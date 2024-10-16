@@ -1,10 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="purple_200">#FFBB86FC</color>
-    <color name="purple_500">#FF6200EE</color>
-    <color name="purple_700">#FF3700B3</color>
-    <color name="teal_200">#FF03DAC5</color>
-    <color name="teal_700">#FF018786</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="backgroundColor">#E8E8E0</color>
+    <color name="backgroundColorPress">#DBDBD3</color>
+    <color name="banner_card">@color/bg_second</color>
+    <color name="bg_disable">#B3BAC5</color>
+    <color name="bg_eight">#F7F5FF</color>
+    <color name="bg_five">#ffffff</color>
+    <color name="bg_fourth">#ffffff</color>
+    <color name="bg_main">#FFFFFF</color>
+    <color name="bg_nine">#ffffff</color>
+    <color name="bg_second">#F8F9FA</color>
+    <color name="bg_seven">#F8F9FA</color>
+    <color name="bg_six">#F8F9FA</color>
+    <color name="bg_third">#F8F9FA</color>
+    <color name="black">#000000</color>
+    <color name="blackpay1">#666666</color>
+    <color name="blackpay2">#999999</color>
+    <color name="blackpay3">#CCCCCC</color>
+    <item name="blue" type="color">#FF33B5E5</item>
+    <color name="check_select">#8F6DEF</color>
+    <color name="check_select_p_10">#198F6DEF</color>
+    <color name="check_unselect">#EDEDEF</color>
+    <color name="color_14_white">#24FFFFFF</color>
+    <color name="color_99_black">#99000000</color>
+    <color name="color_magic_box">#1AD1D6E0</color>
+    <item name="darkblue" type="color">#FF0099CC</item>
+    <item name="darkgreen" type="color">#FF669900</item>
+    <item name="darkorange" type="color">#E65100</item>
+    <item name="darkpurple" type="color">#FF9933CC</item>
+    <item name="darkred" type="color">#FFCC0000</item>
+    <color name="divider_five">#ECEDF1</color>
+    <color name="divider_fourth">#F7F7F7</color>
+    <color name="divider_main">#ECEDF1</color>
+    <color name="divider_second">#F7F7F7</color>
+    <color name="divider_six">#F7F7F7</color>
+    <color name="divider_third">#F7F7F7</color>
+    <item name="gray" type="color">#88222222</item>
+    <color name="gray_200">#EEEEEE</color>
+    <color name="gray_300">#E0E0E0</color>
+    <color name="gray_400">#BDBDBD</color>
+    <item name="gray_f3f4f6" type="color">#fff3f4f6</item>
+    <item name="green" type="color">#FF99CC00</item>
+    <color name="light_yellow">#FFEE58</color>
+    <color name="lit_action_dialog">@android:color/white</color>
+    <color name="lit_blue">#4EA9FF</color>
+    <color name="lit_bottom_sheet_dialog">@color/white</color>
+    <color name="lit_confirm_unable_bg">@color/text_fourth</color>
+    <color name="lit_dialog_top_gray">#FFE1E4EA</color>
+    <color name="lit_green">#25FF70</color>
+    <color name="lit_grey">#EEEEEE</color>
+    <color name="lit_grey1">#4dCCC6CF</color>
+    <color name="lit_pink">#FF68A2</color>
+    <color name="lit_progress_dialog">#ffffff</color>
+    <color name="lit_red">#FF4456</color>
+    <color name="lit_stroke_gray">#FFB3BAC5</color>
+    <color name="lit_stroke_gray2">#FF838995</color>
+    <color name="lit_stroke_grey">#D1D6E0</color>
+    <color name="lit_stroke_purple">#CCC1EB</color>
+    <color name="lit_yellow">#FFD97C</color>
+    <color name="notify_badge_main">#E23A5B</color>
+    <item name="orange" type="color">#FFFFBB33</item>
+    <color name="primary_blue">#4876FF</color>
+    <color name="primary_blue_dark">#3A5FCD</color>
+    <color name="primary_cyan">#1fbba6</color>
+    <color name="primary_cyan_dark">#158274</color>
+    <color name="primary_orange">#F49C16</color>
+    <color name="primary_orange_dark">#EE7617</color>
+    <item name="purple" type="color">#FFAA66CC</item>
+    <color name="purple_7C5ECF">#7C5ECF</color>
+    <color name="purple_FF8F6DEF">#8F6DEF</color>
+    <item name="red" type="color">#FFFF4444</item>
+    <color name="text_btn">#ffffff</color>
+    <color name="text_bubble">#ffffff</color>
+    <color name="text_disable">#D9D9DA</color>
+    <color name="text_eight">#3D3947</color>
+    <color name="text_fifth">#141C2F</color>
+    <color name="text_fourth">#D1D6E0</color>
+    <color name="text_hit">#CCC6CF</color>
+    <color name="text_main">#141C2F</color>
+    <color name="text_nine">#6C696E</color>
+    <color name="text_second">#838995</color>
+    <color name="text_seven">#ffffff</color>
+    <color name="text_six">#141C2F</color>
+    <color name="text_ten">#A868FF</color>
+    <color name="text_third">#B3BAC5</color>
+    <color name="text_un_focus">#D6DCE8</color>
+    <color name="theme_colorAccent">#8F6DEF</color>
+    <color name="theme_colorPrimary">#ffffff</color>
+    <color name="theme_colorPrimaryDark">#ffffff</color>
 </resources>

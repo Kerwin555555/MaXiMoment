@@ -1,35 +1,79 @@
 package com.moment.app
 
 import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
+import androidx.activity.viewModels
+import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityMainBinding
+import com.moment.app.ui.FragmentNavigator
+import com.moment.app.ui.MainNaviConfig
+import com.moment.app.ui.NaviTab
+import com.moment.app.ui.OnTabStatusListener
+import com.moment.app.utils.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-class MainActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class MainActivity : BaseActivity(){
 
     private lateinit var binding: ActivityMainBinding
+    private lateinit var pageAdapter: MainNaviConfig.MainPageAdapter
+    private lateinit var fragmentNavigator: FragmentNavigator
+    private val mainViewModel by viewModels<MainActivityViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        ImmersionBar.with(this)
+            .statusBarDarkFont(false)
+            .init()
+        setSwipeBackEnable(false)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navView: BottomNavigationView = binding.navView
+        pageAdapter = MainNaviConfig.MainPageAdapter(this)
+        fragmentNavigator = FragmentNavigator(supportFragmentManager,pageAdapter, R.id.fragment_container)
+        mainViewModel.fetchTabs()
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+        initObservers()
+    }
+
+    private fun initObservers() {
+        mainViewModel.naviTab.observe(this) {
+            binding.bottomNav.attach(fragmentNavigator)
+            binding.bottomNav.bindTabs(it)
+            binding.bottomNav.listener = object : OnTabStatusListener {
+                override fun onTabPreSelected(position: Int, tab: NaviTab?) {
+
+                }
+
+                override fun onTabSelected(position: Int, tab: NaviTab?, isClick: Boolean) {
+
+                }
+
+                override fun onTabUnselected(position: Int, tab: NaviTab?) {
+
+                }
+
+                override fun onTabReselected(position: Int, tab: NaviTab?) {
+
+                }
+
+                override fun onSpecialTabSelected(position: Int, tab: NaviTab?) {
+
+                }
+
+            }
+            binding.bottomNav.selectPage("home")
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
     }
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.moment.app.ui.BottomHomeView
+        android:id="@+id/home"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/chat"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <com.moment.app.ui.BottomChatView
+        android:id="@+id/chat"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintLeft_toRightOf="@id/home"
+        app:layout_constraintRight_toLeftOf="@id/profile"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+    <com.moment.app.ui.BottomProfileView
+        android:id="@+id/profile"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintLeft_toRightOf="@id/chat"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+</merge>
