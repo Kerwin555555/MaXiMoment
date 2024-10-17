@@ -7,6 +7,7 @@
         android:id="@+id/home"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:scaleType="fitCenter"
         android:layout_gravity="center"
         android:src="@mipmap/light_home">
     </ImageView>

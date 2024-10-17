@@ -8,6 +8,7 @@ import com.moment.app.ui.FragmentNavigator
 import com.moment.app.ui.MainNaviConfig
 import com.moment.app.ui.NaviTab
 import com.moment.app.ui.OnTabStatusListener
+import com.moment.app.utils.ActivityHolder
 import com.moment.app.utils.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -27,6 +28,7 @@ class MainActivity : BaseActivity(){
         setSwipeBackEnable(false)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        ActivityHolder.onMainCreate(this)
 
         pageAdapter = MainNaviConfig.MainPageAdapter(this)
         fragmentNavigator = FragmentNavigator(supportFragmentManager,pageAdapter, R.id.fragment_container)

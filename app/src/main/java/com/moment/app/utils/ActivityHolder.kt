@@ -5,10 +5,10 @@ import com.blankj.utilcode.util.ActivityUtils
 import com.moment.app.MainActivity
 import java.lang.ref.WeakReference
 
-class ActivityHolder {
-    companion object {
-        private var mainRef: WeakReference<MainActivity>? = null
-    }
+object ActivityHolder {
+
+    var mainRef: WeakReference<MainActivity>? = null
+
 
     fun mainActivity(): MainActivity? {
         if (mainRef == null) {
@@ -21,12 +21,11 @@ class ActivityHolder {
         mainRef = WeakReference<MainActivity>(mainActivity)
     }
 
-    val currentActivity: Activity?
-        get() {
-            val activity: Activity = ActivityUtils.getTopActivity()
-            if (activity is BaseActivity) {
-                return activity
-            }
-            return null
+    fun getCurrentActivity(): BaseActivity? {
+        val activity: Activity = ActivityUtils.getTopActivity()
+        if (activity is BaseActivity) {
+            return activity
         }
+        return null
+    }
 }

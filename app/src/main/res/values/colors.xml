@@ -88,4 +88,8 @@
     <color name="theme_colorAccent">#8F6DEF</color>
     <color name="theme_colorPrimary">#ffffff</color>
     <color name="theme_colorPrimaryDark">#ffffff</color>
+    <color name="divider">#80ECECEC</color>
+    <color name="indicator">#FD257C</color>
+    <color name="moment_text_ff1d1d1d">#ff1d1d1d</color>
+    <color name="moment_text_ff999999">#ff999999</color>
 </resources>

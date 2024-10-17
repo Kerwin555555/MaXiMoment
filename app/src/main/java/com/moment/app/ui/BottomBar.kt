@@ -18,7 +18,7 @@ class BottomBar: ConstraintLayout {
     companion object {
         val DEFAULT_NAVI_TABS = mutableListOf(
             NaviTab().apply {
-                tab_icon_Id = R.mipmap.home_selected
+                tab_icon_Id = R.drawable.home_icon_selector
                 tab_name_Id = R.string.title_home
                 page_name = "home"
                 real_page_index = 0
@@ -30,7 +30,7 @@ class BottomBar: ConstraintLayout {
                 real_page_index = 1
             },
             NaviTab().apply {
-                tab_icon_Id = R.mipmap.profile_unselected
+                tab_icon_Id = R.drawable.profile_icon_selector
                 tab_name_Id = R.string.title_profile
                 page_name = "profile"
                 real_page_index = 2

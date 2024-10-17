@@ -1,6 +1,7 @@
 package com.moment.app.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.annotation.IdRes
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -63,6 +64,7 @@ class FragmentNavigator(
                 transaction.commitNow()
             }
         } catch (throwable: Throwable) {
+            throwable.printStackTrace()
             val e = throwable
         }
     }
