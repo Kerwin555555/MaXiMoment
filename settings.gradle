@@ -36,6 +36,9 @@ pluginManagement {
             if (requested.id.id   == 'kotlin-android' ||requested.id.id  == 'kotlin-kapt' ) {
                 useModule "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22"
             }
+            if (requested.id.namespace == 'com.didi' && requested.id.id == 'com.didi.drouter') {
+                useModule "io.github.didi:drouter-plugin:1.4.0"
+            }
         }
     }
 }

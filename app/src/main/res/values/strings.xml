@@ -3,4 +3,17 @@
     <string name="title_home">Home</string>
     <string name="title_chat">Chat</string>
     <string name="title_profile">Profile</string>
+
+    <string-array name="ntp_server_list">
+        <item>id.pool.ntp.org</item>
+        <item>ph.pool.ntp.org</item>
+        <item>vn.pool.ntp.org</item>
+        <item>th.pool.ntp.org</item>
+        <item>my.pool.ntp.org</item>
+        <item>br.pool.ntp.org</item>
+        <item>tr.pool.ntp.org</item>
+        <item>asia.pool.ntp.org</item>
+        <item>north-america.pool.ntp.org</item>
+        <item>pool.ntp.org</item>
+    </string-array>
 </resources>

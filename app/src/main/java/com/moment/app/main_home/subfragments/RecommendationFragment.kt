@@ -1,7 +1,6 @@
 package com.moment.app.main_home.subfragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +9,13 @@ import com.moment.app.databinding.SubFragmentRecommendationBinding
 import com.moment.app.main_home.subfragments.adapters.RecommendationAdapter
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
 import com.moment.app.main_home.subfragments.viewmodels.RecommendationViewModel
+import com.moment.app.network.UserCancelException
+import com.moment.app.network.startCoroutine
+import com.moment.app.network.toast
 import com.moment.app.utils.BaseFragment
-import com.moment.app.utils.generateEmptyMockUserInfos
-import com.moment.app.utils.generateErrorMockUserInfos
 import com.moment.app.utils.generateMockUserInfos
-import com.moment.app.utils.startCoroutine
-import com.moment.app.utils.toast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 
 class RecommendationFragment: BaseFragment() {
@@ -24,13 +23,13 @@ class RecommendationFragment: BaseFragment() {
 
     private var startPos = -1
     private lateinit var binding: SubFragmentRecommendationBinding
-    private lateinit var adapter: RecommendationAdapter
+    private var currentJob: Job? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = SubFragmentRecommendationBinding.inflate(inflater)
         return binding.root
     }
@@ -43,31 +42,34 @@ class RecommendationFragment: BaseFragment() {
     }
 
     private fun initUI() {
-        adapter = RecommendationAdapter()
-        val emptyView = RecommendationEmptyView(this.requireContext())
-        binding.refreshView.setAdapter(adapter, emptyView){ a ->
-            loadData(a as Boolean)
-        }
-        binding.refreshView.setOnRefreshListener {
-            loadData(false)
+        binding.refreshView.initWith(
+            adapter = RecommendationAdapter(),
+            emptyView = RecommendationEmptyView(this.requireContext())) { isLoadMore ->
+             loadData(isLoadMore as Boolean)
         }
     }
 
     private fun loadData(isLoadMore: Boolean) {
-        startCoroutine({
+        currentJob?.let {
+            if (it.isActive) {
+                it.cancel(UserCancelException())
+            }
+        }
+        currentJob = startCoroutine({
             if (!isLoadMore) {
                 startPos = 0
             }
-            Log.d("zhouzheng 1", ""+ startPos)
             val result = withContext(Dispatchers.IO) {
                 generateMockUserInfos(startPos, limit = 10)
                 //generateEmptyMockUserInfos(startPos, 10)
                 //generateErrorMockUserInfos(startPos, 10)
             }
-            Log.d("zhouzheng", result.toString())
             startPos = result.next_start
             binding.refreshView.onSuccess(result.user_infos!!, isLoadMore, result.has_next)
         }){
+            if (it.throwable is UserCancelException) {
+                return@startCoroutine
+            }
             it.toast()
             binding.refreshView.onFail(isLoadMore, it.message)
         }

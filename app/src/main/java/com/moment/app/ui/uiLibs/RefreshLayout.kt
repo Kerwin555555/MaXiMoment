@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,8 +11,8 @@ import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.loadmore.LoadMoreView
 import com.moment.app.R
 import com.moment.app.databinding.BasicRefreshHeaderBinding
@@ -29,58 +28,60 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     SmartRefreshLayout(context, attrs) {
 
     private val binding = MomentRefreshviewBinding.inflate(LayoutInflater.from(context), this)
+    private var adapter: BaseQuickAdapter<D, *>? = null
+    private val layoutManager = LinearLayoutManager(context)
 
-    private var adapter: RefreshAdapter<D, *>? = null
-
-    private var loadDataListener: ((isLoadMore: Boolean) -> Unit)? = null
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        val refreshView = RefreshView(context)
-        setRefreshHeader(refreshView)
-        setOnRefreshListener {
-            if (loadDataListener != null) {
-                loadDataListener?.invoke(false)
-            }
-        }
-    }
-
-    fun setAdapter(
-        adapter: RefreshAdapter<D, *>,
-        emptyView: EmptyView?,
-        loadDataListener: ((isLoadMore: Boolean) -> Unit)?
+    fun initWith(
+        adapter: BaseQuickAdapter<D, *>,
+        emptyView: EmptyView,
+        refreshHeader: RefreshHeader = RefreshView(context),
+        loadDataListener: (it: Boolean) -> Unit
     ) {
         this.adapter = adapter
-        if (this.adapter != null) {
-            binding.recyclerView.adapter = adapter
-            adapter.refreshEmptyView = emptyView as? EmptyView?
-            adapter.setHeaderAndEmpty(true)
-            adapter.emptyView = (emptyView as View)
-            adapter.setEnableLoadMore(true)
-            adapter.setOnLoadMoreListener({
 
-                Log.d("zhouzheng", "急吼吼")
-                loadDataListener?.invoke(true)
-            }, binding.recyclerView)
-            adapter.refreshEmptyView?.showLoading()
-            adapter.setSetUpListener(object : OnRetryClickListener {
-                override fun onRetry() {
-                    loadDataListener?.invoke(false)
-                }
-            })
+        // refreshLayout logic
+        setRefreshHeader(refreshHeader)
+        setOnRefreshListener {
+            loadDataListener.invoke(false)
         }
+
+        //RecyclerView, adapter loadMore and emptyView config
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = adapter.apply {
+            setupLoadMoreAndEmptyView(
+                emptyView = emptyView,
+                loadDataListener = loadDataListener,
+                rv = binding.recyclerView)
+            //preload 5 items
+            setPreLoadNumber(5)
+        }
+
+        //RetryPage logic
+        emptyView.getRetryPage().setOnClickListener {
+            emptyView.showLoading()
+            loadDataListener.invoke(false)
+        }
+
+        //init the ui state
+        emptyView.showLoading()
     }
 
     fun onSuccess(newData: MutableList<D>, isLoadMore: Boolean, hasMore: Boolean) {
-        if (getState() == RefreshState.Refreshing) {
+        if (state == RefreshState.Refreshing) {
             finishRefresh()
         }
         adapter?.onNewItemData(newData, isLoadMore, hasMore)
+
+        //if no more data and just one page, we shouldn't show the loadEnd
+        if (!hasMore) {
+            binding.recyclerView.postDelayed({
+                adapter?.onExamineFullScreen(layoutManager)
+            }, 50L)
+        }
     }
 
     fun onFail(isLoadMore: Boolean, msg: String?) {
-        if (getState() == RefreshState.Refreshing) {
+        if (state == RefreshState.Refreshing) {
             finishRefresh()
         }
         adapter?.onFail(isLoadMore, msg)
@@ -91,88 +92,51 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     }
 }
 
-open class RefreshAdapter<D, H : BaseViewHolder> : BaseQuickAdapter<D, H> {
-    var refreshEmptyView: EmptyView? = null
-        set(value) {
-            field = value
-        }
-
-    constructor(layoutResId: Int) : super(layoutResId)
-    constructor(data: MutableList<D>?) : super(data)
-    constructor(layoutResId: Int, data: MutableList<D>) : super(layoutResId, data)
-
-    private var listener: OnRetryClickListener? = null// 仅在FeedAnonymity页面有
-
-    fun setSetUpListener(listener: OnRetryClickListener?) {
-        this.listener = listener
-        listener?.let {
-            refreshEmptyView?.getRetryButton()?.setOnClickListener {
-                forceRefresh()
-                listener.onRetry()
-            }
-            setEmptyView(refreshEmptyView as View)
-            setEnableLoadMore(true)
-            setLoadMoreView(MomentLoadMoreView())
-        }
+fun <D> BaseQuickAdapter<D, *>.onNewItemData(newData: MutableList<D>, isLoadMore: Boolean, hasMore: Boolean) {
+    if (isLoadMore) {
+        addData(newData)
+    } else {
+        setNewData(newData)
+        (emptyView as? EmptyView?)?.showNoData()
     }
+    if (hasMore) {
+        loadMoreComplete()
+    } else {
+        setEnableLoadMore(false)
+    }
+}
 
-    fun onNewItemData(newData: MutableList<D>, isLoadMore: Boolean, hasMore: Boolean) {
-        Log.d("zhouzheng", "急吼吼2"+isLoadMore)
+fun <D> BaseQuickAdapter<D, *>.onFail(isLoadMore: Boolean, msg: String?) {
+    (emptyView as? EmptyView?)?.run {
         if (isLoadMore) {
-            addData(newData)
+            loadMoreFail()
         } else {
-            setNewData(newData)
-            refreshEmptyView?.run {
-                showNoData()
-            }
-        }
-        if (hasMore) {
-            loadMoreComplete()
-        } else {
-            setEnableLoadMore(false)
-            recyclerView?.let {
-                val manager = recyclerView.layoutManager
-                manager?.let {
-                    if (manager is LinearLayoutManager) {
-                        recyclerView.postDelayed({
-                            if (this@RefreshAdapter.fullScreen(manager)) {
-                                this@RefreshAdapter.setEnableLoadMore(true)
-                                loadMoreEnd(false)
-                            }
-                        }, 50L)
-                    }
-                }
+            if (data != null && data.isEmpty()) {
+                showRetry(msg)
             }
         }
     }
+}
 
-    private fun fullScreen(llm: LinearLayoutManager): Boolean {
-        return llm.findLastCompletelyVisibleItemPosition() + 1 != this.itemCount || llm.findFirstCompletelyVisibleItemPosition() != 0
+fun <D> BaseQuickAdapter<D, *>.onExamineFullScreen(layoutManager: LinearLayoutManager) {
+    if (fullScreen(layoutManager)) {
+        setEnableLoadMore(true)
+        loadMoreEnd(false)
     }
+}
 
-    fun onFail(isLoadMore: Boolean, msg: String?) {
-        refreshEmptyView?.run {
-            if (isLoadMore) {
-                loadMoreFail()
-            } else {
-                if (mData != null && mData.isEmpty()) {
-                    refreshEmptyView?.run {
-                        showRetry(msg)
-                    }
-                }
-            }
-        }
-    }
+private fun BaseQuickAdapter<*, *>.fullScreen(llm: LinearLayoutManager): Boolean {
+    return llm.findLastCompletelyVisibleItemPosition() + 1 != this.itemCount || llm.findFirstCompletelyVisibleItemPosition() != 0
+}
 
-    private fun forceRefresh() {
-        refreshEmptyView?.run {
-            showLoading()
-        }
-    }
-
-    override fun convert(helper: H, item: D) {
-
-    }
+fun BaseQuickAdapter<*, *>.setupLoadMoreAndEmptyView(emptyView: EmptyView?, loadDataListener: ((isLoadMore: Boolean) -> Unit)?, rv: RecyclerView) {
+    setHeaderAndEmpty(true)
+    this.emptyView = (emptyView as View)
+    setOnLoadMoreListener({
+        loadDataListener?.invoke(true)
+    }, rv)
+    setEnableLoadMore(true)
+    setLoadMoreView(MomentLoadMoreView())
 }
 
 class RefreshView @JvmOverloads constructor(
@@ -257,17 +221,14 @@ class RefreshView @JvmOverloads constructor(
     override fun autoOpen(duration: Int, dragRate: Float, animationOnly: Boolean): Boolean {
         return true
     }
-
 }
 
-interface OnLoadDataListener {
-    fun onLoad(isLoadMore: Boolean)
-}
 
+// BaseQuickAdapter uses one single page to represent the nodata/retry/loading pages
 interface EmptyView {
-    fun getEmpty(): View
-    fun getRetryButton(): View
-    fun getLoading(): View
+    fun getNoDataPage(): View
+    fun getRetryPage(): View
+    fun getLoadingPage(): View
 
     fun showNoData()
     fun showRetry(msg: String?)
@@ -275,13 +236,9 @@ interface EmptyView {
     fun hideAll()
 }
 
-interface OnRetryClickListener {
-    fun onRetry()
-}
-
 class MomentLoadMoreView : LoadMoreView() {
     override fun getLayoutId(): Int {
-        return R.layout.anonymous_loading_more_view
+        return R.layout.moment_loading_more_view
     }
 
     override fun getLoadingViewId(): Int {

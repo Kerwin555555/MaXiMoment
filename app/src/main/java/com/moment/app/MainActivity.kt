@@ -2,6 +2,7 @@ package com.moment.app
 
 import android.os.Bundle
 import androidx.activity.viewModels
+import com.didi.drouter.annotation.Router
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityMainBinding
 import com.moment.app.ui.FragmentNavigator
@@ -10,9 +11,8 @@ import com.moment.app.ui.NaviTab
 import com.moment.app.ui.OnTabStatusListener
 import com.moment.app.utils.ActivityHolder
 import com.moment.app.utils.BaseActivity
-import dagger.hilt.android.AndroidEntryPoint
 
-@AndroidEntryPoint
+@Router(scheme = ".*", host = ".*", path = "/main")
 class MainActivity : BaseActivity(){
 
     private lateinit var binding: ActivityMainBinding

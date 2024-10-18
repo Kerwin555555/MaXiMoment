@@ -20,15 +20,15 @@ class RecommendationEmptyView : FrameLayout, EmptyView{
     init {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
     }
-    override fun getEmpty(): View {
+    override fun getNoDataPage(): View {
         return binding.emptyLayout
     }
 
-    override fun getRetryButton(): View {
+    override fun getRetryPage(): View {
         return binding.errorLayout
     }
 
-    override fun getLoading(): View {
+    override fun getLoadingPage(): View {
         return binding.progress
     }
 

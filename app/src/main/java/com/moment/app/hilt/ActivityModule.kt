@@ -6,8 +6,8 @@ import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.components.SingletonComponent
 
 
-@Module
-@InstallIn(ActivityComponent::class)
-class ActivityModule {
-
-}
+//@Module
+//@InstallIn(ActivityComponent::class)
+//class ActivityModule {
+//
+//}

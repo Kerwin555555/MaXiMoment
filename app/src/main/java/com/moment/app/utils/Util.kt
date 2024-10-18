@@ -5,13 +5,10 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
-import android.util.Log
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
@@ -35,6 +32,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
+import retrofit2.HttpException
+import java.io.IOException
+import java.net.ConnectException
 import kotlin.coroutines.cancellation.CancellationException
 import kotlin.coroutines.resume
 
@@ -365,49 +365,6 @@ fun BaseFragment.getStatusBarHeight(): Int{
     return BarUtils.getStatusBarHeight()
 }
 
-inline fun ViewModel.startCoroutine(
-    crossinline block: suspend CoroutineScope.() -> Unit,
-    crossinline errorAction: (it: Throwable) -> Unit,
-) {
-    val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
-        this.viewModelScope.launch(Dispatchers.Main) {
-            errorAction.invoke(throwable)
-        }
-    }
-    this.viewModelScope.launch(coroutineHandler) {
-        this.block()
-    }
-}
-
-
-inline fun AppCompatActivity.startCoroutine(
-    crossinline block: suspend CoroutineScope.() -> Unit,
-    crossinline errorAction: (it: Throwable) -> Unit,
-) {
-    val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
-        this.lifecycleScope.launch(Dispatchers.Main) {
-            errorAction.invoke(throwable)
-        }
-    }
-    this.lifecycleScope.launch(coroutineHandler) {
-        this.block()
-    }
-}
-
-inline fun Fragment.startCoroutine(
-    crossinline block: suspend CoroutineScope.() -> Unit,
-    crossinline errorAction: (it: Throwable) -> Unit,
-) {
-    val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
-        this.viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
-            errorAction.invoke(throwable)
-        }
-    }
-    this.viewLifecycleOwner.lifecycleScope.launch(coroutineHandler) {
-        this.block()
-    }
-}
-
 suspend fun generateMockUserInfos(start_pos : Int = 0, limit: Int =10) : UserInfoList{
     val f = UserInfoList()
     var noNext = false
@@ -451,18 +408,5 @@ fun String.toast() {
         return
     }
     ToastUtils.showShort(this)
-}
-
-fun Throwable.toast(withCode: Boolean = false) {
-    if (this is CancellationException) {
-        android.util.Log.e("LitNet", "CancellationException ==>", this)
-        return
-    }
-
-    if (withCode) {
-        "$message".toast()
-    } else {
-        message?.toast()
-    }
 }
 
