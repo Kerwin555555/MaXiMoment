@@ -20,16 +20,17 @@ import com.moment.app.databinding.PagingItemBinding
 import com.moment.app.databinding.PagingNetworkItemViewBinding
 import com.moment.app.databinding.RecommendationFragmentBinding
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.main_home.subfragments.viewmodels.RecommendationViewModel
+import com.moment.app.main_home.subfragments.viewmodels.RecommendationPagingViewModel
 import com.moment.app.utils.BaseFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 
 
+@Deprecated("No need")
 @AndroidEntryPoint
 class RecommendPagingFragment: BaseFragment() {
 
-    private val viewModel by viewModels<RecommendationViewModel>()
+    private val viewModel by viewModels<RecommendationPagingViewModel>()
     private lateinit var binding: RecommendationFragmentBinding
     private val adapter = UserInfoAdapter()
 
@@ -83,7 +84,7 @@ class UserInfoAdapter: PagingDataAdapter<UserInfo, BindingViewHolder>(
             val binding = holder.binding as PagingItemBinding
             binding.userInfo = item
         }
-        Log.d("zhouzheng", "写入UI！" + position)
+        Log.d("Moment", "写入UI！" + position)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BindingViewHolder {

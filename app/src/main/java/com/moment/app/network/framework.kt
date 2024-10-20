@@ -25,14 +25,14 @@ class UserCancelException: CancellationException()
 inline fun ViewModel.startCoroutine(
     crossinline block: suspend CoroutineScope.() -> Unit,
     crossinline errorAction: (it: MomentNetError) -> Unit,
-) {
+) : Job{
     val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
         this.viewModelScope.launch(Dispatchers.Main) {
             val pair = throwable.format()
             errorAction.invoke(MomentNetError(pair.first, pair.second, throwable))
         }
     }
-    this.viewModelScope.launch(coroutineHandler) {
+    return this.viewModelScope.launch(coroutineHandler) {
         this.block()
     }
 }

@@ -6,7 +6,6 @@ import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.PagingData
 import androidx.paging.cachedIn
-import androidx.paging.insertFooterItem
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.main_home.subfragments.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -14,7 +13,7 @@ import javax.inject.Inject
 
 
 @HiltViewModel
-class RecommendationViewModel
+class RecommendationPagingViewModel
     @Inject constructor(private val repository: Repository)
     : ViewModel() {
 

@@ -46,8 +46,14 @@ class RecommendationFragment: BaseFragment() {
     @Inject
     lateinit var userInfoDb: HomeRecommendationListDatabase
 
-    val mapper = EntityToModelMapper()
-    val adapter = RecommendationAdapter()
+    val mapper by lazy {
+        EntityToModelMapper()
+    }
+
+    val adapter by lazy {
+         RecommendationAdapter()
+    }
+
     var dbstart = 0
 
     override fun onCreateView(
@@ -89,14 +95,15 @@ class RecommendationFragment: BaseFragment() {
                 //如果数据库没有数据 不变shimmer
                 //进入数据库模式
                 withContext(Dispatchers.IO) {
-                    userInfoDb.UserInfoEntityDao().getUserInfoEntitiesPaged(pageSize, startPos)
+                    userInfoDb.UserInfoEntityDao().getUserInfoEntitiesPaged(pageSize, dbstart)
                         .map {
                             mapper.map(it)
                         }
                 }.apply {
-                    Log.d("zhouzheng", "" + dbstart + ":" + size)
-                    binding.refreshView.onSuccess(this.toMutableList(), isLoadMore,dbstart < 20 && dbstart + size  < 29 && size == pageSize)
-                    dbstart += size
+                    if (size != 0) {
+                        binding.refreshView.onSuccess(this.toMutableList(), isLoadMore, dbstart < 10 && dbstart + size < 29 && size == pageSize)
+                        dbstart += size
+                    }
                 }
             } else {
                 if (isOnlyDbMode) {
@@ -106,8 +113,7 @@ class RecommendationFragment: BaseFragment() {
                                 mapper.map(it)
                             }
                     }.apply {
-                        Log.d("zhouzheng", "" + dbstart + ":" + size)
-                            binding.refreshView.onSuccess(this.toMutableList(), isLoadMore, dbstart < 20 && dbstart + size  < 29 && size == pageSize)
+                            binding.refreshView.onSuccess(this.toMutableList(), isLoadMore, dbstart < 10 && dbstart + size  < 29 && size == pageSize)
                             dbstart += size
                     }
                     return@startCoroutine
@@ -121,21 +127,23 @@ class RecommendationFragment: BaseFragment() {
             }
             //存档到数据库！
             isOnlyDbMode = false
-            withContext(Dispatchers.IO) {
-                val item = (result.data as UserInfoList).user_infos?.map { it ->
-                    UserInfoEntity(
-                        name = it.name!!,
-                        userId = it.userId!!,
-                        gender = it.gender!!,
-                        age = it.age!!,
-                        page = 0
-                    )
-                }
-                userInfoDb.withTransaction {
-                    if (!isLoadMore) {
-                        userInfoDb.UserInfoEntityDao().clearUserInfoEntity()
+            if (!isLoadMore || (adapter.data.size + result.data!!.user_infos!!.size <= 20)) {
+                withContext(Dispatchers.IO) {
+                    val item = (result.data as UserInfoList).user_infos?.map { it ->
+                        UserInfoEntity(
+                            name = it.name!!,
+                            userId = it.userId!!,
+                            gender = it.gender!!,
+                            age = it.age!!,
+                            page = 0
+                        )
                     }
-                    userInfoDb.UserInfoEntityDao().insertUserInfo(item!!)
+                    userInfoDb.withTransaction {
+                        if (!isLoadMore) {
+                            userInfoDb.UserInfoEntityDao().clearUserInfoEntity()
+                        }
+                        userInfoDb.UserInfoEntityDao().insertUserInfo(item!!)
+                    }
                 }
             }
             startPos = result.data!!.next_start
@@ -146,6 +154,7 @@ class RecommendationFragment: BaseFragment() {
             }
             it.toast()
             if (!isLoadMore && adapter.data.size > 0) {
+                // with db data
                 return@startCoroutine
             }
             binding.refreshView.onFail(isLoadMore, it.message)

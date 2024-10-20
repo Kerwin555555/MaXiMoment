@@ -2,7 +2,7 @@ package com.moment.app.datamodel
 
 import com.moment.app.utils.BaseBean
 
-class Result<T> : BaseBean() {
+class Result<T>  {
     var isOk: Boolean = false
     var result: Int = 0 //0 成功
     var msg: String? = null
