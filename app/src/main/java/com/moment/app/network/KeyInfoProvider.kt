@@ -1,7 +1,7 @@
 package com.moment.app.network
 
 import android.text.TextUtils
-import com.moment.app.entities.UserInfo
+import com.moment.app.datamodel.UserInfo
 import com.moment.app.models.LoginModel
 import com.moment.app.utils.BaseBean
 import com.moment.app.utils.JsonUtil

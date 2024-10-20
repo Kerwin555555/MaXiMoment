@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.databinding.FragmentHomeItemViewBinding
-import com.moment.app.entities.UserInfo
+import com.moment.app.datamodel.UserInfo
 
 class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.FragmentHomeItemHolder>(null) {
 

@@ -4,11 +4,10 @@ import android.content.Context
 import android.graphics.drawable.LevelListDrawable
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
 import android.widget.LinearLayout
 import com.moment.app.R
 import com.moment.app.databinding.LayoutGenderBinding
-import com.moment.app.entities.UserInfo
+import com.moment.app.datamodel.UserInfo
 
 class GenderView  : LinearLayout{
 

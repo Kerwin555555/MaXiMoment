@@ -11,7 +11,9 @@ import com.moment.app.ui.NaviTab
 import com.moment.app.ui.OnTabStatusListener
 import com.moment.app.utils.ActivityHolder
 import com.moment.app.utils.BaseActivity
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/main")
 class MainActivity : BaseActivity(){
 

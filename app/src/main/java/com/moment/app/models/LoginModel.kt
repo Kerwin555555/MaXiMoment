@@ -1,6 +1,6 @@
 package com.moment.app.models
 
-import com.moment.app.entities.UserInfo
+import com.moment.app.datamodel.UserInfo
 
 object LoginModel {
     private val info: UserInfo? = UserInfo()

@@ -12,7 +12,7 @@ class FeedList : BaseBean() {
     var next_start: Int = 0
     var feeds: List<FeedsBean>? = null
 
-    class FeedsBean {
+    class FeedsBean: BaseBean() {
         var pics_shape : MutableList<PicShape>? = null
 
         fun isPictureFeed(): Boolean {

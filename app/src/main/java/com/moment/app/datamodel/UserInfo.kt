@@ -1,4 +1,4 @@
-package com.moment.app.entities
+package com.moment.app.datamodel
 
 import com.moment.app.utils.BaseBean
 

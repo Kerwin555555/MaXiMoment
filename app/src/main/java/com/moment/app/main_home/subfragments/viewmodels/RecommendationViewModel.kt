@@ -1,12 +1,23 @@
 package com.moment.app.main_home.subfragments.viewmodels
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
+import androidx.paging.insertFooterItem
+import com.moment.app.datamodel.UserInfo
+import com.moment.app.main_home.subfragments.repository.Repository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class RecommendationViewModel: ViewModel() {
 
+@HiltViewModel
+class RecommendationViewModel
+    @Inject constructor(private val repository: Repository)
+    : ViewModel() {
 
+    val data : LiveData<PagingData<UserInfo>> =
+        repository.fetchUserInfoList().cachedIn(viewModelScope).asLiveData()
 }

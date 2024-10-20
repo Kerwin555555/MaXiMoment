@@ -1,4 +1,4 @@
-package com.moment.app.entities
+package com.moment.app.datamodel
 
 import com.moment.app.utils.BaseBean
 
@@ -7,15 +7,7 @@ class Result<T> : BaseBean() {
     var result: Int = 0 //0 成功
     var msg: String? = null
     var message: String? = null
-    private var data: T? = null
-
-    fun getData(): T? {
-        return data
-    }
-
-    fun setData(data: T) {
-        this.data = data
-    }
+    var data: T? = null
 
     override fun toString(): String {
         return "Result{" +

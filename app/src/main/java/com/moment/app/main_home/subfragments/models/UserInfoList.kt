@@ -1,6 +1,6 @@
-package com.moment.app.main_home.subfragments.entities
+package com.moment.app.main_home.subfragments.models
 
-import com.moment.app.entities.UserInfo
+import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.BaseBean
 
 data class UserInfoList(

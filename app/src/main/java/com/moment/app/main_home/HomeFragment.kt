@@ -11,6 +11,7 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.R
 import com.moment.app.databinding.FragmentHomeBinding
+import com.moment.app.main_home.subfragments.RecommendPagingFragment
 import com.moment.app.main_home.subfragments.RecommendationFragment
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyMargin

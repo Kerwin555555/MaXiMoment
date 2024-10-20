@@ -4,12 +4,14 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.drawable.AnimationDrawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -53,7 +55,7 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
                 loadDataListener = loadDataListener,
                 rv = binding.recyclerView)
             //preload 5 items
-            setPreLoadNumber(5)
+            setPreLoadNumber(0)
         }
 
         //RetryPage logic
@@ -67,7 +69,7 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     }
 
     fun onSuccess(newData: MutableList<D>, isLoadMore: Boolean, hasMore: Boolean) {
-        if (state == RefreshState.Refreshing) {
+        if (!isLoadMore) {
             finishRefresh()
         }
         adapter?.onNewItemData(newData, isLoadMore, hasMore)
@@ -81,7 +83,8 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     }
 
     fun onFail(isLoadMore: Boolean, msg: String?) {
-        if (state == RefreshState.Refreshing) {
+
+        if (!isLoadMore) {
             finishRefresh()
         }
         adapter?.onFail(isLoadMore, msg)
@@ -97,7 +100,9 @@ fun <D> BaseQuickAdapter<D, *>.onNewItemData(newData: MutableList<D>, isLoadMore
         addData(newData)
     } else {
         setNewData(newData)
-        (emptyView as? EmptyView?)?.showNoData()
+        (emptyView as ViewGroup).children.find { it -> it is  EmptyView}?.run {
+            (this as EmptyView).showNoData()
+        }
     }
     if (hasMore) {
         loadMoreComplete()
@@ -107,12 +112,16 @@ fun <D> BaseQuickAdapter<D, *>.onNewItemData(newData: MutableList<D>, isLoadMore
 }
 
 fun <D> BaseQuickAdapter<D, *>.onFail(isLoadMore: Boolean, msg: String?) {
-    (emptyView as? EmptyView?)?.run {
+    (emptyView as ViewGroup).children.find { it -> it is  EmptyView}.run {
         if (isLoadMore) {
             loadMoreFail()
+
         } else {
-            if (data != null && data.isEmpty()) {
-                showRetry(msg)
+
+            if (data.isEmpty()) {
+                (this as EmptyView).showRetry(msg)
+            } else {
+
             }
         }
     }

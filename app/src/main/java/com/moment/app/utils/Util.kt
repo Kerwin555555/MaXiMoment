@@ -5,37 +5,28 @@ import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
 import androidx.constraintlayout.widget.ConstraintSet
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
 import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.blankj.utilcode.util.ToastUtils
-import com.moment.app.entities.UserInfo
-import com.moment.app.main_home.subfragments.entities.UserInfoList
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import com.moment.app.datamodel.UserInfo
+import com.moment.app.main_home.subfragments.models.UserInfoList
+import com.moment.app.network.UserCancelException
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.suspendCancellableCoroutine
-import retrofit2.HttpException
-import java.io.IOException
-import java.net.ConnectException
-import kotlin.coroutines.cancellation.CancellationException
+import java.util.UUID
 import kotlin.coroutines.resume
 
 
@@ -385,7 +376,10 @@ suspend fun generateEmptyMockUserInfos(start_pos : Int = 0, limit: Int =10) : Us
     f.user_infos = mutableListOf()
     for (i in 0 until 10) {
         if (start_pos + i > 50) noNext = true
-        f.user_infos?.add(UserInfo("${start_pos + i}", if (i%2==0) "male" else "female",19 ))
+        val uuid = UUID.randomUUID()
+        f.user_infos?.add(UserInfo("${start_pos + i}", if (i%2==0) "male" else "female",19 ).apply {
+            name = "Moment"+uuid
+        })
     }
     delay(1200)
     f.has_next = !noNext
@@ -408,5 +402,23 @@ fun String.toast() {
         return
     }
     ToastUtils.showShort(this)
+}
+
+fun Job.cancelIfActive() {
+    if (this.isActive) {
+        this.cancel(UserCancelException())
+    }
+}
+
+fun printStack(start: String) {
+    val elements = Throwable().stackTrace
+    val builder = StringBuilder()
+    for (i in elements.indices) {
+        if (i < 34) {
+            val element = elements[i]
+            builder.append(element.className).append(".").append(element.methodName).append("\n")
+        }
+    }
+    Log.d("zhouzheng", start + builder.toString())
 }
 
