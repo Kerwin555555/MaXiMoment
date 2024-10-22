@@ -10,9 +10,9 @@ import com.moment.app.databinding.ActivitySplashBinding
 import com.moment.app.eventbus.AEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
+import com.moment.app.login_profile.ProfileActivity
 import com.moment.app.models.ConfigModel
 import com.moment.app.models.LoginModel
-import com.moment.app.user_profile.ProfileActivity
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.sntp.SntpClock
 import dagger.hilt.android.AndroidEntryPoint

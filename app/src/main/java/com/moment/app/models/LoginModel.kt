@@ -13,7 +13,7 @@ import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LoginEvent
 import com.moment.app.eventbus.LogoutEvent
 import com.moment.app.login_page.service.LoginService
-import com.moment.app.user_profile.ProfileActivity
+import com.moment.app.login_profile.ProfileActivity
 import com.moment.app.utils.AppPrefs
 import com.moment.app.utils.coroutineScope2
 import kotlinx.coroutines.launch
