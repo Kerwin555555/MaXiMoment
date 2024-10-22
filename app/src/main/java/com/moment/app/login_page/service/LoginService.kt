@@ -1,0 +1,16 @@
+package com.moment.app.login_page.service
+
+import com.moment.app.datamodel.Results
+import com.moment.app.datamodel.UserInfo
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
+
+interface LoginService {
+    @POST("api/sns/v1/lit/user/facebook_login")
+    suspend fun facebookLogin(@Body map: Map<String, String>): Results<UserInfo>
+
+    @GET("api/sns/v1/lit/user/logout")
+    suspend fun logout(): Results<Any>
+}

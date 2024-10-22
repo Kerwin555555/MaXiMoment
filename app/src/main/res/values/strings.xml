@@ -3,7 +3,9 @@
     <string name="title_home">Home</string>
     <string name="title_chat">Chat</string>
     <string name="title_profile">Profile</string>
-
+    <string name="facebook_app_id" translatable="false">aa2249012795165840</string>
+    <string name="moment_accost">Accost</string>
+    <string name="moment_Chat">Chat</string>
     <string-array name="ntp_server_list">
         <item>id.pool.ntp.org</item>
         <item>ph.pool.ntp.org</item>

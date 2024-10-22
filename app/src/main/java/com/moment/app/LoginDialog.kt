@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.didi.drouter.api.DRouter
+import com.didi.drouter.api.Extend
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.DialogLoginBinding
 import com.moment.app.utils.BaseFragment
@@ -26,5 +28,9 @@ class LoginDialog: BaseFragment() {
             .statusBarDarkFont(false)
             .fitsSystemWindows(false)
             .init()
+
+        binding.facebookLogin.setOnClickListener {
+            DRouter.build("/login/facebook").start()
+        }
     }
 }

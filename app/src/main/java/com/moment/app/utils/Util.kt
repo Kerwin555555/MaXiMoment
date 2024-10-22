@@ -1,19 +1,31 @@
 package com.moment.app.utils
 
+import android.R
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.ObjectAnimator
+import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.BitmapFactory
 import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.StateListDrawable
 import android.util.Log
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.ColorInt
+import androidx.annotation.ColorRes
+import androidx.annotation.DrawableRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams
 import androidx.constraintlayout.widget.ConstraintLayout.LayoutParams.MATCH_CONSTRAINT
 import androidx.constraintlayout.widget.ConstraintSet
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -23,10 +35,15 @@ import com.blankj.utilcode.util.ToastUtils
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.main_home.subfragments.models.UserInfoList
 import com.moment.app.network.UserCancelException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
+import org.w3c.dom.Text
 import java.util.UUID
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
 
 
@@ -404,6 +421,12 @@ fun String.toast() {
     ToastUtils.showShort(this)
 }
 
+//取代 deprecated 的 GlobalCope
+val coroutineScope = CoroutineScope(EmptyCoroutineContext)
+
+//比如全局子线程切主线程可以直接用该scope
+val coroutineScope2 = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
 fun Job.cancelIfActive() {
     if (this.isActive) {
         this.cancel(UserCancelException())
@@ -420,5 +443,290 @@ fun printStack(start: String) {
         }
     }
     Log.d("zhouzheng", start + builder.toString())
+}
+
+internal fun View.setBgStateListDrawable(
+    dp: Float,
+    @ColorRes enableId: Int,
+    @ColorRes disableId: Int,
+    @ColorRes pressedId: Int? = null
+) {
+    setBgColorIntStateListDrawable(dp, ContextCompat.getColor(this.context, enableId),
+        ContextCompat.getColor(this.context, disableId), if (pressedId != null)
+            ContextCompat.getColor(this.context, pressedId) else null)
+}
+
+internal fun View.setBgColorIntStateListDrawable(
+    dp: Float,
+    @ColorInt enableId: Int,
+    @ColorInt disableId: Int,
+    @ColorInt pressedId: Int? = null
+) {
+    val drawable = StateListDrawable()
+    drawable.addState(
+        intArrayOf(android.R.attr.state_enabled),
+        GradientDrawableBuilder()
+            .conner(SizeUtils.dp2px(dp))
+            .color(enableId)
+            .build()
+    )
+    drawable.addState(
+        intArrayOf(), GradientDrawableBuilder()
+            .conner(SizeUtils.dp2px(dp))
+            .color(disableId)
+            .build()
+    )
+    if (pressedId != null) {
+        drawable.addState(
+            intArrayOf(android.R.attr.state_pressed),
+            GradientDrawableBuilder()
+                .conner(SizeUtils.dp2px(dp))
+                .color(pressedId)
+                .build()
+        )
+    }
+    background = drawable
+}
+
+internal fun View.setBgSelectedStateListDrawable(
+    dp: Float,
+    @ColorRes selectedId: Int,
+    @ColorRes unSelectedId: Int
+) {
+    setBgSelectedColorIntStateListDrawable(dp, ContextCompat.getColor(this.context, selectedId),
+        ContextCompat.getColor(this.context, unSelectedId))
+}
+
+internal fun View.setBgSelectedColorIntStateListDrawable(
+    dp: Float,
+    @ColorInt selectedId: Int,
+    @ColorInt unSelectedId: Int
+) {
+    val drawable = StateListDrawable()
+    drawable.addState(
+        intArrayOf(android.R.attr.state_selected),
+        GradientDrawableBuilder()
+            .conner(SizeUtils.dp2px(dp))
+            .color(selectedId)
+            .build()
+    )
+    drawable.addState(
+        intArrayOf(), GradientDrawableBuilder()
+            .conner(SizeUtils.dp2px(dp))
+            .color(unSelectedId)
+            .build()
+    )
+    background = drawable
+}
+
+internal fun View.setBgWithAllCorners(dp: Float, @ColorRes solid: Int) {
+    background = GradientDrawableBuilder()
+        .conner(SizeUtils.dp2px(dp))
+        .color(ContextCompat.getColor(this.context, solid))
+        .build()
+}
+
+internal fun View.setBgWithCornerRadiusAndColor(dp: Float, @ColorInt solid: Int) {
+    background = GradientDrawableBuilder()
+        .conner(SizeUtils.dp2px(dp))
+        .color(solid)
+        .build()
+}
+
+internal fun ImageView.setImageResourceSelectedStateListDrawable(
+    @DrawableRes selectedId:  Int,
+    @DrawableRes unSelectedId: Int
+) {
+    val drawable = StateListDrawable()
+    drawable.addState(
+        intArrayOf(R.attr.state_selected),
+        ContextCompat.getDrawable(context, selectedId)
+    )
+    drawable.addState(
+        intArrayOf(),
+        ContextCompat.getDrawable(context, unSelectedId)
+    )
+    setImageDrawable(drawable)
+}
+
+internal fun TextView.setTextColorResStateSelectList(
+    @ColorRes selectedId: Int,
+    @ColorRes unSelectedId: Int
+) {
+    val list = ColorStateList(
+        arrayOf(intArrayOf(R.attr.state_selected), intArrayOf()),
+        intArrayOf(ContextCompat.getColor(context, selectedId),
+            ContextCompat.getColor(context, unSelectedId))
+    )
+    setTextColor(list)
+}
+
+internal fun TextView.setTextColorStateSelectList(
+    @ColorInt selectedColor: Int,
+    @ColorInt unSelectedColor: Int
+) {
+    val list = ColorStateList(
+       arrayOf(intArrayOf(R.attr.state_selected), intArrayOf()),
+        intArrayOf(selectedColor, unSelectedColor)
+    )
+    setTextColor(list)
+}
+
+internal fun View.setBgWithTopLeftRightCorners(@ColorRes solid: Int) {
+    val size = SizeUtils.dp2px(20f).toFloat()
+    val drawable = GradientDrawableBuilder()
+        .conners(floatArrayOf(size, size, size, size, 0f, 0f, 0f, 0f))
+        .color(ContextCompat.getColor(this.context, solid))
+        .build()
+    background = drawable
+}
+
+internal fun View.setBgWithBottomLeftRightCorners(@ColorRes solid: Int) {
+    val size = SizeUtils.dp2px(20f).toFloat()
+    val drawable = GradientDrawableBuilder()
+        .conners(floatArrayOf(0f, 0f, 0f, 0f, size, size, size, size))
+        .color(ContextCompat.getColor(this.context, solid))
+        .build()
+    background = drawable
+}
+
+
+//IMAGEVIEW
+
+internal fun ImageView.setImageResourceEnableStateListDrawable(
+    enable: Drawable,
+    disable: Drawable
+) {
+    val drawable = StateListDrawable()
+    drawable.addState(
+        intArrayOf(android.R.attr.state_enabled),
+        enable
+    )
+    drawable.addState(
+        intArrayOf(),
+        disable
+    )
+    setImageDrawable(drawable)
+}
+
+internal fun ImageView.setImageResourceEnableStateListDrawable(disableColorInt: Int, enableColorInt: Int, bitmapRes: Int) {
+    setImageResourceEnableStateListDrawable(enable = BitmapDrawable(null,
+        BitmapFactory.decodeResource(context.resources, bitmapRes)).apply {
+        setTint(enableColorInt)
+    },
+        disable = BitmapDrawable(null, BitmapFactory.decodeResource(context.resources, bitmapRes)).apply {
+            setTint(disableColorInt)
+        } )
+}
+
+
+fun getStateListDrawableWithBitmaps(context: Context, stateResourceId: Int, stateBitmapId: Int, normalBitmapId: Int) : StateListDrawable {
+    return StateListDrawable().apply {
+        addState(intArrayOf(stateResourceId),  BitmapDrawable(context.resources, BitmapFactory.decodeResource(context.resources, stateBitmapId)))
+        addState(intArrayOf(),  BitmapDrawable(context.resources, BitmapFactory.decodeResource(context.resources, normalBitmapId)))
+    }
+}
+
+class GradientDrawableBuilder {
+    private var conner: Int? = null
+    private var conners: FloatArray? = null
+    private var color: Int? = null
+    private var colors: IntArray? = null
+    private var orientation: GradientDrawable.Orientation? = null
+    private var strokeColor: Int? = null
+    private var strokeWidth: Int? = null
+
+    fun build(): GradientDrawable {
+        val gd = GradientDrawable()
+        if (this.conner != null) {
+            gd.cornerRadius = conner!!.toFloat()
+        }
+
+        if (this.conners != null) {
+            gd.cornerRadii = conners
+        }
+
+        if (this.color != null) {
+            gd.setColor(color!!)
+        }
+
+        if (this.colors != null) {
+            gd.colors = colors
+        }
+
+        if (this.orientation != null) {
+            gd.orientation = orientation
+        }
+
+        if (this.strokeWidth != null && this.strokeColor != null) {
+            gd.setStroke(strokeWidth!!, strokeColor!!)
+        }
+
+        return gd
+    }
+
+    fun into(view: View) {
+        val gd = GradientDrawable()
+        if (this.conner != null) {
+            gd.cornerRadius = conner!!.toFloat()
+        }
+
+        if (this.conners != null) {
+            gd.cornerRadii = conners
+        }
+
+        if (this.color != null) {
+            gd.setColor(color!!)
+        }
+
+        if (this.colors != null) {
+            gd.colors = colors
+        }
+
+        if (this.orientation != null) {
+            gd.orientation = orientation
+        }
+
+        if (this.strokeWidth != null && this.strokeColor != null) {
+            gd.setStroke(strokeWidth!!, strokeColor!!)
+        }
+
+        view.background = gd
+    }
+
+    fun conner(conner: Int): GradientDrawableBuilder {
+        this.conner = conner
+        return this
+    }
+
+    fun conners(conners: FloatArray?): GradientDrawableBuilder {
+        this.conners = conners
+        return this
+    }
+
+    fun color(color: Int): GradientDrawableBuilder {
+        this.color = color
+        return this
+    }
+
+    fun colors(colors: IntArray?): GradientDrawableBuilder {
+        this.colors = colors
+        return this
+    }
+
+    fun strokeColor(strokeColor: Int): GradientDrawableBuilder {
+        this.strokeColor = strokeColor
+        return this
+    }
+
+    fun strokeWidth(strokeWidth: Int): GradientDrawableBuilder {
+        this.strokeWidth = strokeWidth
+        return this
+    }
+
+    fun orientation(orientation: GradientDrawable.Orientation?): GradientDrawableBuilder {
+        this.orientation = orientation
+        return this
+    }
 }
 

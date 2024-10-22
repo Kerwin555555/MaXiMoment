@@ -69,6 +69,7 @@ class EntityToModelMapper : Map<UserInfoEntity, UserInfo> {
              this.userId = input.userId
              this.gender = input.gender
              this.name = input.name
+             this.followed = input.followed
          }
     }
 }

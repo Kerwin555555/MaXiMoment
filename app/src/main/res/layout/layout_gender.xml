@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android">
-
     <ImageView
         android:id="@+id/gender_view"
         android:src="@drawable/level_list_gender"
@@ -10,17 +9,16 @@
         android:layout_marginVertical="3.5dp"
         android:layout_width="10dp"
         android:layout_height="10dp"/>
-    
     <TextView
         android:id="@+id/text"
         android:text="14"
-        android:textColor="#FF2E6D"
+        android:textColor="@color/gender_view_age_color"
         android:fontFamily="sans-serif-medium"
         android:layout_gravity="center_vertical"
         android:layout_marginStart="1.5dp"
         android:layout_marginEnd="9dp"
+        android:textSize="11sp"
         android:includeFontPadding="false"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-
 </merge>

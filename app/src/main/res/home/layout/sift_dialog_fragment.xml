@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_moment_bottom_sheet_dialog"
+    android:paddingBottom="25dp">
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Choose the age and gender"
+        android:textColor="@color/moment_text_ff1d1d1d"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="15sp"
+        android:layout_marginTop="15dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/select_gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gender："
+        android:textColor="@color/moment_text_ff666666"
+        android:textSize="15sp"
+        android:layout_marginTop="39.5dp"
+        android:layout_marginStart="30.5dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <TextView
+        android:id="@+id/all"
+        android:text="All"
+        android:background="@drawable/gender_slector_drawable"
+        android:textSize="15sp"
+        android:minWidth="66dp"
+        android:gravity="center"
+        android:layout_width="0dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="17.5dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintHorizontal_chainStyle="spread_inside"
+        app:layout_constraintStart_toEndOf="@id/select_gender"
+        app:layout_constraintEnd_toStartOf="@id/boy"
+        app:layout_constraintTop_toTopOf="@id/select_gender"
+        app:layout_constraintBottom_toBottomOf="@id/select_gender"/>
+    <TextView
+        android:id="@+id/boy"
+        android:text="male"
+        android:background="@drawable/gender_slector_drawable"
+
+        android:textSize="15sp"
+        android:layout_width="0dp"
+        android:layout_marginStart="18dp"
+        android:gravity="center"
+        android:layout_height="34dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintEnd_toStartOf="@id/girl"
+        app:layout_constraintStart_toEndOf="@id/all"
+        app:layout_constraintTop_toTopOf="@id/select_gender"
+        app:layout_constraintBottom_toBottomOf="@id/select_gender"/>
+    <TextView
+        android:id="@+id/girl"
+        android:text="female"
+        android:textSize="15sp"
+        android:layout_width="0dp"
+        android:background="@drawable/gender_slector_drawable"
+        android:layout_height="34dp"
+        android:layout_marginStart="18dp"
+        android:layout_marginEnd="43dp"
+        android:gravity="center"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toEndOf="@id/boy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/select_gender"
+        app:layout_constraintBottom_toBottomOf="@id/select_gender" />
+
+    <TextView
+        android:id="@+id/age"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Age："
+        android:textColor="#ff666666"
+        android:textSize="15sp"
+        android:layout_marginTop="36dp"
+        android:layout_marginStart="30.5dp"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/boy"
+        />
+
+    <com.jaygoo.widget.RangeSeekBar
+        android:id="@+id/seekbar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="0dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="@id/all"
+        app:layout_constraintEnd_toEndOf="@id/girl"
+        app:layout_constraintTop_toTopOf="@id/age"
+        app:layout_constraintBottom_toBottomOf="@id/age"
+        app:rsb_thumb_drawable="@drawable/drawable_thumb"
+        app:rsb_indicator_background_color="#00000000"
+        app:rsb_indicator_text_color="#333333"
+        app:rsb_indicator_text_size="13sp"
+        app:rsb_thumb_width="18dp"
+        app:rsb_thumb_height="18dp"
+
+        app:rsb_mode="range"
+        app:rsb_progress_color="@color/colorProgress"
+        app:rsb_min_interval="50"
+        app:rsb_indicator_show_mode="alwaysShow"
+        app:rsb_indicator_height="wrap_content"
+        app:rsb_indicator_width="wrap_content"
+        app:rsb_indicator_margin="0dp"/>
+
+    <TextView
+        android:id="@+id/confirm"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Confirm"
+        android:gravity="center"
+        android:textColor="#ffffffff"
+        android:textSize="15sp"
+        android:background="@drawable/bg_drawable_dp25"
+        android:paddingVertical="14.5dp"
+        android:layout_marginHorizontal="42dp"
+        android:layout_marginTop="38dp"
+        app:rsb_indicator_text_color="@color/moment_text_ff1d1d1d"
+        app:layout_constraintTop_toBottomOf="@id/seekbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+</androidx.constraintlayout.widget.ConstraintLayout>

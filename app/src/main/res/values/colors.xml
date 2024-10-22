@@ -44,7 +44,7 @@
     <color name="light_yellow">#FFEE58</color>
     <color name="lit_action_dialog">@android:color/white</color>
     <color name="lit_blue">#4EA9FF</color>
-    <color name="lit_bottom_sheet_dialog">@color/white</color>
+    <color name="lit_bottom_sheet_dialog">@color/moment_white</color>
     <color name="lit_confirm_unable_bg">@color/text_fourth</color>
     <color name="lit_dialog_top_gray">#FFE1E4EA</color>
     <color name="lit_green">#25FF70</color>
@@ -90,6 +90,22 @@
     <color name="theme_colorPrimaryDark">#ffffff</color>
     <color name="divider">#80ECECEC</color>
     <color name="indicator">#FD257C</color>
+    <color name="moment_white">#FFFFFFFF</color>
     <color name="moment_text_ff1d1d1d">#ff1d1d1d</color>
     <color name="moment_text_ff999999">#ff999999</color>
+    <color name="moment_text_ff666666">#ff666666</color>
+    <color name="moment_icon_color_fff93c69">#fff93c69</color>
+    <color name="moment_text_ff9a9a9a">ff9a9a9a</color>
+    <color name="moment_text_ffdcdcdc">#ffdcdcdc</color>
+
+    <color name="colorPrimary">#2ed184</color>
+    <color name="colorPrimaryDark">#2ed184</color>
+    <color name="colorAccent">#2ed184</color>
+    <color name="colorGreen50">#802ED184</color>
+    <color name="colorProgress">#ffffbb33</color>
+    <color name="colorProgressDefault">#FFD7D7D7</color>
+
+    <color name="colorRed">#F44336</color>
+
+
 </resources>

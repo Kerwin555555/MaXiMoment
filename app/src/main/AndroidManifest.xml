@@ -87,6 +87,24 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoTranslucent" />
+
+        <activity
+            android:name=".login_profile.ProfileActivity"
+            android:screenOrientation="portrait">
+        </activity>
+
+
+        <activity
+            android:name=".login_page.FacebookLoginActivity"
+            android:screenOrientation="portrait" />
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider2249012795165840"
+            android:exported="true" />
     </application>
 
 </manifest>

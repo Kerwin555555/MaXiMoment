@@ -1,30 +1,36 @@
 package com.moment.app
 
+import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
-import android.view.View
-import androidx.core.content.ContextCompat
-import androidx.viewpager.widget.ViewPager.DecorView
 import com.didi.drouter.api.DRouter
 import com.didi.drouter.api.Extend
-import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivitySplashBinding
 import com.moment.app.eventbus.AEvent
+import com.moment.app.hilt.app_level.MockData
+import com.moment.app.login_page.service.LoginService
 import com.moment.app.models.ConfigModel
 import com.moment.app.models.LoginModel
 import com.moment.app.user_profile.ProfileActivity
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.sntp.SntpClock
+import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import javax.inject.Inject
 
 //https://github.com/didi/DRouter/wiki/1.-Router
+
+@AndroidEntryPoint
 class SplashActivity : BaseActivity(){
 
     private lateinit var binding: ActivitySplashBinding
     private var loginDialog: LoginDialog? = null
 
+    @Inject
+    @MockData
+    lateinit var loginService: LoginService
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
@@ -97,7 +103,7 @@ class SplashActivity : BaseActivity(){
             if (LoginModel.isLogin()) {
                 val forbidSid: String? = LoginModel.forbidden_session
                 //登录但是有完善信息
-                LoginModel.logout(true)
+                LoginModel.logout(true, loginService = loginService)
                 if (!TextUtils.isEmpty(forbidSid)) {
                     LoginModel.forbidden_session = forbidSid
                 }
@@ -108,7 +114,6 @@ class SplashActivity : BaseActivity(){
                     .replace(R.id.login_root, this)
                     .commitAllowingStateLoss()
             }
-
             ConfigModel.updateConfig()
         }
     }

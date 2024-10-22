@@ -1,5 +1,7 @@
 package com.moment.app.utils
 
+import android.os.Bundle
+import com.moment.app.R
 import me.imid.swipebacklayout.lib.app.SwipeBackActivity
 
 
@@ -8,5 +10,24 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivity
  *
  */
 open class BaseActivity: SwipeBackActivity() {
+    override fun setSwipeBackEnable(enable: Boolean) {
+        super.setSwipeBackEnable(enable)
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        onTransitionCreate()
+    }
+    protected fun onTransitionCreate() {
+        overridePendingTransition(R.anim.slide_right_in, R.anim.slide_left_out)
+    }
+
+    protected fun onTransitionFinish() {
+        overridePendingTransition(R.anim.slide_left_in, R.anim.slide_right_out)
+    }
+
+    override fun finish() {
+        super.finish()
+        onTransitionFinish()
+    }
 }

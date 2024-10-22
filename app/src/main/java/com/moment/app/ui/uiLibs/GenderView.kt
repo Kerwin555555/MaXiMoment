@@ -26,5 +26,6 @@ class GenderView  : LinearLayout{
         (background as? LevelListDrawable)?.setLevel(if (userInfo.gender == "male")1 else 0)
         (binding.genderView.drawable as? LevelListDrawable)?.setLevel(if (userInfo.gender == "male")1 else 0)
         binding.text.text = "${userInfo.age}"
+        binding.text.isSelected = userInfo.gender == "male"
     }
 }

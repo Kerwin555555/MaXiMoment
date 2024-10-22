@@ -38,5 +38,6 @@ data class UserInfoEntity (
     val gender: String,
     val age: Int,
     val name: String,
-    var page:Int
+    var page:Int,
+    var followed: Boolean,
 )

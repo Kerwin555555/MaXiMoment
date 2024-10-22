@@ -55,7 +55,8 @@ class UserInfoEntityRemoteMediator (
                     userId = it.userId!!,
                     gender = it.gender!!,
                     page = page + 1,
-                    age = it.age!!
+                    age = it.age!!,
+                    followed = it.followed!!
                 )
             }
             //3 database

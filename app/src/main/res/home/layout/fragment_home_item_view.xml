@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="wrap_content">
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="60dp"
@@ -13,13 +13,11 @@
         android:src="@mipmap/local_avatar"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
     </ImageView>
-
     <TextView
         android:id="@+id/name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="Lisa Vetnam"
         android:textColor="@color/moment_text_ff1d1d1d"
@@ -31,8 +29,10 @@
         android:includeFontPadding="false"
         android:layout_marginTop="10dp"
         android:layout_marginStart="12.5dp"
+        android:layout_marginEnd="30dp"
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/chat"
         />
     <com.moment.app.ui.uiLibs.GenderView
         android:id="@+id/gender"
@@ -71,4 +71,26 @@
         app:layout_constraintStart_toEndOf="@id/avatar"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+    <FrameLayout
+        android:id="@+id/chat"
+        android:text="accost"
+        android:layout_width="79dp"
+        android:layout_height="29dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/chat_bg"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+        <TextView
+            android:id="@+id/chat_text"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="5.5dp"
+            android:text="@string/moment_Chat"
+            android:textColor="@color/gender_text"
+            android:textSize="12sp"
+            app:drawableStartCompat="@mipmap/love_small_12dp" />
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

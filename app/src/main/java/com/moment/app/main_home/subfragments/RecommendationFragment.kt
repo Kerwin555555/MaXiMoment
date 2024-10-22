@@ -1,7 +1,6 @@
 package com.moment.app.main_home.subfragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +18,7 @@ import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
 import com.moment.app.network.UserCancelException
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
+import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.cancelIfActive
 import dagger.hilt.android.AndroidEntryPoint
@@ -78,6 +78,12 @@ class RecommendationFragment: BaseFragment() {
             emptyView = RecommendationEmptyView(this.requireContext())) { isLoadMore ->
              loadData(isLoadMore as Boolean)
         }
+        binding.refreshView.getRecyclerView().addItemDecoration(DataDividerItemDecoration(
+            adapter = adapter,
+            size = 0.5f,
+            dividerColor = 0xffF4F4F4.toInt(),
+            horizontalMargin = 15
+        ))
     }
 
     private fun loadData(isLoadMore: Boolean) {
@@ -94,15 +100,21 @@ class RecommendationFragment: BaseFragment() {
                      //onsuccess 数据
                 //如果数据库没有数据 不变shimmer
                 //进入数据库模式
-                withContext(Dispatchers.IO) {
-                    userInfoDb.UserInfoEntityDao().getUserInfoEntitiesPaged(pageSize, dbstart)
-                        .map {
-                            mapper.map(it)
+                kotlin.runCatching {
+                    withContext(Dispatchers.IO) {
+                        userInfoDb.UserInfoEntityDao().getUserInfoEntitiesPaged(pageSize, dbstart)
+                            .map {
+                                mapper.map(it)
+                            }
+                    }.apply {
+                        if (size != 0) {
+                            binding.refreshView.onSuccess(
+                                this.toMutableList(),
+                                isLoadMore,
+                                dbstart < 10 && dbstart + size < 29 && size == pageSize
+                            )
+                            dbstart += size
                         }
-                }.apply {
-                    if (size != 0) {
-                        binding.refreshView.onSuccess(this.toMutableList(), isLoadMore, dbstart < 10 && dbstart + size < 29 && size == pageSize)
-                        dbstart += size
                     }
                 }
             } else {
@@ -135,7 +147,8 @@ class RecommendationFragment: BaseFragment() {
                             userId = it.userId!!,
                             gender = it.gender!!,
                             age = it.age!!,
-                            page = 0
+                            page = 0,
+                            followed = it.followed!!
                         )
                     }
                     userInfoDb.withTransaction {

@@ -11,7 +11,8 @@ data class UserInfo(
     var finished_info: Boolean = true,
     var country: String? = "",
     var forbidden_session: String? ="",
-    var huanxin:HuanxinBean? = null
+    var huanxin:HuanxinBean? = null,
+    var followed: Boolean? = false,
 ): BaseBean() {
 }
 
@@ -22,4 +23,9 @@ class HuanxinBean : BaseBean() {
      */
     var password: String? = null
     var user_id: String? = null
+}
+
+
+class UserSettings : BaseBean() {
+    //var allowCrossRegionMatch: Boolean = true //默认勾选
 }

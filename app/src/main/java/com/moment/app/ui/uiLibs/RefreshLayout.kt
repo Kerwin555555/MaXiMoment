@@ -2,9 +2,11 @@ package com.moment.app.ui.uiLibs
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Rect
 import android.graphics.drawable.AnimationDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +16,15 @@ import android.widget.FrameLayout
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.blankj.utilcode.util.SizeUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.loadmore.LoadMoreView
 import com.moment.app.R
 import com.moment.app.databinding.BasicRefreshHeaderBinding
 import com.moment.app.databinding.MomentRefreshviewBinding
+import com.moment.app.utils.GradientDrawableBuilder
+import com.moment.app.utils.dp
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshHeader
 import com.scwang.smart.refresh.layout.api.RefreshKernel
@@ -90,8 +96,8 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
         adapter?.onFail(isLoadMore, msg)
     }
 
-    fun getBinding(): MomentRefreshviewBinding {
-        return binding
+    fun getRecyclerView(): RecyclerView {
+        return binding.recyclerView
     }
 }
 
@@ -154,8 +160,7 @@ class RefreshView @JvmOverloads constructor(
 
     private val binding = BasicRefreshHeaderBinding.inflate(LayoutInflater.from(context), this)
 
-    private var animationDrawable: AnimationDrawable? = null
-
+    var animationDrawable: AnimationDrawable? = null
 
     init {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
@@ -260,5 +265,48 @@ class MomentLoadMoreView : LoadMoreView() {
 
     override fun getLoadEndViewId(): Int {
         return R.id.load_more_load_end_view
+    }
+}
+
+class DataDividerItemDecoration(val adapter: BaseQuickAdapter<*, *>,
+                                var size: Float,
+                                var dividerColor: Int,
+                                var horizontalMargin: Int):
+       ItemDecoration() {
+    val paint = Paint()
+
+    override fun getItemOffsets(
+        outRect: Rect,
+        view: View,
+        parent: RecyclerView,
+        state: RecyclerView.State
+    ) {
+        if (adapter.data.size == 0) {
+            return
+        }
+        super.getItemOffsets(outRect, view, parent, state)
+        outRect.bottom = SizeUtils.dp2px(size)
+    }
+
+    override fun onDraw(canvas: Canvas, parent: RecyclerView, state: RecyclerView.State) {
+        super.onDraw(canvas, parent, state)
+        if (adapter.data.size == 0) {
+            return
+        }
+        canvas.save()
+        val childCount = parent.childCount
+        val mBounds = Rect()
+        for (i in 0 until childCount) {
+            val child = parent.getChildAt(i)
+            parent.getDecoratedBoundsWithMargins(child, mBounds)
+            mBounds.bottom += Math.round(child.translationY)
+            mBounds.top = mBounds.bottom - SizeUtils.dp2px(size)
+            mBounds.right = parent.width - horizontalMargin.dp
+            mBounds.left = horizontalMargin.dp
+            canvas.drawRect(mBounds, paint.apply {
+                color = dividerColor
+            })
+        }
+        canvas.restore()
     }
 }
