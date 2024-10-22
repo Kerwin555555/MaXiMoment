@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">"semua media "</string>
+    <string name="explorer_preview">pratinjau</string>
+    <string name="explorer_apply">"request "</string>
+    <string name="explorer_back">"kembali "</string>
+    <string name="photo_max_size_limit">Ukuran gambar melebihi batas maksimum %s</string>
+    <string name="video_max_size_limit">Ukuran video melebihi batas maksimum %s</string>
+    <string name="video_size_limit">Hanya dapat memilih video dalam %d detik untuk diedit</string>
+    <string name="photo_select_count_limit">Maksimal hanya dapat memilih %d gambar</string>
+    <string name="video_select_count_limit">Maksimal hanya dapat memilih %d video</string>
+    <string name="photo_without_video">Tidak dapat memilih gambar dan video dalam waktu bersamaan</string>
+    <string name="video_without_photo">Tidak dapat memilih video dan gambar dalam waktu bersamaan</string>
+    <string name="video_min_seconds_limit">Tidak dapat memilih video dengan durasi pendek lebih dari %d detik</string>
+    <string name="video_max_seconds_limit">Tidak dapat memilih video dengan durasi panjang lebih dari %d detik</string>
+</resources>

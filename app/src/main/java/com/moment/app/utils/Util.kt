@@ -379,7 +379,7 @@ suspend fun generateMockUserInfos(start_pos : Int = 0, limit: Int =10) : UserInf
     f.user_infos = mutableListOf()
     for (i in 0 until 10) {
         if (start_pos + i > 50) noNext = true
-        f.user_infos?.add(UserInfo("${start_pos + i}", if (i%2==0) "male" else "female",19 ))
+        f.user_infos?.add(UserInfo("${start_pos + i}", if (i%2==0) "male" else "female",age = 19 ))
     }
     delay(1200)
     f.has_next = !noNext
@@ -394,7 +394,7 @@ suspend fun generateEmptyMockUserInfos(start_pos : Int = 0, limit: Int =10) : Us
     for (i in 0 until 10) {
         if (start_pos + i > 50) noNext = true
         val uuid = UUID.randomUUID()
-        f.user_infos?.add(UserInfo("${start_pos + i}", if (i%2==0) "male" else "female",19 ).apply {
+        f.user_infos?.add(UserInfo("${start_pos + i}", if (i%2==0) "male" else "female",age = 19 ).apply {
             name = "Moment"+uuid
         })
     }

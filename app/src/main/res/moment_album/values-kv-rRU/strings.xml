@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">Все СМИ</string>
+    <string name="explorer_preview">Предварительный просмотр</string>
+    <string name="explorer_apply">Использовать</string>
+    <string name="explorer_back">Вернуться</string>
+</resources>

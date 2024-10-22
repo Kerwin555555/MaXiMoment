@@ -1,13 +1,12 @@
 package com.moment.app
 
-import android.app.Application
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.didi.drouter.api.DRouter
 import com.didi.drouter.api.Extend
 import com.moment.app.databinding.ActivitySplashBinding
-import com.moment.app.eventbus.AEvent
+import com.moment.app.eventbus.LoginEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.login_profile.ProfileActivity
@@ -123,14 +122,16 @@ class SplashActivity : BaseActivity(){
         overridePendingTransition(0, 0)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        EventBus.getDefault().unregister(this)
+
+    @Subscribe
+    fun onLogin(event: LoginEvent) {
+        //GooglePaymentManager.getInstance().refreshDiamondProducts()
+        finish()
     }
 
 
-    @Subscribe
-    fun onEvent(event: AEvent) {
-
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 }

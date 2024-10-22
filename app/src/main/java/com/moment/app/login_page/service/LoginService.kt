@@ -13,4 +13,7 @@ interface LoginService {
 
     @GET("api/sns/v1/lit/user/logout")
     suspend fun logout(): Results<Any>
+
+    @POST("api/sns/v1/lit/user/info")
+    suspend fun updateInfo(@Body data: Map<String?, String?>?): Results<UserInfo>
 }

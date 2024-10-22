@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">Tüm Medya</string>
+    <string name="explorer_preview">Ön izle</string>
+    <string name="explorer_apply">Onayla</string>
+    <string name="explorer_back">Geri Dön</string>
+</resources>

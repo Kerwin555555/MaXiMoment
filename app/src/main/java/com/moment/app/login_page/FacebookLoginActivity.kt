@@ -2,7 +2,6 @@ package com.moment.app.login_page
 
 import android.os.Bundle
 import android.text.TextUtils
-import android.util.Log
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.didi.drouter.annotation.Router
@@ -27,7 +26,6 @@ import com.moment.app.utils.ProgressDialog
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
-import kotlin.math.log
 
 
 @Router(scheme = ".*", host = ".*", path = "/login/facebook")

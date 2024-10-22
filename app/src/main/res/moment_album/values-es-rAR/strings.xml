@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">Todos los medios</string>
+    <string name="explorer_preview">Previsualizar</string>
+    <string name="explorer_apply">Solicitar</string>
+    <string name="explorer_back">Regresar</string>
+    <string name="photo_max_size_limit">El tamaño de la foto supera el límite máximo %s</string>
+    <string name="video_max_size_limit">El tamaño del vídeo supera el límite máximo %s</string>
+    <string name="video_size_limit">Solo se puede seleccionar vídeos en %d segundos, se necesita editar</string>
+    <string name="photo_select_count_limit">Se puede sellecionar al máximo %d fotos</string>
+    <string name="video_select_count_limit">e puede sellecionar al máximo %d vídeos</string>
+    <string name="photo_without_video">No se puede seleccionar fotos y vídeos al mismo tiempo</string>
+    <string name="video_without_photo">No se puede seleccionar vídeos y fotos al mismo tiempo</string>
+    <string name="video_min_seconds_limit">Vídeo menos de %d segundos, no se puede seleccionar</string>
+    <string name="video_max_seconds_limit">Vídeo más de %d segundos, no se puede seleccionar</string>
+</resources>

@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
+    <string name="explorer_all_media">All Media</string>
+    <string name="explorer_preview">Preview</string>
+    <string name="explorer_apply">Apply</string>
+    <string name="explorer_back">Back</string>
+
+    <string name="video_size_too_large">This video size is too large, can not selected.</string>
+
+    <string name="photo_max_size_limit">The photo size exceeds the maximum limit %s</string>
+    <string name="video_max_size_limit">The video size exceeds the maximum limit %s</string>
+    <string name="video_size_limit">Only videos within %d seconds can be selected and need to be edited</string>
+
+    <string name="photo_select_count_limit">You can only select %d pictures at most</string>
+    <string name="video_select_count_limit">You can only select %d videos at most</string>
+    
+    <string name="video_invalid_tip">Invalid video within %0.f seconds</string>
+
+    <string name="photo_without_video">Picture and video cannot be selected at the same time</string>
+    <string name="video_without_photo">Video and pictures cannot be selected at the same time</string>
+
+    <string name="video_min_seconds_limit">The video is less than %d seconds and cannot be selected</string>
+    <string name="video_max_seconds_limit">The video is greater than %d seconds and cannot be selected</string>
+
+</resources>

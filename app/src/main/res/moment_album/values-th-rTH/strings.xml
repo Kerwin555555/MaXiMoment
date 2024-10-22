@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">สื่อทั้งหมด</string>
+    <string name="explorer_preview">ตัวอย่าง</string>
+    <string name="explorer_apply">นำมาใช้</string>
+    <string name="explorer_back">กลับ</string>
+    <string name="photo_select_count_limit">สามารถเลือกรูปภาได้สูงสุด%dภาพ</string>
+    <string name="video_select_count_limit">สูงสุด %d วิดีโอ</string>
+    <string name="photo_without_video">ไม่สามารถเลือกรูปภาพร้อมกับวีดีโอได้</string>
+    <string name="video_without_photo">ไม่สามารถเลือกวีดีโอพร้อมกับรูปภาพได้</string>
+    <string name="video_min_seconds_limit">วิดีโอสั้นกว่า %d วินาที ไม่สามารถใช้งานได้ในขณะนี้</string>
+    <string name="video_max_seconds_limit">วิดีโอมีขนาดใหญ่กว่า %d วินาที ไม่สามารถเลือกได้</string>
+    <string name="photo_max_size_limit">ขนาดรูปภาพเกินขีดจำกัดสูงสุด %s</string>
+    <string name="video_max_size_limit">ขนาดวิดีโอเกินขีดจำกัดสูงสุด %s</string>
+    <string name="video_size_limit">เลือกเฉพาะวิดีโอภายใน %d วินาทีเพื่อแก้ไข</string>
+</resources>

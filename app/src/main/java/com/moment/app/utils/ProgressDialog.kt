@@ -14,7 +14,7 @@ import androidx.fragment.app.FragmentManager
 import com.moment.app.databinding.ViewLoadingProgressBinding
 import com.moment.app.ui.uiLibs.RefreshView
 
-class ProgressDialog : BaseDialogFragment() {
+open class ProgressDialog : BaseDialogFragment() {
     private lateinit var binding: ViewLoadingProgressBinding
 
     var refreshView: RefreshView? = null

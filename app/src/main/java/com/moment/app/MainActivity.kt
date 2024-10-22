@@ -65,7 +65,7 @@ class MainActivity : BaseActivity(){
                 }
 
             }
-            binding.bottomNav.selectPage("home")
+            binding.bottomNav.selectPage("")
         }
     }
 

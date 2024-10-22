@@ -1,5 +1,6 @@
 package com.moment.app.network
 
+import android.content.Context
 import android.util.Log
 import androidx.annotation.Keep
 import androidx.appcompat.app.AppCompatActivity
@@ -7,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -119,5 +121,35 @@ fun MomentNetError.toast(withCode: Boolean = false) {
     } else {
         message?.toast()
     }
+}
+
+sealed class ProgressDialogStatus {
+    class ShowProgressDialog(var cancellable: Boolean): ProgressDialogStatus()
+
+    object CancelProgressDialog: ProgressDialogStatus()
+}
+fun ProgressDialogStatus.refreshProgressDialog(oldProgressDialog: ProgressDialog?, context: Context?) : ProgressDialog?{
+    context?.let {
+        when (this) {
+            is ProgressDialogStatus.ShowProgressDialog -> {
+                oldProgressDialog?.dismissAllowingStateLoss()
+                return ProgressDialog.show(it).apply {
+                    isCancelable = cancellable
+                }
+            }
+            is ProgressDialogStatus.CancelProgressDialog -> {
+                oldProgressDialog?.dismissAllowingStateLoss()
+                return null
+            }
+        }
+    }
+    return null
+}
+
+sealed class LoadingStatus<T> {
+    class InProgressLoadingStatus<T>(val show: Boolean): LoadingStatus<T>()
+    class SuccessLoadingStatus<T>(val result: T): LoadingStatus<T>()
+    class FailedLoadingStatus<T>(val error: MomentNetError? = null): LoadingStatus<T>()
+    class FailureLoadingStatus<T>(val error: T? = null): LoadingStatus<T>()
 }
 

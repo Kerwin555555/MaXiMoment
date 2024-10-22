@@ -5,9 +5,11 @@ import com.moment.app.utils.BaseBean
 data class UserInfo(
     var userId: String? = "",
     var gender: String? = "",
+    var birthday: String? = "",
     var age: Int? = 0,
     var name: String? = "MomentFan",
     var session: String? = "",
+    var bio: String? = "",
     var finished_info: Boolean = true,
     var country: String? = "",
     var forbidden_session: String? ="",

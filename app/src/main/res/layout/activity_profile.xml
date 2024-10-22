@@ -1,377 +1,279 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/loading_page"
+    android:id="@+id/root_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+
     <ImageView
         android:id="@+id/bg"
-        android:src="@mipmap/register_top_bg"
-        android:scaleType="fitXY"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:layout_constraintTop_toTopOf="parent">
-    </ImageView>
+        android:scaleType="fitXY"
+        android:src="@mipmap/register_top_bg"
+        app:layout_constraintTop_toTopOf="parent"/>
 
-    <ImageView
-        android:id="@+id/small_logo"
-        android:src="@mipmap/logo"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/title"/>
+    <com.moment.app.utils.NoFitSystemWindowPaddingLinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clipToPadding="false"
+        android:fitsSystemWindows="true"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:text="Create your profile"
-        android:textColor="@color/moment_text_ff1d1d1d"
-        android:textSize="24sp"
-        android:layout_marginTop="39.5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/small_logo"
-        app:layout_constraintBottom_toTopOf="@id/nickname"
-        />
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/loading_page"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fitsSystemWindows="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/nickname"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="*Nickname："
-        android:layout_marginTop="44.5dp"
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/moment_text_ff9a9a9a"
-        android:textSize="12sp"
-        android:layout_marginStart="40.5dp"
-        app:layout_constraintTop_toBottomOf="@id/title"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/divider1"
-        />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/nickname_content"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@null"
-        android:maxLines="1"
-        android:ellipsize="end"
-        android:hint="put your nickname here"
-        android:maxLength="16"
-        android:layout_marginStart="19dp"
-        android:layout_marginEnd="42dp"
-        android:textAlignment="viewStart"
-        android:textColor="@color/moment_text_ff666666"
-        android:textColorHint="@color/moment_text_ffdcdcdc"
-        android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@id/nickname"
-        app:layout_constraintTop_toTopOf="@id/nickname"
-        app:layout_constraintBottom_toBottomOf="@id/nickname"
-        app:layout_constraintEnd_toEndOf="parent"/>
-    <View
-        android:id="@+id/divider1"
-        android:layout_width="0.5dp"
-        android:layout_height="1dp"
-        android:background="#D8D8D8"
-        android:layout_marginTop="9dp"
-        app:layout_constraintTop_toBottomOf="@id/nickname"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/age">
-    </View>
+                <ImageView
+                    android:id="@+id/small_logo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="100dp"
+                    android:src="@mipmap/logo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/age"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Birthday："
-        android:fontFamily="sans-serif-medium"
-        android:textColor="@color/moment_text_ff9a9a9a"
-        android:textSize="12sp"
-        android:layout_marginTop="25dp"
-        android:layout_marginStart="40.5dp"
-        app:layout_constraintTop_toBottomOf="@id/divider1"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/divider2"
-        />
-    <LinearLayout
-        android:id="@+id/brithday_edit"
-        android:layout_width="250dp"
-        android:layout_height="50dp"
-        android:gravity="center_vertical"
-        android:visibility="visible"
-        android:layout_marginStart="19dp"
-        app:layout_constraintBottom_toBottomOf="@id/age"
-        app:layout_constraintStart_toEndOf="@id/age"
-        app:layout_constraintTop_toTopOf="@id/age">
-        <EditText
-            android:id="@+id/edit_1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="D"
-            android:textColorHint="@color/text_third"
-            android:background="@null"
-            android:inputType="number"
-            android:maxLength="1"
-            android:textAlignment="center"
-            android:textColor="@color/moment_text_ff666666" />
+                <TextView
+                    android:id="@+id/title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="39.5dp"
+                    android:text="Create your profile"
+                    android:textColor="@color/moment_text_ff1d1d1d"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toTopOf="@id/nickname"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/small_logo" />
 
-        <EditText
-            android:id="@+id/edit_2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="D"
-            android:background="@null"
-            android:inputType="number"
-            android:textColorHint="@color/text_third"
-            android:maxLength="1"
-            android:textAlignment="center"
-            android:textColor="@color/moment_text_ff666666" />
+                <TextView
+                    android:id="@+id/nickname"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40.5dp"
+                    android:layout_marginTop="44.5dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="*Nickname："
+                    android:textColor="@color/moment_text_ff9a9a9a"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@id/divider1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/title" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textColor="@color/moment_text_ffdcdcdc"
-            android:text="/"
-            android:textSize="11sp" />
+                <EditText
+                    android:id="@+id/nickname_content"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="19dp"
+                    android:layout_marginEnd="42dp"
+                    android:background="@null"
+                    android:ellipsize="end"
+                    android:hint="put your nickname here"
+                    android:maxLength="16"
+                    android:maxLines="1"
+                    android:textAlignment="viewStart"
+                    android:textColor="@color/moment_text_ff666666"
+                    android:textColorHint="@color/moment_text_ffdcdcdc"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="@id/nickname"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/nickname"
+                    app:layout_constraintTop_toTopOf="@id/nickname" />
 
-        <EditText
-            android:id="@+id/edit_3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="M"
-            android:inputType="number"
-            android:maxLength="1"
-            android:background="@null"
-            android:textColorHint="@color/moment_text_ffdcdcdc"
-            android:textAlignment="center"
-            android:textColor="@color/moment_text_ff666666" />
+                <View
+                    android:id="@+id/divider1"
+                    android:layout_width="0.5dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="9dp"
+                    android:background="#D8D8D8"
+                    app:layout_constraintBottom_toTopOf="@id/age"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/nickname"/>
 
-        <EditText
-            android:id="@+id/edit_4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="M"
-            android:inputType="number"
-            android:background="@null"
-            android:textColorHint="@color/moment_text_ffdcdcdc"
-            android:maxLength="1"
-            android:textAlignment="center"
-            android:textColor="@color/moment_text_ff666666" />
+                <TextView
+                    android:id="@+id/age"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40.5dp"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="*Birthday："
+                    android:textColor="@color/moment_text_ff9a9a9a"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@id/divider2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider1" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="/"
-            android:includeFontPadding="false"
-            android:background="@null"
-            android:textColor="@color/moment_text_ffdcdcdc"
-            android:textSize="11sp" />
+                <FrameLayout
+                    android:id="@+id/birthday_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:clickable="true"
+                    android:descendantFocusability="blocksDescendants"
+                    android:focusable="true"
+                    app:layout_constraintTop_toTopOf="@id/age"
+                    app:layout_constraintBottom_toBottomOf="@id/age"
+                    app:layout_constraintStart_toStartOf="@id/nickname_content">
 
-        <EditText
-            android:id="@+id/edit_5"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="Y"
-            android:inputType="number"
-            android:maxLength="1"
-            android:background="@null"
-            android:textAlignment="center"
-            android:textColorHint="@color/moment_text_ffdcdcdc"
-            android:textColor="@color/moment_text_ff666666" />
+                    <EditText
+                        android:id="@+id/birthday"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:background="@null"
+                        android:editable="false"
+                        android:focusable="false"
+                        android:textAlignment="viewStart"
+                        android:textColor="@color/moment_text_ff666666"
+                        android:textColorHint="@color/moment_text_ffdcdcdc"
+                        android:textSize="11sp"
+                        android:focusableInTouchMode="true"
+                        android:hint="DD/MM/YYYY"
+                        android:includeFontPadding="false"/>
 
-        <EditText
-            android:id="@+id/edit_6"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="Y"
-            android:inputType="number"
-            android:maxLength="1"
-            android:background="@null"
-            android:textColorHint="@color/moment_text_ffdcdcdc"
-            android:textAlignment="center"
-            android:textColor="@color/moment_text_ff666666" />
+                </FrameLayout>
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="0.5dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="9dp"
+                    android:background="#D8D8D8"
+                    app:layout_constraintBottom_toTopOf="@id/gender"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/age"/>
 
-        <EditText
-            android:id="@+id/edit_7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="Y"
-            android:inputType="number"
-            android:background="@null"
-            android:maxLength="1"
-            android:textAlignment="center"
-            android:textColorHint="@color/moment_text_ffdcdcdc"
-            android:textColor="@color/moment_text_ff666666" />
-
-        <EditText
-            android:id="@+id/edit_8"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:includeFontPadding="false"
-            android:textSize="11sp"
-            android:hint="Y"
-            android:inputType="number"
-            android:maxLength="1"
-            android:background="@null"
-            android:textAlignment="center"
-            android:textColorHint="@color/moment_text_ffdcdcdc"
-            android:textColor="@color/moment_text_ff666666" />
-    </LinearLayout>
-    <View
-        android:id="@+id/divider2"
-        android:layout_width="0.5dp"
-        android:layout_height="1dp"
-        android:background="#D8D8D8"
-        android:layout_marginTop="9dp"
-        app:layout_constraintTop_toBottomOf="@id/age"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/gender">
-    </View>
-    <TextView
-        android:id="@+id/gender"
-        android:layout_width="43dp"
-        android:layout_height="17dp"
-        android:text="*Gender："
-        android:layout_marginTop="39dp"
-        android:textColor="@color/moment_text_ff9a9a9a"
-        android:textSize="12sp"
-        android:fontFamily="sans-serif-medium"
-        android:layout_marginStart="41.5dp"
-        app:layout_constraintTop_toBottomOf="@id/divider2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/desc"
-        />
+                <TextView
+                    android:id="@+id/gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="41.5dp"
+                    android:layout_marginTop="39dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="*Gender："
+                    android:textColor="@color/moment_text_ff9a9a9a"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@id/desc"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/divider2" />
 
 
-    <TextView
-        android:id="@+id/boy"
-        android:text="Boy"
-        android:background="@drawable/gender_slector_drawable"
-        android:textSize="15sp"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:paddingVertical="6dp"
-        android:paddingHorizontal="22dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        app:layout_constraintStart_toEndOf="@id/gender"
-        app:layout_constraintTop_toTopOf="@id/gender"
-        app:layout_constraintBottom_toBottomOf="@id/gender"/>
+                <TextView
+                    android:id="@+id/boy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="23dp"
+                    android:background="@drawable/gender_slector_drawable"
+                    android:gravity="center"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="6dp"
+                    android:text="Boy"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@id/gender"
+                    app:layout_constraintStart_toEndOf="@id/gender"
+                    app:layout_constraintTop_toTopOf="@id/gender" />
 
-    <TextView
-        android:id="@+id/girl"
-        android:text="Girl"
-        android:background="@drawable/gender_slector_drawable"
-        android:textSize="15sp"
-        android:gravity="center"
-        android:layout_width="wrap_content"
-        android:paddingVertical="6dp"
-        android:paddingHorizontal="22dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="23dp"
-        app:layout_constraintStart_toEndOf="@id/boy"
-        app:layout_constraintTop_toTopOf="@id/boy"
-        app:layout_constraintBottom_toBottomOf="@id/boy"/>
+                <TextView
+                    android:id="@+id/girl"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="23dp"
+                    android:background="@drawable/gender_slector_drawable"
+                    android:gravity="center"
+                    android:paddingHorizontal="22dp"
+                    android:paddingVertical="6dp"
+                    android:text="Girl"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toBottomOf="@id/boy"
+                    app:layout_constraintStart_toEndOf="@id/boy"
+                    app:layout_constraintTop_toTopOf="@id/boy" />
 
-    <TextView
-        android:id="@+id/desc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Self Intro："
-        android:textColor="@color/moment_text_ff9a9a9a"
-        android:textSize="12sp"
-        android:layout_marginTop="41.5dp"
-        android:fontFamily="sans-serif-medium"
-        android:layout_marginStart="40.5dp"
-        app:layout_constraintTop_toBottomOf="@id/gender"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/edit_text"/>
-    <!--    ‌Androidx.emoji2.widget.EmojiEditText的特殊功能‌-->
+                <TextView
+                    android:id="@+id/desc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="40.5dp"
+                    android:layout_marginTop="41.5dp"
+                    android:fontFamily="sans-serif-medium"
+                    android:text="Self Intro："
+                    android:textColor="@color/moment_text_ff9a9a9a"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toTopOf="@id/edit_text"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/gender" />
+                <!--    ‌Androidx.emoji2.widget.EmojiEditText的特殊功能‌-->
 
-    <!--    https://zhuanlan.zhihu.com/p/449100055 ‌支持Emoji输入‌：EmojiEditText控件支持用户输入和显示Emoji表情符号，丰富了用户的交流体验。这是其与传统EditText的主要区别之一。-->
-    <!--    ‌自定义表情键盘‌：开发者可以通过继承EmojiEditText类，创建自定义的表情键盘布局，并与EmojiEditText控件进行交互，实现表情的插入和显示。-->
-    <!--    ‌表情字符处理‌：EmojiEditText能够处理表情字符的编码集，实现字符与图像资源的映射，确保用户输入的表情能够正确显示为相应的图片。-->
-    <!--    综上所述，Androidx.emoji2.widget.EmojiEditText在支持Emoji输入方面提供了丰富的功能，使得开发者能够更轻松地为用户创建出功能强大且用户友好的表情输入体验。‌-->
+                <!--    https://zhuanlan.zhihu.com/p/449100055 ‌支持Emoji输入‌：EmojiEditText控件支持用户输入和显示Emoji表情符号，丰富了用户的交流体验。这是其与传统EditText的主要区别之一。-->
+                <!--    ‌自定义表情键盘‌：开发者可以通过继承EmojiEditText类，创建自定义的表情键盘布局，并与EmojiEditText控件进行交互，实现表情的插入和显示。-->
+                <!--    ‌表情字符处理‌：EmojiEditText能够处理表情字符的编码集，实现字符与图像资源的映射，确保用户输入的表情能够正确显示为相应的图片。-->
+                <!--    综上所述，Androidx.emoji2.widget.EmojiEditText在支持Emoji输入方面提供了丰富的功能，使得开发者能够更轻松地为用户创建出功能强大且用户友好的表情输入体验。‌-->
 
-    <androidx.emoji2.widget.EmojiEditText
-        android:id="@+id/edit_text"
-        android:layout_width="0dp"
-        android:layout_height="113dp"
-        android:background="@drawable/bg_drawable_12dp"
-        android:focusableInTouchMode="true"
-        android:gravity="top|start"
-        android:layout_marginTop="8dp"
-        android:textColor="@color/moment_text_ff666666"
-        android:hint="self introduction here"
-        android:maxLength="80"
-        android:padding="15dp"
-        android:layout_marginHorizontal="42dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/desc"
-        app:layout_constraintBottom_toTopOf="@id/confirm"
-        />
+                <androidx.emoji2.widget.EmojiEditText
+                    android:id="@+id/edit_text"
+                    android:layout_width="0dp"
+                    android:layout_height="113dp"
+                    android:layout_marginHorizontal="42dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_drawable_12dp"
+                    android:focusableInTouchMode="true"
+                    android:gravity="top|start"
+                    android:textDirection="locale"
+                    android:hint="Introduce yourself to Moments community"
+                    android:maxLength="80"
+                    android:padding="15dp"
+                    android:textColor="@color/moment_text_ff666666"
+                    app:layout_constraintBottom_toTopOf="@id/confirm"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/desc" />
 
-    <TextView
-        android:id="@+id/confirm"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Confirm"
-        android:gravity="center"
-        android:textColor="#ffffffff"
-        android:textSize="15sp"
-        android:background="@drawable/bg_drawable_dp25"
-        android:paddingVertical="14.5dp"
-        android:layout_marginHorizontal="42dp"
-        android:layout_marginTop="38dp"
-        app:rsb_indicator_text_color="@color/moment_text_ff1d1d1d"
-        app:layout_constraintTop_toBottomOf="@id/edit_text"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/age_gender_no_change"
-        />
+                <TextView
+                    android:id="@+id/confirm"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="42dp"
+                    android:layout_marginTop="38dp"
+                    android:background="@drawable/bg_drawable_dp25"
+                    android:gravity="center"
+                    android:paddingVertical="14.5dp"
+                    android:text="Confirm"
+                    android:textColor="#ffffffff"
+                    android:textSize="15sp"
+                    app:layout_constraintBottom_toTopOf="@id/age_gender_no_change"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/edit_text"
+                    app:rsb_indicator_text_color="@color/moment_text_ff1d1d1d" />
 
-    <TextView
-        android:id="@+id/age_gender_no_change"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:gravity="center"
-        android:text="Age and Gender are Non-Modifiable; Avoid Errors"
-        android:textColor="#ff999999"
-        android:textSize="12sp"
-        android:layout_marginHorizontal="42dp"
-        android:layout_marginTop="52.5dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/confirm"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</androidx.core.widget.NestedScrollView>
+                <TextView
+                    android:id="@+id/age_gender_no_change"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="42dp"
+                    android:layout_marginTop="52.5dp"
+                    android:layout_marginBottom="20dp"
+                    android:gravity="center"
+                    android:maxLines="2"
+                    android:text="Age and Gender are Non-Modifiable; Avoid Errors"
+                    android:textColor="#ff999999"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/confirm" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </com.moment.app.utils.NoFitSystemWindowPaddingLinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

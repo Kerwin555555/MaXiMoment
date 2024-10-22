@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="2dp">
+
+    <ImageView
+        android:id="@+id/explorer_media_thumb_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:scaleType="centerCrop" />
+
+    <View
+        android:id="@+id/explorer_media_thumb_view_overlay"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:background="#ccffffff"/>
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/publish_image_thumb_view_position"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="match_parent"-->
+    <!--        android:layout_gravity="center"-->
+    <!--        android:background="#bb000000"-->
+    <!--        android:gravity="center"-->
+    <!--        android:text="1"-->
+    <!--        android:textColor="@android:color/white"-->
+    <!--        android:textSize="32dp"-->
+    <!--        android:textStyle="bold"-->
+    <!--        android:visibility="gone" />-->
+
+    <FrameLayout
+        android:id="@+id/explorer_tv_select"
+        android:layout_width="wrap_content"
+        android:layout_alignParentRight="true"
+        android:paddingStart="10dp"
+        android:paddingBottom="10dp"
+        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/explorer_tv"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:background="@drawable/explorer_activity_selector"
+            android:gravity="center"
+            android:textColor="@android:color/white"
+            android:textSize="14sp" />
+    </FrameLayout>
+
+    <ImageView
+        android:id="@+id/explorer_thumb_view_selected"
+        android:layout_width="18dp"
+        android:layout_height="18dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="2dp"
+        android:layout_marginRight="2dp"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/explorer_tv_video_duration"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginBottom="4dp"
+        android:text="00:18"
+        android:textColor="#ffffffff"
+        android:textSize="12sp"
+        android:shadowColor="#33141c2f"
+        android:shadowDx="0"
+        android:shadowDy="3"
+        android:shadowRadius="3.0"
+        android:lines="1"/>
+
+    <ImageView
+        android:id="@+id/explorer_gif_badge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="3dp"
+        android:src="@mipmap/ic_gif_badge"
+        android:visibility="gone"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"/>
+</RelativeLayout>

@@ -106,6 +106,7 @@
     <color name="colorProgressDefault">#FFD7D7D7</color>
 
     <color name="colorRed">#F44336</color>
+    <color name="moment_divider_fff4f4f4">#F4F4F4</color>
 
 
 </resources>

@@ -66,9 +66,12 @@ android {
 
             res.srcDirs = [
                 'src/main/res',
-                'src/main/res/home',
-                'src/main/res/chat',
-                'src/main/res/profile',
+                'src/main/res/moment_login',
+                'src/main/res/moment_home',
+                'src/main/res/moment_chat',
+                'src/main/res/moment_profile',
+                'src/main/res/moment_album',
+                'src/main/res/moment_dialogs',
             ]
         }
     }
@@ -116,6 +119,7 @@ dependencies {
     api "io.github.didi:drouter-api-process:1.0.0"   // Process
     def emoji2_version = "1.0.0"
     implementation "androidx.emoji2:emoji2:$emoji2_version"
+    implementation 'com.alexvasilkov:gesture-views:2.8.3'
     implementation "androidx.emoji2:emoji2-views:$emoji2_version"
     implementation "androidx.emoji2:emoji2-views-helper:$emoji2_version"
     implementation 'io.hyphenate:hyphenate-chat:3.9.1.2'

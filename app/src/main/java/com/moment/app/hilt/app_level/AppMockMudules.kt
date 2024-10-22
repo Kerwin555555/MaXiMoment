@@ -119,6 +119,13 @@ class MockLoginService: LoginService {
         return Results()
     }
 
+    override suspend fun updateInfo(data: Map<String?, String?>?): Results<UserInfo> {
+        withContext(Dispatchers.IO) {
+            delay(400)
+        }
+        return Results()
+    }
+
 }
 
 

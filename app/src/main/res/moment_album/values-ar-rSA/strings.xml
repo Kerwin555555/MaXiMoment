@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">كل الوسائط</string>
+    <string name="explorer_preview">شاهد</string>
+    <string name="explorer_apply">تطبيق</string>
+    <string name="explorer_back">عودة</string>
+    <string name="photo_select_count_limit">يمكنك فقط تحديد %d صورة على الأكثر</string>
+    <string name="video_select_count_limit">يمكنك فقط تحديد %d فيديو على الأكثر</string>
+    <string name="photo_without_video">لا يمكن اختيار كل من الفيديو والصورة</string>
+    <string name="video_without_photo">لا يمكن اختيار كل من الصورة والفيديو</string>
+    <string name="video_min_seconds_limit">الفيديو أقصر من %d ثوان\\nلا يمكن استخدامها حاليا</string>
+    <string name="video_max_seconds_limit">الفيديو أكثر من %d ثوان\\nلا يمكن استخدامها حاليا</string>
+    <string name="video_size_limit">فقط حدد الفيديو في غضون %d ثوان للتحرير</string>
+    <string name="photo_max_size_limit">تجاوز حجم الصورة الحد الأقصى %s</string>
+    <string name="video_max_size_limit">تجاوز حجم الفيديو الحد الأقصى %s</string>
+</resources>

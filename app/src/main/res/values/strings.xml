@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <string name="app_name">Moment</string>
     <string name="title_home">Home</string>
     <string name="title_chat">Chat</string>
@@ -6,6 +6,21 @@
     <string name="facebook_app_id" translatable="false">aa2249012795165840</string>
     <string name="moment_accost">Accost</string>
     <string name="moment_Chat">Chat</string>
+    <string name="enable_push_content_he">Turn on notifications so you know right away when he messages you.</string>
+
+    <string name="request_audio_permission">In order to %s, you need to allow Moment to access your microphone.</string>
+    <string name="request_audio_permission_fail">You need to allow Moment to access your microphone.\nMethod: Setting> Application >Moment >Permission >Microphone</string>
+    <string name="request_photo_permission">In order to visit photo gallery or take photos, you need to allow Moment to access your camera and storage permission</string>
+    <string name="request_photo_permission_fail">You need to allow Moment to access your photo gallery and camera before sending pics. Method: Setting> Application >Moment >Permission >Storage &amp; Camera</string>
+    <string name="request_video_permission">In order to use %s，you need to allow Moment to access your camera and microphone permission.</string>
+    <string name="request_video_permission_fail">You need to allow Moment to access your microphone and camera. Method: Setting> Application >Moment >Permission >Microphone &amp; Camera</string>
+    <string name="request_save_permission">In order to %s, you need to allow Moment to access your storage permission.</string>
+    <string name="request_save_permission_fail">You need to allow Moment to access your storage permission,Method: Setting> Application >Moment >Permission >Storage &amp; Camera</string>
+    <string name="request_location_permission">Hey, someone nearby is waiting to meet you! Remember to click [Chat] when you see him/her. This function is available when 📍GPS is on.</string>
+    <string name="request_location_permission_fail">You need to allow Moment to access your location before using Hey There. Method: Setting> Application >Moment >Permission >Location access</string>
+    <string name="map_get_location_permission">In order to share your location,you need to allow Moment to access your location permission.</string>
+    <string name="map_get_location_permission_process">You need to allow Moment to access your location permission, Method: Setting&gt;Application &gt;Moment&gt;Permission&gt;Location</string>
+
     <string-array name="ntp_server_list">
         <item>id.pool.ntp.org</item>
         <item>ph.pool.ntp.org</item>

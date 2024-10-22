@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">全媒體</string>
+    <string name="explorer_preview">預覽</string>
+    <string name="explorer_apply">應用</string>
+    <string name="explorer_back">返回</string>
+
+    <string name="video_size_too_large">這個視頻尺寸太大，無法選擇。</string>
+
+    <string name="photo_max_size_limit">照片大小超過最大限制%s</string>
+    <string name="video_max_size_limit">視頻大小超過最大限制%s</string>
+    <string name="video_size_limit">只能選擇%d秒內的視頻，需要編輯</string>
+
+    <string name="photo_select_count_limit">您最多隻能選擇%d張圖片</string>
+    <string name="video_select_count_limit">您最多隻能選擇%d個視頻</string>
+
+    <string name="video_invalid_tip">%0.f秒內的視頻無效</string>
+
+    <string name="photo_without_video">圖片和視頻不能同時選擇</string>
+    <string name="video_without_photo">視頻和圖片不能同時選擇</string>
+
+    <string name="video_min_seconds_limit">視頻小於%d秒，無法選擇</string>
+    <string name="video_max_seconds_limit">視頻大於%d秒，無法選擇</string>
+</resources>

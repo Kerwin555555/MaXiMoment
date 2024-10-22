@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="explorer_all_media">Tất cả các kênh truyền thông</string>
+    <string name="explorer_preview">Xem trước</string>
+    <string name="explorer_apply">Áp dụng</string>
+    <string name="explorer_back">Trở về</string>
+    <string name="photo_max_size_limit">Kích thước ảnh vượt quá giới hạn tối đa %s</string>
+    <string name="video_max_size_limit">Kích thước video vượt quá giới hạn tối đa %s</string>
+    <string name="video_size_limit">Chỉ những video trong %d giây mới có thể được chọn và chỉnh sửa</string>
+    <string name="photo_select_count_limit">Bạn chỉ có thể chọn tối đa %d ảnh</string>
+    <string name="video_select_count_limit">Bạn chỉ có thể chọn tối đa %d video</string>
+    <string name="photo_without_video">Không thể chọn hình ảnh và video cùng một lúc</string>
+    <string name="video_without_photo">Không thể chọn video và hình ảnh cùng một lúc</string>
+    <string name="video_min_seconds_limit">Video dưới %d giây và không thể chọn được</string>
+    <string name="video_max_seconds_limit">Video dài hơn %d giây và không thể chọn được</string>
+</resources>

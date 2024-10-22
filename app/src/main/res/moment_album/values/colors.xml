@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#FFFFFFFF</color>
+    <color name="lit_explorer_preview_bg_color">#D4FFFFFF</color>
+    <color name="lit_explorer_send_color">#FFFFFFFF</color>
+    <color name="lit_explorer_send_bg_color">#FF8F6DEF</color>
+    <color name="lit_explorer_send_disable_bg_color">#FFD1D6E0</color>
+    <color name="lit_explorer_send_disable_color">#FFFFFFFF</color>
+    <color name="lit_explorer_preview_disable_color">#FFB3BAC5 </color>
+    <color name="lit_explorer_preview_enable_color">#FF8F6DEF </color>
+    <color name="lit_explorer_text_color">#FF141C2F </color>
+    <color name="lit_explorer_activity_background_color">#FFFFFFFF </color>
+</resources>
