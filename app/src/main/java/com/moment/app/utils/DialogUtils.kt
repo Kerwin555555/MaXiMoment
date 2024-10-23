@@ -50,7 +50,7 @@ object DialogUtils {
         return false
     }
 
-    private fun getActivity(cont: Context?): Activity? {
+    fun getActivity(cont: Context?): Activity? {
         return if (cont == null) {
             null
         } else if (cont is Activity) {

@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.Gravity
 import android.view.View
 import androidx.activity.viewModels
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bigkoo.pickerview.listener.OnDismissListener
@@ -18,6 +18,7 @@ import com.bigkoo.pickerview.view.TimePickerView
 import com.blankj.utilcode.util.KeyboardUtils
 import com.didi.drouter.annotation.Router
 import com.gyf.immersionbar.ImmersionBar
+import com.moment.app.R
 import com.moment.app.databinding.ActivityProfileBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LoginEvent
@@ -56,20 +57,26 @@ class ProfileActivity: BaseActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSwipeBackEnable(false)
+        kotlin.runCatching {
+            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
+            for (f in supportFragmentManager.getFragments()) {
+                transaction.remove(f!!)
+            }
+            transaction.commitNow()
+        }
         ImmersionBar.with(this)
             .statusBarDarkFont(false)
             .fitsSystemWindows(false)
             .init()
-
         initUI()
         initObservers()
     }
 
     private fun initUI() {
-        binding.editText.addTextChangedListener(object : TextWatcher {
+        binding.bioEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
-                viewModel.liveData.value?.desc = text?.toString()?.trim()?.replace("\n", "") ?: ""
+                viewModel.liveData.value?.bio = text?.toString()?.trim()?.replace("\n", "") ?: ""
                 refresh()
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -87,6 +94,7 @@ class ProfileActivity: BaseActivity() {
                 })
             pickerView.setOnDismissListener(object : OnDismissListener {
                 override fun onDismiss(o: Any?) {
+
                 }
             })
             pickerView.show()
@@ -106,7 +114,7 @@ class ProfileActivity: BaseActivity() {
             viewModel.liveData.value?.gender = "girl"
             refresh()
         }
-        binding.nicknameContent.addTextChangedListener(object : TextWatcher {
+        binding.nicknameEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
                 viewModel.liveData.value?.nickName = text?.toString()?.trim()?.replace("\n", "") ?: ""
@@ -129,9 +137,24 @@ class ProfileActivity: BaseActivity() {
         cancelListener: View.OnClickListener?,
         selectChangeListener: OnTimeSelectChangeListener?
     ): TimePickerView {
+        val defaultDate = Calendar.getInstance()
+        if (!TextUtils.isEmpty(binding.birthday.text.toString())) {
+            try {
+                val date = binding.birthday.text.toString().split("-".toRegex()).dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
+                defaultDate[date[0].toInt(), date[1].toInt() - 1] = date[2].toInt()
+            } catch (e: Exception) {
+                e.printStackTrace()
+                defaultDate[2004, 0] = 1
+            }
+        } else {
+            defaultDate[2004, 0] = 1
+        }
+        viewModel.liveData.value?.timeSelect = defaultDate.time
+        refresh()
         return DateUtil.chooseDate(
             context,
-            binding.birthday.text.toString(),
+            defaultDate,
             listener,
             cancelListener,
             selectChangeListener
@@ -141,9 +164,6 @@ class ProfileActivity: BaseActivity() {
     @SuppressLint("DefaultLocale")
     private fun initObservers() {
          viewModel.liveData.observe(this) {
-             if (!it.desc.isNullOrEmpty()) {
-                 binding.editText.setText(it.desc)
-             }
              it.timeSelect?.let { date ->
                  val calendar = Calendar.getInstance()
                  calendar.time = date
@@ -167,10 +187,6 @@ class ProfileActivity: BaseActivity() {
                  binding.boy.isSelected = false
              }
 
-             it.nickName?.let { nickName ->
-                 binding.nicknameContent.setText(nickName)
-             }
-
              ("ahaha : "+it.dataOk).toast()
              it.dataOk = it.timeSelect != null && !it.nickName.isNullOrEmpty() && it.gender != null
              binding.confirm.isEnabled = it.dataOk
@@ -179,9 +195,16 @@ class ProfileActivity: BaseActivity() {
          viewModel.netLiveData.observe(this) {
              when (it) {
                  is LoadingStatus.SuccessLoadingStatus -> {
-                     ChooseAvatarWindow(this@ProfileActivity)
-                         . showAtLocation(binding.root, Gravity.BOTTOM or Gravity.CENTER, 0, 0)
-                 }
+                     val fragmentTransaction = supportFragmentManager.beginTransaction()
+                     fragmentTransaction.setCustomAnimations(
+                         R.anim.slide_out, // 进入动画
+                        0, // 退出动画（这里没有设置，所以为0）
+                         0, // 弹出动画（这里没有设置，所以为0）
+                       0, // 弹入动画（这里没有设置，所以为0）
+                   )
+                     fragmentTransaction.add(R.id.root_layout, ChooseAvatarFragment())
+                     fragmentTransaction.commitAllowingStateLoss()
+                }
                  is LoadingStatus.FailedLoadingStatus -> {
                      it.error?.toast()
                  }
@@ -215,7 +238,7 @@ class ProfileViewModel @Inject constructor(
                 "age" to data!!.ageToString(),
                 "name" to data!!.nickName,
                 "gender" to data!!.gender,
-                "bio" to data!!.desc
+                "bio" to data!!.bio
             ))
             val info: UserInfo? = LoginModel.getUserInfo()
             if (info == null) {
@@ -224,7 +247,7 @@ class ProfileViewModel @Inject constructor(
             info.name = data!!.nickName
             info.birthday = data!!.ageToString()
             info.gender = data!!.gender
-            info.bio = data!!.desc
+            info.bio = data!!.bio
             if (result.data != null) info.age = result.data!!.age
             LoginModel.setUserInfo(info)
             EventBus.getDefault().post(LoginEvent())
@@ -241,7 +264,7 @@ class ProfileViewModel @Inject constructor(
         var timeSelect: Date? = null,
         var nickName: String? = null,
         var gender: String? = null,
-        var desc: String? = null,
+        var bio: String? = null,
 
         var dataOk: Boolean = false
     ) {

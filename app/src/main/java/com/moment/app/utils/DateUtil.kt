@@ -105,7 +105,7 @@ object DateUtil {
 
     fun chooseDate(
         context: Context?,
-        defaultBirthday: String,
+        defaultDate: Calendar,
         listener: OnTimeSelectListener?,
         cancelListener: View.OnClickListener?,
         selectChangeListener: OnTimeSelectChangeListener?
@@ -120,19 +120,6 @@ object DateUtil {
             startDate = endDate
         }
 
-        val defaultDate = Calendar.getInstance()
-        if (!TextUtils.isEmpty(defaultBirthday)) {
-            try {
-                val date = defaultBirthday.split("-".toRegex()).dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-                defaultDate[date[0].toInt(), date[1].toInt() - 1] = date[2].toInt()
-            } catch (e: Exception) {
-                e.printStackTrace()
-                defaultDate[2003, 0] = 1
-            }
-        } else {
-            defaultDate[2003, 0] = 1
-        }
 
         return TimePickerBuilder(context, listener)
             .setType(booleanArrayOf(true, true, true, false, false, false)) // type of date

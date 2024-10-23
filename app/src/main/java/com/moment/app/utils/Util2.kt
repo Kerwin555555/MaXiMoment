@@ -4,8 +4,10 @@ import android.content.res.ColorStateList
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-
+import androidx.fragment.app.FragmentManager
+import java.lang.Exception
 
 
 // TextView 设置textColor扩展函数
@@ -46,4 +48,10 @@ internal fun TextView.applySelectedColorIntStateList(@ColorInt selectedId: Int,
         selectedId,
         unSelectedId)
     setTextColor(ColorStateList(status, colors))
+}
+
+fun FragmentManager.popBackStackNowAllowingStateLoss() {
+    try {
+        popBackStackImmediate()
+    } catch (e: Exception) {}
 }

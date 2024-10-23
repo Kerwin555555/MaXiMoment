@@ -49,6 +49,7 @@
         android:id="@+id/text"
         android:layout_width="204dp"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:text="Uploading a Profile Picture with a Face Yields Better Recommendations"
         android:textColor="@color/moment_text_ff999999"
         android:textSize="12sp"

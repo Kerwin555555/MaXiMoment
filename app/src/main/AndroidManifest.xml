@@ -89,6 +89,10 @@
             android:theme="@style/AppTheme.NoTranslucent" />
 
         <activity
+            android:name=".images.media.MediaExplorerActivity"
+            android:screenOrientation="portrait" />
+
+        <activity
             android:name=".login_profile.ProfileActivity"
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait">
