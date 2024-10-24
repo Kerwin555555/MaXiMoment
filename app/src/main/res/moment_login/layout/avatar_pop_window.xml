@@ -38,6 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
     <ImageView
+        android:id="@+id/upload"
         android:src="@mipmap/image_upload"
         android:layout_width="65dp"
         android:layout_height="56dp"

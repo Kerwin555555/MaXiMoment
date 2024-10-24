@@ -2,12 +2,15 @@ package com.moment.app.login_profile
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
 import androidx.activity.viewModels
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,8 +19,10 @@ import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.bigkoo.pickerview.view.TimePickerView
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.LogUtils
 import com.didi.drouter.annotation.Router
-import com.gyf.immersionbar.ImmersionBar
+import com.didi.drouter.api.DRouter
+import com.didi.drouter.api.Extend
 import com.moment.app.R
 import com.moment.app.databinding.ActivityProfileBinding
 import com.moment.app.datamodel.UserInfo
@@ -34,11 +39,19 @@ import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
 import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.immersion
+import com.moment.app.utils.setOnSingleClickListener
 import com.moment.app.utils.setTextColorStateSelectList
-import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
@@ -64,10 +77,7 @@ class ProfileActivity: BaseActivity() {
             }
             transaction.commitNow()
         }
-        ImmersionBar.with(this)
-            .statusBarDarkFont(false)
-            .fitsSystemWindows(false)
-            .init()
+        immersion()
         initUI()
         initObservers()
     }
@@ -122,9 +132,9 @@ class ProfileActivity: BaseActivity() {
             }
             override fun afterTextChanged(s: Editable?) {}
         })
-        binding.confirm.setOnClickListener {
+        binding.confirm.setOnSingleClickListener({
             viewModel.submit()
-        }
+        }, 500)
     }
 
     private fun refresh() {
@@ -187,7 +197,6 @@ class ProfileActivity: BaseActivity() {
                  binding.boy.isSelected = false
              }
 
-             ("ahaha : "+it.dataOk).toast()
              it.dataOk = it.timeSelect != null && !it.nickName.isNullOrEmpty() && it.gender != null
              binding.confirm.isEnabled = it.dataOk
          }
@@ -195,13 +204,15 @@ class ProfileActivity: BaseActivity() {
          viewModel.netLiveData.observe(this) {
              when (it) {
                  is LoadingStatus.SuccessLoadingStatus -> {
+                     binding.bioEditText.clearFocus()
+                     KeyboardUtils.hideSoftInput(this)
                      val fragmentTransaction = supportFragmentManager.beginTransaction()
                      fragmentTransaction.setCustomAnimations(
-                         R.anim.slide_out, // 进入动画
+                         R.anim.slide_up, // 进入动画
                         0, // 退出动画（这里没有设置，所以为0）
                          0, // 弹出动画（这里没有设置，所以为0）
                        0, // 弹入动画（这里没有设置，所以为0）
-                   )
+                     )
                      fragmentTransaction.add(R.id.root_layout, ChooseAvatarFragment())
                      fragmentTransaction.commitAllowingStateLoss()
                 }
@@ -230,24 +241,26 @@ class ProfileViewModel @Inject constructor(
     val _showProgressDialog = MutableLiveData<ProgressDialogStatus>()
     val showProgressDialog = _showProgressDialog
 
+    val hasAvatarLiveData = MutableLiveData<Boolean>()
+
     fun submit() {
+        showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(cancellable = true)
         startCoroutine({
-            showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(cancellable = true)
             val data = _liveData.value
             val result =  loginService.updateInfo(mutableMapOf(
                 "age" to data!!.ageToString(),
-                "name" to data!!.nickName,
-                "gender" to data!!.gender,
-                "bio" to data!!.bio
+                "name" to data.nickName,
+                "gender" to data.gender,
+                "bio" to data.bio
             ))
             val info: UserInfo? = LoginModel.getUserInfo()
             if (info == null) {
                 return@startCoroutine
             }
-            info.name = data!!.nickName
-            info.birthday = data!!.ageToString()
-            info.gender = data!!.gender
-            info.bio = data!!.bio
+            info.name = data.nickName
+            info.birthday = data.ageToString()
+            info.gender = data.gender
+            info.bio = data.bio
             if (result.data != null) info.age = result.data!!.age
             LoginModel.setUserInfo(info)
             EventBus.getDefault().post(LoginEvent())
@@ -257,6 +270,60 @@ class ProfileViewModel @Inject constructor(
         }){
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
             _netLiveData.value = LoadingStatus.FailedLoadingStatus(it)
+        }
+    }
+
+
+    fun saveAvatar(imageView: ClipImageView) {
+        startCoroutine({
+            showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(cancellable = false)
+            kotlin.runCatching {
+                (imageView.context as AppCompatActivity).supportFragmentManager.let {
+                    val f = it.findFragmentByTag("ClipImageFragment")
+                    val f2 = it.findFragmentByTag("ChooseAlbumFragment")
+                    it.beginTransaction()
+                        .setCustomAnimations(0,R.anim.slide_down,0,0)
+                        .remove(f!!)
+                        .remove(f2!!)
+                        .commitNowAllowingStateLoss()
+                }
+            }
+            val file = withContext(Dispatchers.IO) {
+                saveView(imageView.context, imageView.clipCircle()!!)
+            }
+            LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
+                avatar = file
+            })
+            hasAvatarLiveData.value = true
+            delay(2000) // mock upload to backend and cloud storage
+            showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
+            DRouter.build("/main")
+                .putExtra(Extend.START_ACTIVITY_FLAGS, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                .putExtra("isFromRegister", true)
+                //.putExtra(MainActivity.INTENT_FROM_KEY, MainActivity.INTENT_FROM_LOGIN)
+                .start()
+        }) {
+            showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
+        }
+    }
+
+    private fun saveView(context: Context, bitmap: Bitmap): File? {
+        val fileName = "moment_" + System.currentTimeMillis() + ".jpg"
+        val pictureFile = File(context.cacheDir, fileName)
+
+        try {
+            val fos = FileOutputStream(pictureFile)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+            fos.flush()
+            fos.close()
+            return pictureFile
+        } catch (e: FileNotFoundException) {
+            LogUtils.d("ClipImage", "File not found: " + e.message)
+            return null
+        } catch (e: IOException) {
+            LogUtils.d("ClipImage", "Error accessing file: " + e.message)
+            return null
+        } finally {
         }
     }
 

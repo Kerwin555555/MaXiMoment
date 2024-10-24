@@ -1,12 +1,14 @@
 package com.moment.app.utils
 
 import android.content.res.ColorStateList
+import android.view.View
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.gyf.immersionbar.ImmersionBar
 import java.lang.Exception
 
 
@@ -55,3 +57,26 @@ fun FragmentManager.popBackStackNowAllowingStateLoss() {
         popBackStackImmediate()
     } catch (e: Exception) {}
 }
+
+fun AppCompatActivity.immersion() {
+    ImmersionBar.with(this)
+    .statusBarDarkFont(false)
+    .fitsSystemWindows(false)
+    .init()
+}
+
+/**
+ * 防止多次点击
+ */
+inline fun View.setOnSingleClickListener(crossinline onClick: (view: View) -> Unit, delayMillis: Long) {
+    this.setOnClickListener {
+        if (this.isClickable) {
+            this.isClickable = false
+            onClick(it)
+            this.postDelayed({
+                this.isClickable = true
+            }, delayMillis)
+        }
+    }
+}
+

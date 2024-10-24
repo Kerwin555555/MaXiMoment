@@ -132,9 +132,9 @@ class RecommendationFragment: BaseFragment() {
                 }
             }
             val result = withContext(Dispatchers.IO) {
-                if (!NetworkUtils.isConnected()) {
-                    throw RuntimeException("Net work Error")
-                }
+//                if (!NetworkUtils.isConnected()) {
+//                    throw RuntimeException("Net work Error")
+//                }
                 homeService.getOnlineUsersForSlide(startPos, pageSize)
             }
             //存档到数据库！

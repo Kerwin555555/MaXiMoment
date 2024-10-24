@@ -4,22 +4,38 @@
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/load_more_loading_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:textColor="#ff747276"
-        android:padding="20dp"
-        android:text="loading more..." />
-
-    <TextView
         android:id="@+id/load_more_load_fail_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
         android:textColor="#ff747276"
         android:padding="20dp"
-        android:text="loading fail!" />
+        android:text="Load fail!" />
+
+    <LinearLayout
+        android:id="@+id/load_more_loading_view"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ProgressBar
+            android:id="@+id/progress"
+            android:indeterminate="true"
+            android:indeterminateDrawable="@drawable/loading_indicator_drawable"
+            android:indeterminateBehavior="repeat"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:visibility="visible"
+            android:layout_gravity="center"/>
+        <TextView
+            android:layout_marginStart="5dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="#ff747276"
+            android:paddingVertical="20dp"
+            android:text="Loading..." />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/load_more_load_end_view"
@@ -28,6 +44,6 @@
         android:gravity="center"
         android:textColor="#ff747276"
         android:padding="20dp"
-        android:text="load ends">
+        android:text="Load ends">
     </TextView>
 </FrameLayout>

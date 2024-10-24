@@ -8,12 +8,14 @@ import com.moment.app.R
 import com.moment.app.databinding.FragmentHomeItemViewBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.applyDrawable
+import com.moment.app.utils.setBgWithCornerRadiusAndColor
 
 class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.FragmentHomeItemHolder>(null) {
 
     override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): FragmentHomeItemHolder{
-        val binding = FragmentHomeItemViewBinding.inflate(LayoutInflater.from(mContext),parent, false)
-        return FragmentHomeItemHolder(binding)
+         val binding = FragmentHomeItemViewBinding.inflate(LayoutInflater.from(mContext),parent, false)
+         binding.location.setBgWithCornerRadiusAndColor(9f, solid = 0x1aed9d1d)
+         return FragmentHomeItemHolder(binding)
     }
 
     override fun convert(helper: FragmentHomeItemHolder, item: UserInfo) {
@@ -23,10 +25,6 @@ class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.Fr
         binding.name.text = item.name
 
         binding.gender.bindGender(item)
-
-        binding.avatar
-
-        binding.location
 
         item.followed?.let {
             binding.chat.isSelected = it

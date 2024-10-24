@@ -1,6 +1,7 @@
 package com.moment.app.datamodel
 
 import com.moment.app.utils.BaseBean
+import java.io.File
 
 data class UserInfo(
     var userId: String? = "",
@@ -15,6 +16,7 @@ data class UserInfo(
     var forbidden_session: String? ="",
     var huanxin:HuanxinBean? = null,
     var followed: Boolean? = false,
+    var avatar: File? = null
 ): BaseBean() {
 }
 

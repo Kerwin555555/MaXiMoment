@@ -94,6 +94,11 @@ dependencies {
     implementation("com.google.dagger:hilt-android:2.51.1")
     kapt("com.google.dagger:hilt-android-compiler:2.51.1")
     implementation 'io.github.scwang90:refresh-layout-kernel:2.1.0'
+    implementation  'io.github.scwang90:refresh-header-classics:2.1.0'    //经典刷新头
+    implementation  'io.github.scwang90:refresh-header-radar:2.1.0'       //雷达刷新头
+    implementation  'io.github.scwang90:refresh-header-falsify:2.1.0'     //虚拟刷新头
+    implementation  'io.github.scwang90:refresh-header-material:2.1.0'    //谷歌刷新头
+    implementation  'io.github.scwang90:refresh-header-two-level:2.1.0'   //二级刷新头
     implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
     implementation 'com.blankj:utilcodex:1.31.1'
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'

@@ -2,6 +2,40 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#00ff00">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#ff000000">
+    <com.moment.app.login_profile.ClipImageView
+        android:id="@+id/clip_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+    <com.moment.app.login_profile.LayerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 
+    <TextView
+    android:id="@+id/confirm"
+    android:text="Confirm"
+    android:background="@drawable/gender_slector_drawable"
+    android:textSize="12sp"
+    android:minWidth="66dp" android:textColor="@color/white"
+    android:gravity="center"
+    android:layout_width="0dp"
+    android:layout_height="34dp"
+    android:layout_marginEnd="10dp"
+        android:layout_marginBottom="15dp"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"/>
+    <TextView
+        android:id="@+id/cancel"
+        android:text="Cancel"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:minWidth="66dp"
+        android:gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/confirm"
+        app:layout_constraintBottom_toBottomOf="@id/confirm"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

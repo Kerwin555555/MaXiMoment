@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import com.moment.app.R
 import com.moment.app.databinding.LayoutGenderBinding
 import com.moment.app.datamodel.UserInfo
+import com.moment.app.utils.setBgSelectedColorIntStateListDrawable
 
 class GenderView  : LinearLayout{
 
@@ -20,10 +21,13 @@ class GenderView  : LinearLayout{
     init {
         setBackgroundResource(R.drawable.bg_gender_level_list)
         orientation = HORIZONTAL
+        setBgSelectedColorIntStateListDrawable(9f,
+            selectedId = 0x1a2131FF , unSelectedId = 0x1aFF3875)
     }
 
     fun bindGender(userInfo: UserInfo) {
         (background as? LevelListDrawable)?.setLevel(if (userInfo.gender == "male")1 else 0)
+        isSelected = userInfo.gender == "male"
         (binding.genderView.drawable as? LevelListDrawable)?.setLevel(if (userInfo.gender == "male")1 else 0)
         binding.text.text = "${userInfo.age}"
         binding.text.isSelected = userInfo.gender == "male"

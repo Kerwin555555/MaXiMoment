@@ -17,10 +17,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewOutlineProvider
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatActivity.RESULT_OK
 import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.os.bundleOf
@@ -28,7 +26,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
-import com.facebook.common.Common
 import com.moment.app.MomentApp
 import com.moment.app.R
 import com.moment.app.databinding.FragmentChooseAlbumBinding
@@ -38,18 +35,10 @@ import com.moment.app.images.engine.MediaStoreHelper
 import com.moment.app.images.engine.OkDisplayCompat
 import com.moment.app.images.media.IMediaContract
 import com.moment.app.images.media.MediaDirectoryWindow
-import com.moment.app.images.media.adapter.MediaLimitChecker
 import com.moment.app.images.utils.ExpUtil
-import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseFragment
-import com.moment.app.utils.CommonUtil
 import com.moment.app.utils.DialogUtils
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
-import com.moment.app.utils.toast
-import dagger.hilt.android.AndroidEntryPoint
-import java.lang.Exception
-import javax.inject.Inject
-
 
 
 class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
@@ -217,15 +206,11 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
 
 
 class MediaAdapter(private val f: Fragment, private val context: Context) :
-    RecyclerView.Adapter<com.moment.app.login_profile.MediaAdapter.MediaViewHolder>() {
+    RecyclerView.Adapter<MediaAdapter.MediaViewHolder>() {
 
     private var size = context.resources.displayMetrics.widthPixels / Explorer.DEFAULT_SPAN_COUNT
 
     private val imageList: MutableList<MediaFile> = mutableListOf()
-
-    var selectAction: (() -> Unit)? = null
-
-    var videoSelectAction: ((file: MediaFile) -> Unit)? = null
 
     var latestDirId = "ALL"
 
@@ -324,8 +309,8 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                         )
                         ?.hide(f)
                         ?.add(R.id.root_layout, ClipImageFragment().apply {
-                            arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
-                        })?.addToBackStack(null)
+                            arguments = bundleOf("uri" to Uri.parse(file.path))
+                        }, "ClipImageFragment")?.addToBackStack(null)
                         ?.commitAllowingStateLoss()
                 }
 

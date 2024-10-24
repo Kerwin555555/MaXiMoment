@@ -10,15 +10,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.os.bundleOf
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
+import androidx.core.view.isVisible
+import androidx.fragment.app.activityViewModels
+import com.bumptech.glide.Glide
 import com.moment.app.R
 import com.moment.app.databinding.AvatarPopWindowBinding
 import com.moment.app.images.Explorer
 import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_CHOOSE
 import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_CHOOSE_VIDEO
 import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_TAKE
-import com.moment.app.network.startCoroutine
+import com.moment.app.models.LoginModel
 import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.toast
@@ -26,7 +27,7 @@ import com.moment.app.utils.toast
 
 class ChooseAvatarFragment : BaseFragment() {
     private lateinit var binding: AvatarPopWindowBinding
-    private var isClipImageFragmentVisible = false
+    private val viewModel by activityViewModels<ProfileViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -42,6 +43,16 @@ class ChooseAvatarFragment : BaseFragment() {
         binding.pic.setOnClickListener {
             onChooseFromLibrary()
         }
+
+        viewModel.hasAvatarLiveData.observe(this.viewLifecycleOwner) {
+            if (it == true) {
+                Glide.with(this).load(LoginModel.getUserInfo()!!.avatar).fitCenter().into(binding.pic)
+                binding.upload.isVisible = false
+            } else {
+                binding.upload.isVisible = true
+                Glide.with(this).clear(binding.pic)
+            }
+        }
     }
 
     fun onChooseFromLibrary() {
@@ -55,9 +66,7 @@ class ChooseAvatarFragment : BaseFragment() {
                     override fun result(res: Int) {
                         if (res == 0) {
                             Log.d("zhouzheng", Thread.currentThread().name)
-                            startCoroutine({
-                                choosePhoto()
-                            }) {}
+                            choosePhoto()
                         }
                     }
                 })
@@ -96,14 +105,14 @@ class ChooseAvatarFragment : BaseFragment() {
          (activity as? AppCompatActivity?)?.supportFragmentManager
             ?.beginTransaction()
             ?.setCustomAnimations(
-                R.anim.slide_out, // 进入动画
+                R.anim.slide_up, // 进入动画
                 0, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
                 0, // 弹出动画（这里没有设置，所以为0）
                 R.anim.slide_down ,  // 弹入动画（这里没有设置，所以为0）
            )
            ?.add(R.id.root_layout, ChooseAlbumFragment().apply {
                    arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
-           })?.addToBackStack(null)
+           }, "ChooseAlbumFragment")?.addToBackStack(null)
             ?.commitAllowingStateLoss()
     }
 }

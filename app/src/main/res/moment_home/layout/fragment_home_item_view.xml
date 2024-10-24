@@ -50,7 +50,6 @@
         android:text="My City"
         android:textColor="#ffed9d1d"
         android:textSize="11sp"
-        android:background="@drawable/bg_shape_1a1a5cff_9dp"
         android:backgroundTint="#ED9D1D"
         android:layout_marginStart="6dp"
         android:paddingHorizontal="9dp"
