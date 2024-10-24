@@ -1,0 +1,97 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "me.ele",
+    "module": "lancet-plugin",
+    "version": "1.0.7",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.5.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "lancet-plugin-1.0.7.jar",
+          "url": "lancet-plugin-1.0.7.jar",
+          "size": 44700,
+          "sha512": "8c705343fd4e8cb80b01aa049bf8a0760cbbf69190f1d0bcd2df47820d92d305209fef34f953c355e916172c157525c7013bd975723c1e25fc24d9eac9d3c464",
+          "sha256": "16f703a90ef0fe009a2e4bc8c24960e13980c440673e3d3b8832fdb737c5a9bf",
+          "sha1": "c8ec4fb4fc47bf28cb2519895f96d10b4efffca5",
+          "md5": "a9ebfb23dac30acf9cc6ce2db62750ba"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "com.android.tools",
+          "module": "common",
+          "version": {
+            "requires": "30.3.0"
+          }
+        },
+        {
+          "group": "com.google.code.gson",
+          "module": "gson",
+          "version": {
+            "requires": "2.8.0"
+          }
+        },
+        {
+          "group": "commons-io",
+          "module": "commons-io",
+          "version": {
+            "requires": "2.4"
+          }
+        },
+        {
+          "group": "me.ele",
+          "module": "lancet-weaver",
+          "version": {
+            "requires": "1.0.7"
+          }
+        },
+        {
+          "group": "me.ele",
+          "module": "lancet-base",
+          "version": {
+            "requires": "1.0.7"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "lancet-plugin-1.0.7.jar",
+          "url": "lancet-plugin-1.0.7.jar",
+          "size": 44700,
+          "sha512": "8c705343fd4e8cb80b01aa049bf8a0760cbbf69190f1d0bcd2df47820d92d305209fef34f953c355e916172c157525c7013bd975723c1e25fc24d9eac9d3c464",
+          "sha256": "16f703a90ef0fe009a2e4bc8c24960e13980c440673e3d3b8832fdb737c5a9bf",
+          "sha1": "c8ec4fb4fc47bf28cb2519895f96d10b4efffca5",
+          "md5": "a9ebfb23dac30acf9cc6ce2db62750ba"
+        }
+      ]
+    }
+  ]
+}

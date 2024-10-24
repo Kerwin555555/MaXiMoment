@@ -8,12 +8,12 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface LoginService {
-    @POST("api/sns/v1/lit/user/facebook_login")
+    @POST("api/sns/v1/moment/user/facebook_login")
     suspend fun facebookLogin(@Body map: Map<String, String>): Results<UserInfo>
 
-    @GET("api/sns/v1/lit/user/logout")
+    @GET("api/sns/v1/moment/user/logout")
     suspend fun logout(): Results<Any>
 
-    @POST("api/sns/v1/lit/user/info")
+    @POST("api/sns/v1/moment/user/info")
     suspend fun updateInfo(@Body data: Map<String?, String?>?): Results<UserInfo>
 }

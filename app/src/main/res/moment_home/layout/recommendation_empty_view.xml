@@ -22,13 +22,11 @@
         android:paddingHorizontal="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
-    <ProgressBar
-        android:id="@+id/progress"
-        android:indeterminate="true"
-        android:indeterminateDrawable="@drawable/loading_indicator_drawable"
-        android:indeterminateBehavior="repeat"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:visibility="visible"
-        android:layout_gravity="center"/>
+    <com.moment.app.utils.MomentLoadingView
+        android:id = "@+id/loading"
+        android:drawableTop="@mipmap/page_loading"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
 </merge>

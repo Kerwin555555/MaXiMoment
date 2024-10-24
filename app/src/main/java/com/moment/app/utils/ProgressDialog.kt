@@ -49,7 +49,6 @@ open class ProgressDialog : BaseDialogFragment() {
             dialog?.setCanceledOnTouchOutside(cancel)
             dialog?.setCancelable(cancel)
         }
-        refreshView?.animationDrawable?.start()
     }
 
     fun setOnCancelListener(onCancelListener: DialogInterface.OnCancelListener?) {
@@ -71,7 +70,7 @@ open class ProgressDialog : BaseDialogFragment() {
 //        super.dismiss();
         try {
             if (refreshView != null) {
-                refreshView?.animationDrawable?.stop()
+
             }
             dismissAllowingStateLoss()
         } catch (e: Exception) {

@@ -1,12 +1,20 @@
 package com.moment.app.ui.uiLibs
 
+import android.animation.ValueAnimator
+import android.animation.ValueAnimator.AnimatorUpdateListener
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.ColorFilter
+import android.graphics.Matrix
 import android.graphics.Paint
+import android.graphics.Path
+import android.graphics.PixelFormat
 import android.graphics.Rect
-import android.graphics.drawable.AnimationDrawable
+import android.graphics.drawable.Animatable
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,12 +27,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
 import com.blankj.utilcode.util.SizeUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
-import com.chad.library.adapter.base.BaseViewHolder
 import com.chad.library.adapter.base.loadmore.LoadMoreView
 import com.moment.app.R
 import com.moment.app.databinding.BasicRefreshHeaderBinding
 import com.moment.app.databinding.MomentRefreshviewBinding
-import com.moment.app.utils.GradientDrawableBuilder
 import com.moment.app.utils.dp
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshHeader
@@ -32,6 +38,8 @@ import com.scwang.smart.refresh.layout.api.RefreshKernel
 import com.scwang.smart.refresh.layout.api.RefreshLayout
 import com.scwang.smart.refresh.layout.constant.RefreshState
 import com.scwang.smart.refresh.layout.constant.SpinnerStyle
+import kotlin.math.max
+
 
 class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     SmartRefreshLayout(context, attrs) {
@@ -43,7 +51,7 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     fun initWith(
         adapter: BaseQuickAdapter<D, *>,
         emptyView: EmptyView,
-        refreshHeader: RefreshHeader = RefreshView(context),
+        refreshHeader: RefreshView = RefreshView(context),
         loadDataListener: (it: Boolean) -> Unit
     ) {
         this.adapter = adapter
@@ -161,12 +169,8 @@ class RefreshView @JvmOverloads constructor(
 
     private val binding = BasicRefreshHeaderBinding.inflate(LayoutInflater.from(context), this)
 
-    var animationDrawable: AnimationDrawable? = null
-
     init {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-        binding.icon.setImageResource(R.drawable.refresh_animation_drawable)
-        animationDrawable = binding.icon.getDrawable() as? AnimationDrawable?
     }
 
     @SuppressLint("RestrictedApi")
@@ -204,7 +208,7 @@ class RefreshView @JvmOverloads constructor(
         height: Int,
         maxDragHeight: Int
     ) {
-        animationDrawable?.selectDrawable(15)
+       // binding.progress.stop()
     }
 
     @SuppressLint("RestrictedApi")
@@ -214,13 +218,12 @@ class RefreshView @JvmOverloads constructor(
 
     @SuppressLint("RestrictedApi")
     override fun onStartAnimator(refreshLayout: RefreshLayout, height: Int, maxDragHeight: Int) {
-        animationDrawable?.selectDrawable(0)
-        animationDrawable?.start()
+        binding.progress.start()
     }
 
     @SuppressLint("RestrictedApi")
     override fun onFinish(refreshLayout: RefreshLayout, success: Boolean): Int {
-        animationDrawable?.stop()
+        binding.progress.stop()
         return 0
     }
 
@@ -235,6 +238,139 @@ class RefreshView @JvmOverloads constructor(
 
     override fun autoOpen(duration: Int, dragRate: Float, animationOnly: Boolean): Boolean {
         return true
+    }
+}
+
+class RefreshHeadView @JvmOverloads constructor(
+    context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
+) : View(context, attrs, defStyleAttr) {
+    val drawable = ProgressDrawable()
+
+    init {
+        setPadding(15.dp,15.dp,15.dp,15.dp)
+        drawable.callback = this
+    }
+
+     fun start() {
+        drawable.start()
+    }
+
+    override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+        super.onLayout(changed, left, top, right, bottom)
+        drawable.setBounds(paddingLeft,paddingTop,width- paddingRight, height-paddingBottom)
+    }
+
+    fun stop() {
+        drawable.stop()
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        drawable.attach()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        drawable.detach()
+    }
+
+    override fun onDraw(canvas: Canvas) {
+        super.onDraw(canvas)
+        drawable.draw(canvas)
+    }
+
+    override fun verifyDrawable(who: Drawable): Boolean {
+        return super.verifyDrawable(who) || who == drawable
+    }
+}
+
+class ProgressDrawable : Drawable(), Animatable,
+    AnimatorUpdateListener {
+    protected var mWidth: Int = 0
+    protected var mHeight: Int = 0
+    protected var mProgressDegree: Int = 0
+    protected var mValueAnimator: ValueAnimator = ValueAnimator.ofInt(30, 3600)
+    protected var mPath: Path = Path()
+
+    protected val mPaint = Paint()
+    init {
+        mPaint.style = Paint.Style.FILL
+        mPaint.isAntiAlias = true
+        mPaint.color = -0x555556
+    }
+
+    override fun onAnimationUpdate(animation: ValueAnimator) {
+        val value = animation.animatedValue as Int
+        mProgressDegree = 30 * (value / 30)
+        invalidateSelf()
+    }
+
+    //<editor-fold desc="Drawable">
+    override fun draw( canvas: Canvas) {
+        canvas.save()
+        val matrix = Matrix()
+        matrix.preTranslate(bounds.left.toFloat(), bounds.top.toFloat())
+        canvas.setMatrix(matrix)
+        val drawable: Drawable = this@ProgressDrawable
+        val bounds = drawable.bounds
+        val width = bounds.width()
+        val height = bounds.height()
+        val r = max(1.0, (width / 22f).toDouble()).toFloat()
+
+        if (mWidth != width || mHeight != height) {
+            mPath.reset()
+            mPath.addCircle(width - r, height / 2f, r, Path.Direction.CW)
+            mPath.addRect(
+                width - 5 * r,
+                height / 2f - r,
+                width - r,
+                height / 2f + r,
+                Path.Direction.CW
+            )
+            mPath.addCircle(width - 5 * r, height / 2f, r, Path.Direction.CW)
+            mWidth = width
+            mHeight = height
+        }
+        canvas.rotate(mProgressDegree.toFloat(), (width) / 2f, (height) / 2f)
+        for (i in 0..11) {
+            mPaint.alpha = (i + 5) * 0x11
+            canvas.rotate(30f, (width) / 2f, (height) / 2f)
+            canvas.drawPath(mPath, mPaint)
+        }
+        canvas.restore()
+    }
+
+    override fun setAlpha(alpha: Int) {}
+    override fun setColorFilter(colorFilter: ColorFilter?) {}
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
+    }
+
+    //</editor-fold>
+    override fun start() {
+        mValueAnimator.start()
+    }
+
+    override fun stop() {
+        mValueAnimator.cancel()
+    }
+
+    override fun isRunning(): Boolean {
+        return mValueAnimator.isRunning
+    }
+
+    fun detach() {
+        mValueAnimator.removeAllUpdateListeners()
+        mValueAnimator.cancel()
+    }
+
+    fun attach() {
+        mValueAnimator.setDuration(8000)
+        mValueAnimator.interpolator = null
+        mValueAnimator.repeatCount = ValueAnimator.INFINITE
+        mValueAnimator.repeatMode = ValueAnimator.RESTART
+        mValueAnimator.addUpdateListener(this)
+        Log.d("zhouzheng", "attach")
     }
 }
 

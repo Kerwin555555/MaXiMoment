@@ -6,14 +6,11 @@
     android:gravity="center"
     android:orientation="vertical">
 
-    <ImageView
-        android:id="@+id/icon"
-        android:scaleType="fitXY"
-        android:layout_gravity="center"
-        android:src="@drawable/refresh_animation_drawable"
+    <com.moment.app.ui.uiLibs.RefreshHeadView
+        android:id="@+id/progress"
         android:layout_width="50dp"
         android:layout_height="50dp"
-        android:padding="10dp"
-        />
+        android:visibility="visible"
+        android:layout_gravity="center"/>
 
 </merge>

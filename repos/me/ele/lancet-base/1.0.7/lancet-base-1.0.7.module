@@ -1,0 +1,60 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "me.ele",
+    "module": "lancet-base",
+    "version": "1.0.7",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.5.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "lancet-base-1.0.7.jar",
+          "url": "lancet-base-1.0.7.jar",
+          "size": 6085,
+          "sha512": "27ce1629e6cb049c43aa44ebde1f8f3e9f5abb293afcd18d24d364e68d2d066ceb079c47182e737d7ff68af1060b177a74d0e9a62bf14ca2625179f677dba53d",
+          "sha256": "b429eeefcd322f7fa7b3d1d38ad8f696288fcae10c4205e7404e39b108565b31",
+          "sha1": "9c6eb1ca4d23c3dafde995dbe9bae076ace17066",
+          "md5": "f1d4ffa44aa14e0b6e17e3ed0b2767ec"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "files": [
+        {
+          "name": "lancet-base-1.0.7.jar",
+          "url": "lancet-base-1.0.7.jar",
+          "size": 6085,
+          "sha512": "27ce1629e6cb049c43aa44ebde1f8f3e9f5abb293afcd18d24d364e68d2d066ceb079c47182e737d7ff68af1060b177a74d0e9a62bf14ca2625179f677dba53d",
+          "sha256": "b429eeefcd322f7fa7b3d1d38ad8f696288fcae10c4205e7404e39b108565b31",
+          "sha1": "9c6eb1ca4d23c3dafde995dbe9bae076ace17066",
+          "md5": "f1d4ffa44aa14e0b6e17e3ed0b2767ec"
+        }
+      ]
+    }
+  ]
+}

@@ -61,15 +61,13 @@ class MockNetWorkModule {
 
 class MockHomeService: HomeService {
     override suspend fun getOnlineUsersForSlide(startPos: Int, num: Int): Results<UserInfoList> {
-        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada")
+        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada 1")
         val result = UserInfoList()
         val list = mutableListOf<UserInfo>()
-        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada:" + Thread.currentThread().name)
-        try {
-            delay(500)
-        } catch (e: Exception) {
-            Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada:" + e.message)
-        }
+        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada: 2" + Thread.currentThread().name)
+
+        delay(1000L)
+
         for (i in startPos until  startPos + num) {
             list.add(UserInfo().apply {
                 this.userId = ""+java.util.UUID.randomUUID()
@@ -79,9 +77,9 @@ class MockHomeService: HomeService {
                 this.followed = i%2 ==0
             })
         }
-        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada")
+        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada 4")
         result.user_infos = list
-        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada")
+        Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada 5")
         result.has_next = if (startPos == 30) false else true
         result.next_start = startPos + num
         return Results<UserInfoList>().apply {
@@ -95,7 +93,7 @@ class MockHomeService: HomeService {
 class MockLoginService: LoginService {
     override suspend fun facebookLogin(map: Map<String, String>): Results<UserInfo> {
         val res = withContext(Dispatchers.IO) {
-            delay(500)
+            delay(800)
             UserInfo(
                 userId = UUID.randomUUID().toString(),
                 name = "Momentfanxxx",

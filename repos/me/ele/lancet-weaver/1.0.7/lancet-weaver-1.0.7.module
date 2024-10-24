@@ -1,0 +1,97 @@
+{
+  "formatVersion": "1.1",
+  "component": {
+    "group": "me.ele",
+    "module": "lancet-weaver",
+    "version": "1.0.7",
+    "attributes": {
+      "org.gradle.status": "release"
+    }
+  },
+  "createdBy": {
+    "gradle": {
+      "version": "7.5.1"
+    }
+  },
+  "variants": [
+    {
+      "name": "apiElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-api"
+      },
+      "files": [
+        {
+          "name": "lancet-weaver-1.0.7.jar",
+          "url": "lancet-weaver-1.0.7.jar",
+          "size": 119530,
+          "sha512": "71783b2ae8c4889e1ce39a3e2e35b11e7c4ff23faf106219e0b2523f730790c7dc632b1fbdc1c954d1d96d3e3742b7d333d59ef51f0027fdae858229338d61a4",
+          "sha256": "b7c3e56252015f05e30832f4a5dc9782f5fefe749ffc762a1607b127e2498bba",
+          "sha1": "6094b5ba380c2e9c1a085d2523eb0141c602f8fb",
+          "md5": "e93c26169ed8464ff544b8ab8f55f627"
+        }
+      ]
+    },
+    {
+      "name": "runtimeElements",
+      "attributes": {
+        "org.gradle.category": "library",
+        "org.gradle.dependency.bundling": "external",
+        "org.gradle.jvm.version": 8,
+        "org.gradle.libraryelements": "jar",
+        "org.gradle.usage": "java-runtime"
+      },
+      "dependencies": [
+        {
+          "group": "org.ow2.asm",
+          "module": "asm",
+          "version": {
+            "requires": "9.1"
+          }
+        },
+        {
+          "group": "org.ow2.asm",
+          "module": "asm-tree",
+          "version": {
+            "requires": "9.1"
+          }
+        },
+        {
+          "group": "org.ow2.asm",
+          "module": "asm-util",
+          "version": {
+            "requires": "9.1"
+          }
+        },
+        {
+          "group": "org.ow2.asm",
+          "module": "asm-commons",
+          "version": {
+            "requires": "9.1"
+          }
+        },
+        {
+          "group": "me.ele",
+          "module": "lancet-base",
+          "version": {
+            "requires": "1.0.7"
+          }
+        }
+      ],
+      "files": [
+        {
+          "name": "lancet-weaver-1.0.7.jar",
+          "url": "lancet-weaver-1.0.7.jar",
+          "size": 119530,
+          "sha512": "71783b2ae8c4889e1ce39a3e2e35b11e7c4ff23faf106219e0b2523f730790c7dc632b1fbdc1c954d1d96d3e3742b7d333d59ef51f0027fdae858229338d61a4",
+          "sha256": "b7c3e56252015f05e30832f4a5dc9782f5fefe749ffc762a1607b127e2498bba",
+          "sha1": "6094b5ba380c2e9c1a085d2523eb0141c602f8fb",
+          "md5": "e93c26169ed8464ff544b8ab8f55f627"
+        }
+      ]
+    }
+  ]
+}

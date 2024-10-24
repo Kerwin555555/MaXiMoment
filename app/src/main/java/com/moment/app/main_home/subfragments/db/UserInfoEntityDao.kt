@@ -29,6 +29,9 @@ interface UserInfoEntityDao {
 
     @Query("SELECT * FROM userInfoEntity LIMIT :pageSize OFFSET :offset")
     suspend fun getUserInfoEntitiesPaged(pageSize: Int, offset: Int): List<UserInfoEntity>
+
+    @Query("SELECT * FROM userInfoEntity")
+    fun getAllUserInfoEntities(): List<UserInfoEntity>
 }
 
 @Entity

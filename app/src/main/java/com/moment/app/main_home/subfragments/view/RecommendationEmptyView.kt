@@ -30,7 +30,7 @@ class RecommendationEmptyView : FrameLayout, EmptyView{
     }
 
     override fun getLoadingPage(): View {
-        return binding.progress
+        return binding.loading
     }
 
     override fun showNoData() {
@@ -42,7 +42,7 @@ class RecommendationEmptyView : FrameLayout, EmptyView{
     }
 
     override fun showLoading() {
-        showEmptyView(binding.progress)
+        showEmptyView(binding.loading)
     }
 
     override fun hideAll() {
@@ -50,8 +50,13 @@ class RecommendationEmptyView : FrameLayout, EmptyView{
     }
 
     private fun showEmptyView(view: View?) {
-        binding.progress.isVisible = view == binding.progress
+        binding.loading.isVisible = view == binding.loading
         binding.errorLayout.isVisible = view == binding.errorLayout
         binding.emptyLayout.isVisible = view == binding.emptyLayout
+        if (binding.loading == view) {
+            binding.loading.start()
+        } else {
+            binding.loading.stop()
+        }
     }
 }
