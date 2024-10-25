@@ -44,20 +44,15 @@ class FacebookLoginActivity : BaseActivity() {
             .statusBarDarkFont(false)
             .init()
 
-        kotlin.runCatching {
-            binding = FacebookLoginActivityBinding.inflate(layoutInflater)
-            setContentView(binding.getRoot())
-            initFacebookLogin()
-            val accessToken = AccessToken.getCurrentAccessToken()
-            val isLoggedIn = accessToken != null && !accessToken.isExpired
-            if (isLoggedIn && ConfigModel.momentConfig?.enableFacebookTokenCheck == true) {
-                login(accessToken!!.token)
-            } else {
-                binding.loginButton.performClick()
-            }
-        }.onFailure {
-           //
-            login("metaToken")
+        binding = FacebookLoginActivityBinding.inflate(layoutInflater)
+        setContentView(binding.getRoot())
+        initFacebookLogin()
+        val accessToken = AccessToken.getCurrentAccessToken()
+        val isLoggedIn = accessToken != null && !accessToken.isExpired
+        if (isLoggedIn && ConfigModel.momentConfig?.enableFacebookTokenCheck == true) {
+            login(accessToken!!.token)
+        } else {
+            binding.loginButton.performClick()
         }
     }
 

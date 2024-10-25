@@ -36,6 +36,13 @@
         android:name="android.hardware.camera"
         android:required="false" />
 
+    <queries>
+        <provider android:authorities="com.facebook.katana.provider.PlatformProvider3935032196729480" />
+
+        <package android:name="com.zhiliaoapp.musically" />
+        <package android:name="com.ss.android.ugc.trill" />
+    </queries>
+
     <application
         android:name=".MomentApp"
         android:allowBackup="true"
@@ -99,6 +106,17 @@
         </activity>
 
 
+
+        <meta-data
+            android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
+            android:value="false" />
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+        <meta-data
+            android:name="com.facebook.sdk.ClientToken"
+            android:value="@string/facebook_client_token"/>
+
         <activity
             android:name=".login_page.FacebookLoginActivity"
             android:screenOrientation="portrait" />
@@ -110,7 +128,7 @@
             android:value="@string/facebook_app_id" />
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider2249012795165840"
+            android:authorities="com.facebook.app.FacebookContentProvider3935032196729480"
             android:exported="true" />
     </application>
 
