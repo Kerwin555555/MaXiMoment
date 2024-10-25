@@ -2,20 +2,20 @@ package com.moment.app.login_profile
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Outline
-import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
 import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.ViewOutlineProvider
 import android.widget.ImageView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -26,9 +26,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.IntentUtils
+import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.UriUtils
 import com.moment.app.MomentApp
 import com.moment.app.R
 import com.moment.app.databinding.FragmentChooseAlbumBinding
+import com.moment.app.databinding.LayoutUploadImageBinding
 import com.moment.app.images.Explorer
 import com.moment.app.images.bean.MediaFile
 import com.moment.app.images.engine.MediaStoreHelper
@@ -36,9 +40,12 @@ import com.moment.app.images.engine.OkDisplayCompat
 import com.moment.app.images.media.IMediaContract
 import com.moment.app.images.media.MediaDirectoryWindow
 import com.moment.app.images.utils.ExpUtil
+import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.DialogUtils
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
+import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.toast
 
 
 class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
@@ -82,6 +89,10 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
             binding.explorerRecycler.scrollToPosition(0)
             window.dismiss()
         }
+        binding.explorerMenuDirectory.setOnClickListener {
+            window.show()
+        }
+        binding.explorerRecycler.setHasFixedSize(true)
         ExpUtil.setTopPadding(binding.explorerToolbar, MomentApp.appContext)
         binding.cancel.setOnClickListener {
             (activity as? AppCompatActivity?)?.supportFragmentManager?.popBackStackNowAllowingStateLoss()
@@ -145,6 +156,26 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
             Log.d("@@@==>", "requestCode == EXPLORER_MEDIA_PREVIEW")
             //这里接收通知，处理数据给最上层
             setResultToPrevious()
+        } else if (requestCode == adapter.REQUEST_CODE_TAKE) {
+            /**
+             *           R.anim.f_slide_in_right,    // clip enter from right 1
+             *                             R.anim.f_slide_out_left,    // clip out from left 2
+             *                             R.anim.f_slide_in_left,    // album back from left 2
+             *                             R.anim.f_slide_out_right   // album out from right 1
+             */
+            adapter.mCurrentPhotoPath?.let {
+                (context as? AppCompatActivity?)?.supportFragmentManager
+                    ?.beginTransaction()
+                    ?.setCustomAnimations(
+                        R.anim.f_slide_in_left, // 进入动画
+                        0, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
+                       0,
+                        R.anim.f_slide_out_right)
+                    ?.add(R.id.root_layout, ClipImageFragment().apply {
+                        arguments = bundleOf("uri" to it)
+                    }, "ClipImageFragment")?.addToBackStack(null)
+                    ?.commitAllowingStateLoss()
+            }
         }
     }
 
@@ -206,23 +237,17 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
 
 
 class MediaAdapter(private val f: Fragment, private val context: Context) :
-    RecyclerView.Adapter<MediaAdapter.MediaViewHolder>() {
+    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private val TYPE_PHOTO_UPLOAD = 0
+    private val TYPE_ALBUM_IMAGE = 1
 
-    private var size = context.resources.displayMetrics.widthPixels / Explorer.DEFAULT_SPAN_COUNT
+    private var size = context.resources.displayMetrics.widthPixels / 4
 
     private val imageList: MutableList<MediaFile> = mutableListOf()
 
     var latestDirId = "ALL"
 
     private var extras: Bundle? = null
-
-    fun parseBundle(bundle: Bundle?) {
-        this.extras = bundle
-        bundle?.let {
-            size = context.resources.displayMetrics.widthPixels / it.getInt("extra_span_count",
-                Explorer.DEFAULT_SPAN_COUNT)
-        }
-    }
 
     fun update() {
         selectDirectoryById(latestDirId)
@@ -236,12 +261,13 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
     }
 
     private fun setData(data: MutableList<MediaFile>, forceClear: Boolean = false) {
-        if (data.size == 0) return
-
         if (forceClear) {
             imageList.clear()
         }
-
+        //添加选图逻辑
+        imageList.add(MediaFile().apply {
+            mimeType = "photo_upload"
+        })
         imageList.addAll(data)
         notifyDataSetChanged()
     }
@@ -253,35 +279,103 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
     }
 
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MediaViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        if (viewType == TYPE_PHOTO_UPLOAD) {
+            return MediaPhotoViewHolder(LayoutUploadImageBinding.inflate(LayoutInflater.from(context)).apply {
+                root.layoutParams = RecyclerView.LayoutParams(size, size)
+            })
+        }
         val view =
             LayoutInflater.from(context).inflate(R.layout.item_view_nothing, parent, false)
                 .also {
                     it.layoutParams = RecyclerView.LayoutParams(size, size)
                 }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            view.findViewById<ImageView>(R.id.explorer_media_thumb_view).outlineProvider = object : ViewOutlineProvider(){
-                override fun getOutline(target: View?, outline: Outline?) {
-                    val rect = Rect()
-                    target?.getGlobalVisibleRect(rect);
-                    val selfRect = Rect(0, 0,
-                        target!!.width, target.height);
-                    //这里还可以使用setRect()矩形  setOval()圆形
-                    outline?.setRoundRect(selfRect, ExpUtil.dp2px(4f, context).toFloat())
-                }
-
-            }
-            view.findViewById<ImageView>(R.id.explorer_media_thumb_view).clipToOutline = true
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+//            view.findViewById<ImageView>(R.id.explorer_media_thumb_view).outlineProvider = object : ViewOutlineProvider(){
+//                override fun getOutline(target: View?, outline: Outline?) {
+//                    val rect = Rect()
+//                    target?.getGlobalVisibleRect(rect);
+//                    val selfRect = Rect(0, 0,
+//                        target!!.width, target.height);
+//                    //这里还可以使用setRect()矩形  setOval()圆形
+//                    outline?.setRoundRect(selfRect, ExpUtil.dp2px(4f, context).toFloat())
+//                }
+//
+//            }
+//            view.findViewById<ImageView>(R.id.explorer_media_thumb_view).clipToOutline = true
+//        }
 
         return MediaViewHolder(view)
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        if (position == 0) {
+            return TYPE_PHOTO_UPLOAD
+        }
+        return TYPE_ALBUM_IMAGE
     }
 
 
     override fun getItemCount(): Int = imageList.size
 
-    override fun onBindViewHolder(holder: com.moment.app.login_profile.MediaAdapter.MediaViewHolder, position: Int) {
+    override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
+        if (position == 0) {
+            val holder = h as MediaPhotoViewHolder
+            holder.binding.root.setOnSingleClickListener({
+                    try {
+                        PermissionHelper.check(
+                            context, "Take Photos",
+                            arrayOf<String>(
+                                Manifest.permission.CAMERA,
+                                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                                Manifest.permission.READ_EXTERNAL_STORAGE
+                            )
+                                    ,object : PermissionHelper.Callback {
+                                override fun result(res: Int) {
+                                    if (res == 0) {
+                                        mCurrentPhotoPath = createImageUri()
+
+                                        val captureIntent =
+                                            IntentUtils.getCaptureIntent(mCurrentPhotoPath)
+                                        try {
+                                            f.startActivityForResult(
+                                                captureIntent,
+                                                REQUEST_CODE_TAKE
+                                            )
+                                        } catch (e: java.lang.Exception) {
+                                            LogUtils.d("capture", e)
+                                        }
+                                    }
+                                }
+                            })
+                    } catch (e: java.lang.Exception) {
+                        e.printStackTrace()
+                        "requestPermissions error".toast()
+                    }
+            }, 500)
+            return
+        }
+        val holder = h as MediaViewHolder
         holder.setData(imageList[position])
+    }
+    var mCurrentPhotoPath: Uri? = null
+
+    private fun createImageUri(): Uri? {
+        val status = Environment.getExternalStorageState()
+        // 判断是否有SD卡,优先使用SD卡存储,当没有SD卡时使用手机存储
+        return if (status == Environment.MEDIA_MOUNTED) {
+            context.contentResolver
+                .insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, ContentValues())
+        } else {
+            context.contentResolver
+                .insert(MediaStore.Images.Media.INTERNAL_CONTENT_URI, ContentValues())
+        }
+    }
+
+    val REQUEST_CODE_TAKE = 56386
+
+    inner class MediaPhotoViewHolder(val binding: LayoutUploadImageBinding) : RecyclerView.ViewHolder(binding.root) {
+
     }
 
     inner class MediaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -302,14 +396,14 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                     (context as? AppCompatActivity?)?.supportFragmentManager
                         ?.beginTransaction()
                         ?.setCustomAnimations(
-                            R.anim.f_slide_in_right, // 进入动画
-                            R.anim.f_slide_out_left, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
-                            R.anim.f_slide_in_left, // 弹出动画（这里没有设置，所以为0）
-                            R.anim.f_slide_out_right  // 弹入动画（这里没有设置，所以为0）
+                            R.anim.f_slide_in_right,    // clip enter from right 1
+                            R.anim.f_slide_out_left,    // album out to left 1
+                            R.anim.f_slide_in_left,    // album back from left 2
+                            R.anim.f_slide_out_right   // clip out to right 2
                         )
                         ?.hide(f)
                         ?.add(R.id.root_layout, ClipImageFragment().apply {
-                            arguments = bundleOf("uri" to Uri.parse(file.path))
+                            arguments = bundleOf("file" to file.displayPath())
                         }, "ClipImageFragment")?.addToBackStack(null)
                         ?.commitAllowingStateLoss()
                 }

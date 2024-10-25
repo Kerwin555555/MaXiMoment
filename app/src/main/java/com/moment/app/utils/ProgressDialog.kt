@@ -1,23 +1,30 @@
 package com.moment.app.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.FragmentManager
+import com.moment.app.databinding.BasicRefreshHeaderBinding
 import com.moment.app.databinding.ViewLoadingProgressBinding
-import com.moment.app.ui.uiLibs.RefreshView
+import com.scwang.smart.refresh.layout.api.RefreshHeader
+import com.scwang.smart.refresh.layout.api.RefreshKernel
+import com.scwang.smart.refresh.layout.api.RefreshLayout
+import com.scwang.smart.refresh.layout.constant.RefreshState
+import com.scwang.smart.refresh.layout.constant.SpinnerStyle
 
 open class ProgressDialog : BaseDialogFragment() {
     private lateinit var binding: ViewLoadingProgressBinding
 
-    var refreshView: RefreshView? = null
     private var onCancelListener: DialogInterface.OnCancelListener? = null
 
     override fun onStart() {
@@ -35,10 +42,6 @@ open class ProgressDialog : BaseDialogFragment() {
         savedInstanceState: Bundle?
     ): View? {
         binding = ViewLoadingProgressBinding.inflate(inflater)
-        refreshView = RefreshView(requireContext()).apply {
-            refreshView?.layoutParams = FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT)
-            binding.root.addView(this)
-        }
         return binding.root
     }
 
@@ -69,9 +72,6 @@ open class ProgressDialog : BaseDialogFragment() {
     override fun dismiss() {
 //        super.dismiss();
         try {
-            if (refreshView != null) {
-
-            }
             dismissAllowingStateLoss()
         } catch (e: Exception) {
             e.printStackTrace()

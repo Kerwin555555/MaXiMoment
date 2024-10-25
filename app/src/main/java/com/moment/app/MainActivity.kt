@@ -5,6 +5,7 @@ import androidx.activity.viewModels
 import com.didi.drouter.annotation.Router
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityMainBinding
+import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.ui.FragmentNavigator
 import com.moment.app.ui.MainNaviConfig
 import com.moment.app.ui.NaviTab
@@ -12,6 +13,7 @@ import com.moment.app.ui.OnTabStatusListener
 import com.moment.app.utils.ActivityHolder
 import com.moment.app.utils.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.Subscribe
 
 @AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/main")
@@ -65,9 +67,15 @@ class MainActivity : BaseActivity(){
                 }
 
             }
-            binding.bottomNav.selectPage("")
+            binding.bottomNav.selectPage("home")
         }
     }
+
+    @Subscribe
+    fun onLoginCancel(event: LogCancelEvent?) {
+        binding.bottomNav.selectPage("home")
+    }
+
 
     override fun onStart() {
         super.onStart()

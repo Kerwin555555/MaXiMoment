@@ -52,6 +52,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.lang.ref.WeakReference
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
@@ -108,6 +109,7 @@ class ProfileActivity: BaseActivity() {
                 }
             })
             pickerView.show()
+            clearEditTextsFocus()
             KeyboardUtils.hideSoftInput(this)
         }
         binding.boy.setTextColorStateSelectList(
@@ -204,7 +206,7 @@ class ProfileActivity: BaseActivity() {
          viewModel.netLiveData.observe(this) {
              when (it) {
                  is LoadingStatus.SuccessLoadingStatus -> {
-                     binding.bioEditText.clearFocus()
+                     clearEditTextsFocus()
                      KeyboardUtils.hideSoftInput(this)
                      val fragmentTransaction = supportFragmentManager.beginTransaction()
                      fragmentTransaction.setCustomAnimations(
@@ -225,6 +227,11 @@ class ProfileActivity: BaseActivity() {
         viewModel.showProgressDialog.observe(this) {
             progressDialog = it.refreshProgressDialog(progressDialog, this)
         }
+    }
+
+    private fun clearEditTextsFocus() {
+        binding.bioEditText.clearFocus()
+        binding.nicknameEditText.clearFocus()
     }
 }
 

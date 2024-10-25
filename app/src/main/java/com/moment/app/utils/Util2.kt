@@ -2,12 +2,14 @@ package com.moment.app.utils
 
 import android.content.res.ColorStateList
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
+import com.blankj.utilcode.util.SizeUtils
 import com.gyf.immersionbar.ImmersionBar
 import java.lang.Exception
 

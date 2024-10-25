@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.didi.drouter.api.DRouter
-import com.didi.drouter.api.Extend
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.DialogLoginBinding
 import com.moment.app.utils.BaseFragment
+import com.moment.app.utils.setOnSingleClickListener
 
 class LoginDialog: BaseFragment() {
     private lateinit var binding: DialogLoginBinding
@@ -29,8 +29,11 @@ class LoginDialog: BaseFragment() {
             .fitsSystemWindows(false)
             .init()
 
-        binding.facebookLogin.setOnClickListener {
+        binding.facebookLogin.setOnSingleClickListener({
             DRouter.build("/login/facebook").start()
-        }
+        }, 500)
+        binding.googleLogin.setOnSingleClickListener({
+            DRouter.build("/login/google").start()
+        }, 500)
     }
 }

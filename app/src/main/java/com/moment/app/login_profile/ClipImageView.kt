@@ -13,10 +13,13 @@ import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
+import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import androidx.appcompat.widget.AppCompatImageView
+import com.bumptech.glide.load.resource.bitmap.BitmapDrawableResource
+import okhttp3.internal.wait
 import kotlin.math.max
 import kotlin.math.min
 
@@ -171,7 +174,11 @@ class ClipImageView(context: Context?, attrs: AttributeSet?) :
     }
 
     override fun setImageDrawable(drawable: Drawable?) {
+        if (drawable == null) {
+            return
+        }
         super.setImageDrawable(drawable)
+        //Log.d("zhouzheng", "setup scalematix" + (drawable as? BitmapDrawable)?.bitmap?.width)
         // super.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.monster_icon_6))
         postInitImageMatrix()
     }
@@ -212,7 +219,7 @@ class ClipImageView(context: Context?, attrs: AttributeSet?) :
             (dx + 0.5f).toInt().toFloat(),
             (dy + 0.5f).toInt().toFloat()
         )
-
+        //Log.d("zhouzheng", "setup scalematix" + mScaleMatrix)
         imageMatrix = mScaleMatrix
 
         mInitScale = scale

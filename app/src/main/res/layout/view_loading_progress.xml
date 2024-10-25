@@ -4,4 +4,7 @@
     android:layout_height="wrap_content"
     android:background="@drawable/loading_bg"
     >
+    <com.moment.app.utils.MomentLoadingView
+        android:layout_width="72dp"
+        android:layout_height="72dp"/>
 </FrameLayout>

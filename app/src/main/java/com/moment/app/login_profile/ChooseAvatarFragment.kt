@@ -79,7 +79,7 @@ class ChooseAvatarFragment : BaseFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            Log.d("zhouzheng", "" + requestCode)
+            //Log.d("zhouzheng", "" + requestCode)
             if (requestCode == REQUEST_CODE_CHOOSE) {
 //                if (chooseListener != null) chooseListener!!.onPhotoChoose(
 //                    Explorer.obtainResult(

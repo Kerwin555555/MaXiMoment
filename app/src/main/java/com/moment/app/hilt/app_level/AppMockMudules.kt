@@ -112,6 +112,26 @@ class MockLoginService: LoginService {
 
     }
 
+    override suspend fun googleLogin(map: Map<String, String>): Results<UserInfo> {
+        val res = withContext(Dispatchers.IO) {
+            delay(800)
+            UserInfo(
+                userId = UUID.randomUUID().toString(),
+                name = "Momentfanxxx",
+                session = "mysession",
+                finished_info = false,
+                huanxin = HuanxinBean().apply{
+                    password  = "045xxxx"
+                    user_id = "loveabscdessss"
+                },
+                gender = "male"
+            )
+        }
+        return Results<UserInfo>().apply {
+            data = res
+        }
+    }
+
     override suspend fun logout(): Results<Any> {
         delay(300)
         return Results()

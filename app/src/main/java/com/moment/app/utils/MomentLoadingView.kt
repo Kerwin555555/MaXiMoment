@@ -1,14 +1,12 @@
 package com.moment.app.utils
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.LinearLayout
+import android.view.ViewGroup
 import com.moment.app.databinding.MomentLoadingViewBinding
 
-class MomentLoadingView: LinearLayout {
+class MomentLoadingView: androidx.constraintlayout.widget.ConstraintLayout{
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -18,7 +16,7 @@ class MomentLoadingView: LinearLayout {
     private val binding = MomentLoadingViewBinding.inflate(LayoutInflater.from(context), this)
    // private val argbEvaluator = ArgbEvaluator()
     init {
-        orientation = VERTICAL
+        layoutParams = ViewGroup.LayoutParams(72.dp, 72.dp)
     }
 
     override fun onAttachedToWindow() {

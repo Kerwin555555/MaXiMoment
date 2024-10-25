@@ -16,13 +16,13 @@ import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
-import com.moment.app.models.ConfigModel
 import com.moment.app.models.IMModel
 import com.moment.app.models.LoginModel
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import javax.inject.Inject
@@ -47,13 +47,16 @@ class FacebookLoginActivity : BaseActivity() {
         binding = FacebookLoginActivityBinding.inflate(layoutInflater)
         setContentView(binding.getRoot())
         initFacebookLogin()
-        val accessToken = AccessToken.getCurrentAccessToken()
-        val isLoggedIn = accessToken != null && !accessToken.isExpired
-        if (isLoggedIn && ConfigModel.momentConfig?.enableFacebookTokenCheck == true) {
-            login(accessToken!!.token)
-        } else {
-            binding.loginButton.performClick()
-        }
+
+        login("metatoken")
+
+//        val accessToken = AccessToken.getCurrentAccessToken()
+//        val isLoggedIn = accessToken != null && !accessToken.isExpired
+//        if (isLoggedIn && ConfigModel.momentConfig?.enableFacebookTokenCheck == true) {
+//            login(accessToken!!.token)
+//        } else {
+//            binding.loginButton.performClick()
+//        }
     }
 
     private fun initFacebookLogin() {
@@ -117,6 +120,9 @@ class FacebookLoginActivity : BaseActivity() {
 
                      override fun onError(code: Int, msg: String?) {
                          //onFail(code, msg)
+                         progressDialog.dismiss()
+                         msg?.toast()
+                         finish()
                      }
                  })
          }){

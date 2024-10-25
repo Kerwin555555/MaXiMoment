@@ -9,8 +9,8 @@ import com.moment.app.main_profile.MeFragment
 class MainNaviConfig {
 
     companion object {
-        const val TAB_HOME: String = ""
-        const val TAB_CHAT: String = ""
+        const val TAB_HOME: String = "home"
+        const val TAB_CHAT: String = "chat"
         const val TAB_ME: String = "me"
 
         val MAIN_PAGE: Array<Class<*>> = arrayOf<Class<*>>(

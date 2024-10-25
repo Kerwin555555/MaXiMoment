@@ -4,8 +4,8 @@
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/empty_layout"
-        android:drawableTop="@mipmap/no_data"
-        android:text="No data"
+        android:text="No results"
+        android:textColor="@color/moment_icon_color_fff93c69"
         android:layout_gravity="center"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:textStyle="bold"
@@ -14,8 +14,8 @@
     <TextView
         android:id="@+id/error_layout"
         android:background="@drawable/bg_shape_1a1a5cff_9dp"
-        android:backgroundTint="@color/lit_pink"
-        android:textColor="@color/lit_pink"
+        android:backgroundTint="@color/moment_icon_color_fff93c69"
+        android:textColor="@color/moment_icon_color_fff93c69"
         android:text="Retry!"
         android:layout_gravity="center"
         android:paddingVertical="10dp"
@@ -26,7 +26,7 @@
         android:id = "@+id/loading"
         android:drawableTop="@mipmap/page_loading"
         android:layout_gravity="center"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="72dp"
+        android:layout_height="72dp"
         android:gravity="center"/>
 </merge>

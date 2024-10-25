@@ -189,16 +189,16 @@ internal fun View.applyMarginLTR(
 
 //默认 0
 internal fun View.applyPaddingsWithDefaultZero(
-    start: Float? = null,
-    top: Float? = null,
-    end: Float? = null,
-    bottom: Float? = null
+    start: Int? = null,
+    top: Int? = null,
+    end: Int? = null,
+    bottom: Int? = null
 ) {
     setPaddingRelative(
-        if(start == null) 0 else SizeUtils.dp2px(start),
-        if(top == null) 0 else SizeUtils.dp2px(top),
-        if(end == null) 0 else SizeUtils.dp2px(end),
-        if(bottom == null) 0 else SizeUtils.dp2px(bottom),
+        if(start == null) 0 else start,
+        if(top == null) 0 else top,
+        if(end == null) 0 else end,
+        if(bottom == null) 0 else bottom,
     )
 }
 

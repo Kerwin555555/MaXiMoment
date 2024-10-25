@@ -20,19 +20,19 @@ class BottomBar: ConstraintLayout {
             NaviTab().apply {
                 tab_icon_Id = R.drawable.home_icon_selector
                 tab_name_Id = R.string.title_home
-                page_name = ""
+                page_name = "home"
                 real_page_index = 0
             },
             NaviTab().apply {
                 tab_icon_Id = R.drawable.chat_icon_selector
                 tab_name_Id = R.string.title_chat
-                page_name = ""
+                page_name = "chat"
                 real_page_index = 1
             },
             NaviTab().apply {
                 tab_icon_Id = R.drawable.profile_icon_selector
                 tab_name_Id = R.string.title_profile
-                page_name = ""
+                page_name = "me"
                 real_page_index = 2
             },
         )
@@ -60,19 +60,19 @@ class BottomBar: ConstraintLayout {
         for (i in 0 until numberOfNaviTabs) {
             val tab = tabs[i]
             val tabView = when (tab.page_name) {
-                "" -> {
+                "home" -> {
                     BottomHomeView(context).apply {
                         getBinding().home.setImageResource(tab.tab_icon_Id)
                     }
                 }
 
-                "" -> {
+                "chat" -> {
                     BottomChatView(context).apply {
                         getBinding().chat.setImageResource(tab.tab_icon_Id)
                     }
                 }
 
-                "" -> {
+                "me" -> {
                     BottomProfileView(context).apply {
                         getBinding().profile.setImageResource(tab.tab_icon_Id)
                     }
