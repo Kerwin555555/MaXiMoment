@@ -52,7 +52,6 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
-import java.lang.ref.WeakReference
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
@@ -299,7 +298,8 @@ class ProfileViewModel @Inject constructor(
                 saveView(imageView.context, imageView.clipCircle()!!)
             }
             LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
-                avatar = file
+                avatar = file // for test
+                finished_info = true
             })
             hasAvatarLiveData.value = true
             delay(2000) // mock upload to backend and cloud storage

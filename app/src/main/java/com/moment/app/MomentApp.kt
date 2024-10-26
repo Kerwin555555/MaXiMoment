@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import com.didi.drouter.api.DRouter
 import com.moment.app.models.IMModel
+import com.moment.app.models.LoginModel
 import com.moment.app.utils.AppInfo
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
@@ -25,6 +26,8 @@ class MomentApp : Application() {
 
         AppInfo.init(this)
         IMModel.initIM(this)
+
+        LoginModel.getUserInfo()
 //
 //        MMKV.initialize(
 //            this

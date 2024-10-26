@@ -20,6 +20,7 @@ class RecommendationEmptyView : FrameLayout, EmptyView{
 
     init {
         layoutParams = ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+        setBackgroundColor(0xffffffff.toInt())
     }
     override fun getNoDataPage(): View {
         return binding.emptyLayout

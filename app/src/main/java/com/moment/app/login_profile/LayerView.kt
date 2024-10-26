@@ -63,6 +63,8 @@ sealed class PaintType {
     object Background: PaintType()
     object CircularRing: PaintType()
     object Circle: PaintType()
+    object RectRing:PaintType()
+    object Rect: PaintType()
 }
 
 fun Paint.ring() {

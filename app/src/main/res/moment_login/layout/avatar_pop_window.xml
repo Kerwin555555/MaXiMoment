@@ -7,10 +7,13 @@
     android:layout_height="match_parent">
     <ImageView
         android:id="@+id/bg"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="fitXY"
         android:src="@mipmap/register_top_bg"
+        app:layout_constraintDimensionRatio="510:409"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     <TextView
         android:id="@+id/avatar"
@@ -39,7 +42,7 @@
         app:layout_constraintEnd_toEndOf="parent"/>
     <ImageView
         android:id="@+id/upload"
-        android:src="@mipmap/image_upload"
+        android:src="@mipmap/small_camera_no_plus"
         android:layout_width="65dp"
         android:layout_height="56dp"
         app:layout_constraintStart_toStartOf="@id/pic"

@@ -14,6 +14,7 @@ import com.moment.app.eventbus.LoginEvent
 import com.moment.app.eventbus.LogoutEvent
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.login_profile.ProfileActivity
+import com.moment.app.network.KeyInfoProvider
 import com.moment.app.utils.AppPrefs
 import com.moment.app.utils.coroutineScope2
 import kotlinx.coroutines.launch
@@ -26,9 +27,27 @@ object LoginModel {
         set(value) {
             field = value
         }
+    init {
+            try {
+                resetInfoCache(AppPrefs.getUserInfo())
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+            if (info == null) {
+                resetInfoCache(UserInfo())
+            }
+
+    }
+
+    private fun resetInfoCache(newInfo: UserInfo?) {
+        if (newInfo != null && !TextUtils.isEmpty(newInfo.session)) {
+            KeyInfoProvider.updateIfNeed(newInfo)
+        }
+        info = newInfo
+    }
 
     fun isLogin() : Boolean{
-        return info != null && !TextUtils.isEmpty(info!!.session)
+        return info != null && !TextUtils.isEmpty(KeyInfoProvider.getSession())
     }
 
     fun getUserInfo(): UserInfo? {
@@ -41,6 +60,7 @@ object LoginModel {
 
     fun setUserInfo(info: UserInfo?) {
         this.info = info
+        resetInfoCache(info)
         AppPrefs.saveUserInfo(info)
         //fetchUserSettings()
     }
@@ -57,6 +77,7 @@ object LoginModel {
 //        map["uuid"] = AppInfo.uuid
 //        AppsFlyerLib.getInstance()
 //            .logEvent(LitApplication.getAppContext(), AFInAppEventType.LOGIN, map)
+        KeyInfoProvider.updateIfNeed(info)
         setUserInfo(info)
         //Sea.getInstance().config().uid(info.getUser_id())
         //EyeConnector.getInstance().fetchEyeToken()
@@ -112,6 +133,7 @@ object LoginModel {
        // AliasModel.getInstance().clearAlias()
        // ConversationManager.getInstance().clearConversations()
         AppPrefs.setAccountInfo(null)
+        KeyInfoProvider.clear()
        //PartyModel.getInstance().clear()
 //        if (TalkGroupManager.INSTANCE.getCurrentSession() != null) {
 //            TalkGroupManager.INSTANCE.getCurrentSession().destroy()

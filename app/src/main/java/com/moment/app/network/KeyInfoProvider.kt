@@ -9,7 +9,7 @@ import com.tencent.mmkv.MMKV
 //
 object KeyInfoProvider {
 
-    const val SAVE_KEY = "litmatch_key_info"
+    const val SAVE_KEY = "moment_key_info"
 
     private var keyInfo: KeyInfo? = null
 

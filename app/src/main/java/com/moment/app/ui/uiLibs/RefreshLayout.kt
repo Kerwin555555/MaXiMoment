@@ -32,6 +32,8 @@ import com.moment.app.R
 import com.moment.app.databinding.BasicRefreshHeaderBinding
 import com.moment.app.databinding.MomentRefreshviewBinding
 import com.moment.app.utils.dp
+import com.scwang.smart.refresh.header.FalsifyHeader
+import com.scwang.smart.refresh.header.MaterialHeader
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 import com.scwang.smart.refresh.layout.api.RefreshHeader
 import com.scwang.smart.refresh.layout.api.RefreshKernel
@@ -51,7 +53,7 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     fun initWith(
         adapter: BaseQuickAdapter<D, *>,
         emptyView: EmptyView,
-        refreshHeader: RefreshView = RefreshView(context),
+        refreshHeader: RefreshHeader = RefreshView(context),
         loadDataListener: (it: Boolean) -> Unit
     ) {
         this.adapter = adapter
@@ -84,9 +86,7 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     }
 
     fun onSuccess(newData: MutableList<D>, isLoadMore: Boolean, hasMore: Boolean) {
-        if (!isLoadMore) {
-            finishRefresh()
-        }
+        finishRefresh()
         adapter?.onNewItemData(newData, isLoadMore, hasMore)
 
         //if no more data and just one page, we shouldn't show the loadEnd
@@ -98,10 +98,7 @@ class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     }
 
     fun onFail(isLoadMore: Boolean, msg: String?) {
-
-        if (!isLoadMore) {
-            finishRefresh()
-        }
+        finishRefresh()
         adapter?.onFail(isLoadMore, msg)
     }
 
@@ -238,6 +235,10 @@ class RefreshView @JvmOverloads constructor(
 
     override fun autoOpen(duration: Int, dragRate: Float, animationOnly: Boolean): Boolean {
         return true
+    }
+
+    fun getBinding(): BasicRefreshHeaderBinding{
+        return binding
     }
 }
 

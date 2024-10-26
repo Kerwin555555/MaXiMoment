@@ -7,8 +7,7 @@
         android:id="@+id/chat"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_gravity="center"
-        android:src="@mipmap/light_chat">
+        android:layout_gravity="center">
     </ImageView>
 
 </merge>

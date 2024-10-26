@@ -1,12 +1,20 @@
 package com.moment.app.hilt.app_level
 
 import android.util.Log
+import com.blankj.utilcode.util.FileUtils
+import com.blankj.utilcode.util.UriUtils
+import com.moment.app.R
 import com.moment.app.datamodel.HuanxinBean
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
+import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_home.subfragments.models.UserInfoList
 import com.moment.app.main_home.subfragments.service.HomeService
+import com.moment.app.main_profile.entities.CreateTimeBean
+import com.moment.app.main_profile.entities.FeedList
+import com.moment.app.main_profile.entities.PicShape
+import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -56,6 +64,14 @@ class MockNetWorkModule {
     fun provideMockLoginService(@MockData retrofit: Retrofit): LoginService {
         return MockLoginService()
     }
+
+
+    @Singleton
+    @Provides
+    @MockData
+    fun provideFeedService(retrofit: Retrofit) : FeedService {
+        return MockFeedService()
+    }
 }
 
 
@@ -75,6 +91,7 @@ class MockHomeService: HomeService {
                 this.name = "MomentFan" + i
                 this.age = i
                 this.followed = i%2 ==0
+                this.imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3")
             })
         }
         Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada 4")
@@ -103,7 +120,11 @@ class MockLoginService: LoginService {
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
                 },
-                gender = "male"
+                gender = "male",
+                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
+                follower_count = 100,
+                following_count= 10,
+                bio = "dsajfadsoihfadsohfioasudp;hfioadsghfiasddghfikasgdfiuasghdfuiasgudf"
             )
         }
         return Results<UserInfo>().apply {
@@ -124,7 +145,11 @@ class MockLoginService: LoginService {
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
                 },
-                gender = "male"
+                gender = "male",
+                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
+                follower_count = 100,
+                following_count= 10,
+                bio = "dsajfadsoihfadsohfioasudp;hfioadsghfiasddghfikasgdfiuasghdfuiasgudf"
             )
         }
         return Results<UserInfo>().apply {
@@ -144,6 +169,80 @@ class MockLoginService: LoginService {
         return Results()
     }
 
+    override suspend fun getUserInfo(userId: String?): Results<UserInfo> {
+        withContext(Dispatchers.IO) {
+            delay(400)
+        }
+        return Results()
+    }
+}
+
+
+/**
+ *     var id: String? = null
+ *     var pics_shape : MutableList<PicShape>? = null
+ *     var user_id: String? = ""
+ *     var user_info: UserInfo? = null
+ *     var content: String? = null
+ *     var create_time: CreateTimeBean? = null
+ *     var comment_num: Int? = 0
+ *     var like_num: Int? = 0
+ *     var liked = false
+ *
+ *     fun isPictureFeed(): Boolean {
+ *         return pics_shape != null && !pics_shape!!.isEmpty()
+ *     }
+ */
+class MockFeedService : FeedService{
+    override suspend fun getFeeds(user: String?, startPos: Int, num: Int): Results<FeedList?> {
+        return withContext(Dispatchers.IO) {
+            val user = UserInfo(
+                userId = UUID.randomUUID().toString(),
+                name = "Momentfanxxx",
+                session = "mysession",
+                finished_info = true,
+                huanxin = HuanxinBean().apply{
+                    password  = "045xxxx"
+                    user_id = "loveabscdessss"
+                },
+                gender = "female",
+            )
+            delay(1500)
+            val list = mutableListOf<PostBean>()
+            for (i in 0 until 10) {
+                val f = PostBean().apply {
+                    id = "feed"+UUID.randomUUID().toString()
+                    pics_shape = if (i %3 != 0) mutableListOf(
+                        PicShape(
+                            fileKey = ""
+                        ),
+                        PicShape(
+                            fileKey = ""
+                        ),
+                        PicShape(
+                            fileKey = ""
+                        )
+                    ) else mutableListOf()
+                    user_info = user
+                    create_time = CreateTimeBean().apply {
+                        time = System.currentTimeMillis()
+                    }
+                    content = "hi, today is a nice, I'm thrilling to meet you in Moment, you can chat with me!"
+                }
+                list.add(f)
+            }
+            Results<FeedList?>().apply {
+                data = FeedList().apply {
+                    next_start = startPos + num
+                    has_next = next_start < 30
+                }
+                data!!.feeds = list
+                isOk = true
+                this.result = 0
+
+            }
+        }
+    }
 }
 
 

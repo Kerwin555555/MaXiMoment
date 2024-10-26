@@ -14,11 +14,11 @@ object AppPrefs {
     private const val SP_USER_SIFT = "sp_user_sift_%s"
     private const val SP_RATE_KEY = "sp_rate_5_start"
     private const val SP_YOUTUBE_WEB = "sp_youtube_web"
-    private const val SP_LIT_CONFIG = "sp_lit_config"
-    private const val SP_LIT_IM_WARN_CONFIG = "sp_lit_im_warn_config"
-    private const val SP_LIT_REPORT_CONFIG = "sp_lit_report_config"
+    private const val SP_MOMENT_CONFIG = "sp_moment_config"
+    private const val SP_MOMENT_IM_WARN_CONFIG = "sp_moment_im_warn_config"
+    private const val SP_MOMENT_REPORT_CONFIG = "sp_moment_report_config"
     private const val SP_PRIVACY_SETTINGS = "sp_privacy_settings"
-    private const val SP_LIT_VOICE_MATCH_REPORT_CONFIG = "sp_lit_voice_match_report_config"
+    private const val SP_MOMENT_VOICE_MATCH_REPORT_CONFIG = "sp_moment_voice_match_report_config"
     private const val SP_LASTED_FOLLOWING_FEED = "sp_lasted_following_feed"
     private const val SP_SHOW_PUSH_VIEW_DATE = "sp_show_push_view_date"
     private const val SP_COPY_DIALOG_SHOW = "sp_copyLink_dialog"
@@ -27,18 +27,6 @@ object AppPrefs {
     private const val SP_FEED_RULE_HINT = "sp_feed_rule_hint_time"
     private const val SP_LOGIN_TYPE = "sp_feed_login_type"
     private const val SP_OSS_UPLOAD_PREFIX = "sp_oss_upload_prefix"
-    private const val SP_SM_DEVICE_ID = "sp_sm_device_id"
-    private const val SP_LASTED_SEND_GIFT_SHOW_FIRST_RECHARGE =
-        "sp_lasted_send_gift_show_first_recharge"
-    private const val SP_HEY_THERE_ACTIVE = "sp_hey_there_active_v2"
-    private const val SP_HEY_THERE_IP_SHOW_TIME = "sp_hey_there_active_ip_show_time"
-    private const val SP_HEY_THERE_ACTIVE_FIRST_SHOW = "sp_hey_there_active_first_show"
-    private const val SP_KEY_EYE_DFID = "sp_key_eye_dfid"
-    private const val SP_KEY_VOICE_MATCH_LOCK_TO_TIME = "sp_key_voice_match_lock_to_time"
-    private const val SP_KEY_SOUL_MATCH_LOCK_TO_TIME = "sp_key_SOUL_match_lock_to_time"
-
-    private const val SP_KEY_FIRST_OPEN_ZONE = "sp_key_first_open_zone"
-    private const val SP_KEY_RECENT_EMOJI = "sp_key_recent_emoji"
 
     val timeOffset: Long
         get() = SPUtil.getLong(SP_TIME_OFFSET, 0)
@@ -89,11 +77,11 @@ object AppPrefs {
         get() = SPUtil.getInt(SP_RATE_KEY, 0)
 
     fun saveConfig(config: MomentConfig?) {
-        SPUtil.save(SP_LIT_CONFIG, JsonUtil.toJson(config))
+        SPUtil.save(SP_MOMENT_CONFIG, JsonUtil.toJson(config))
     }
 
     fun getConfig(): MomentConfig? {
-        val json = SPUtil.getString(SP_LIT_CONFIG, "")
+        val json = SPUtil.getString(SP_MOMENT_CONFIG, "")
         if (TextUtils.isEmpty(json)) {
             return MomentConfig()
         }
@@ -101,12 +89,12 @@ object AppPrefs {
     }
 
     fun saveReportConfig(config: ReportSettings?) {
-        SPUtil.save(SP_LIT_REPORT_CONFIG, Gson().toJson(config))
+        SPUtil.save(SP_MOMENT_REPORT_CONFIG, Gson().toJson(config))
     }
 
     val reportConfig: ReportSettings
         get() {
-            val json: String = SPUtil.getString(SP_LIT_REPORT_CONFIG, "") ?: ""
+            val json: String = SPUtil.getString(SP_MOMENT_REPORT_CONFIG, "") ?: ""
             if (android.text.TextUtils.isEmpty(json)) {
                 return ReportSettings()
             }
@@ -127,12 +115,12 @@ object AppPrefs {
         }
 
     fun saveVoiceMatchConfig(config: ReportSettings?) {
-        SPUtil.save(SP_LIT_VOICE_MATCH_REPORT_CONFIG, Gson().toJson(config))
+        SPUtil.save(SP_MOMENT_VOICE_MATCH_REPORT_CONFIG, Gson().toJson(config))
     }
 
     val voiceMatchConfig: ReportSettings
         get() {
-            val json: String = SPUtil.getString(SP_LIT_VOICE_MATCH_REPORT_CONFIG, "") ?: ""
+            val json: String = SPUtil.getString(SP_MOMENT_VOICE_MATCH_REPORT_CONFIG, "") ?: ""
 
             if (android.text.TextUtils.isEmpty(json)) {
                 return ReportSettings()
@@ -141,11 +129,11 @@ object AppPrefs {
         }
 
     fun saveImWarnConfig(config: ImWarnSetting?) {
-        SPUtil.save(SP_LIT_IM_WARN_CONFIG, Gson().toJson(config))
+        SPUtil.save(SP_MOMENT_IM_WARN_CONFIG, Gson().toJson(config))
     }
 
     fun getimWarnConfig(): ImWarnSetting {
-            val json: String = SPUtil.getString(SP_LIT_IM_WARN_CONFIG, "") ?: ""
+            val json: String = SPUtil.getString(SP_MOMENT_IM_WARN_CONFIG, "") ?: ""
             if (android.text.TextUtils.isEmpty(json)) {
                 return ImWarnSetting()
             }
@@ -235,7 +223,6 @@ class UserSift : BaseBean() {
         get() = "$age_low-$age_high"
 
     /**
-     * -1 为 both，见 [com.lit.app.ui.home.SiftFragment.onSelectGender]
      *
      * @return gender 格式化后的内容
      */

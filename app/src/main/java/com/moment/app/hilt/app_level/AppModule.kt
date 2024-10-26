@@ -2,6 +2,7 @@ package com.moment.app.hilt.app_level
 
 import android.app.Application
 import androidx.room.Room
+import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_home.subfragments.db.HomeRecommendationListDatabase
 import com.moment.app.main_home.subfragments.db.UserInfoEntityDao
@@ -45,6 +46,12 @@ class NetWorkModule {
     @Provides
     fun provideLoginService(retrofit: Retrofit) : LoginService {
         return retrofit.create(LoginService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideFeedService(retrofit: Retrofit) : FeedService {
+        return retrofit.create(FeedService::class.java)
     }
 }
 

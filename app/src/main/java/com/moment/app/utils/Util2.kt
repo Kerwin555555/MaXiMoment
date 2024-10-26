@@ -1,8 +1,10 @@
 package com.moment.app.utils
 
 import android.content.res.ColorStateList
+import android.util.LayoutDirection.RTL
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -81,4 +83,16 @@ inline fun View.setOnSingleClickListener(crossinline onClick: (view: View) -> Un
         }
     }
 }
+
+internal fun View.isRTL() : Boolean  {
+    return this.layoutDirection == RTL
+}
+
+internal fun View.resetGravity(g: Int) {
+    if (this.layoutParams is FrameLayout.LayoutParams) {
+        (this.layoutParams as FrameLayout.LayoutParams).gravity = g
+    }
+}
+
+
 

@@ -8,11 +8,11 @@ object SPUtil {
     private var sp: MMKV? = null
     fun initSP(context: Context?) {
         if (sp == null) {
-            try {
-                sp = MMKV.mmkvWithID("lit_app_default_kv")
-            } catch (e: Exception) {
+            kotlin.runCatching {
+                sp = MMKV.mmkvWithID("moment_app_default_kv")
+            }.onFailure {
                 MMKV.initialize(context)
-                sp = MMKV.mmkvWithID("lit_app_default_kv")
+                sp = MMKV.mmkvWithID("moment_app_default_kv")
             }
         }
     }
