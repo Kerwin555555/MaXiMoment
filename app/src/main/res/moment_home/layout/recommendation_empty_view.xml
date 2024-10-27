@@ -4,11 +4,12 @@
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/empty_layout"
-        android:text="No results"
+        android:text="For now, no results!"
         android:textColor="@color/moment_icon_color_fff93c69"
         android:layout_gravity="center"
         android:textAppearance="?attr/textAppearanceHeadline6"
         android:textStyle="bold"
+        android:textSize="14sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
     <TextView
@@ -17,6 +18,7 @@
         android:backgroundTint="@color/moment_icon_color_fff93c69"
         android:textColor="@color/moment_icon_color_fff93c69"
         android:text="Retry!"
+        android:textSize="14sp"
         android:layout_gravity="center"
         android:paddingVertical="10dp"
         android:paddingHorizontal="20dp"

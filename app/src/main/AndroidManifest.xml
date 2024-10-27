@@ -130,7 +130,9 @@
         <meta-data
             android:name="com.facebook.sdk.ClientToken"
             android:value="@string/facebook_client_token"/>
-
+        <meta-data
+            android:name="EASEMOB_APPKEY"
+            android:value="@string/im_app_id" />
         <activity
             android:name=".login_page.FacebookLoginActivity"
             android:screenOrientation="portrait" />

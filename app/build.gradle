@@ -53,6 +53,7 @@ android {
                     getDefaultProguardFile("proguard-android-optimize.txt"),
                     "proguard-rules.pro"
             )
+           // manifestPlaceholders = [im_app_id: "xx02190223222824#moment"]
         }
     }
     compileOptions {

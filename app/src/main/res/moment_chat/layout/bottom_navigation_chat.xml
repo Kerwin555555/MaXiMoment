@@ -1,13 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ImageView
         android:id="@+id/chat"
         android:layout_width="30dp"
         android:layout_height="30dp"
-        android:layout_gravity="center">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
     </ImageView>
+    <TextView
+        android:id="@+id/red_dot"
+        android:text="10"
+        android:textColor="#ffffffff"
+        android:textSize="10sp"
+        android:background="@drawable/chat_red_dot"
+        android:includeFontPadding="false"
+        android:paddingHorizontal="4.5dp"
+        android:paddingVertical="3dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="-11.5dp"
+        android:layout_marginTop="-3dp"
+        app:layout_constraintStart_toEndOf="@id/chat"
+        app:layout_constraintTop_toTopOf="@id/chat"/>
 
 </merge>

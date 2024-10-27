@@ -102,11 +102,11 @@ object LoginModel {
         //LitString.getInstance().checkResources(loc, Arrays.asList(RR.allStrings().clone()))
     }
 
-    fun logout(loginService: LoginService) {
+    fun logout(loginService: LoginService?) {
         logout(true, loginService)
     }
 
-    fun logout(logoutIm: Boolean, loginService: LoginService) {
+    fun logout(logoutIm: Boolean, loginService: LoginService?) {
         if (!isLogin()) {
             return
         }

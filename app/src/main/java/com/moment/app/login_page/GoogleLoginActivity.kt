@@ -22,7 +22,7 @@ import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
-import com.moment.app.models.IMModel
+import com.moment.app.models.IMLoginModel
 import com.moment.app.models.LoginModel
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
@@ -42,6 +42,10 @@ class GoogleLoginActivity : BaseActivity() {
     @Inject
     @MockData
     lateinit var loginService: LoginService
+
+    @Inject
+    @MockData
+    lateinit var imLoginModel: IMLoginModel
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -165,7 +169,7 @@ class GoogleLoginActivity : BaseActivity() {
                 //onFail(-1, getString(R.string.data_error))
                 return@startCoroutine
             }
-            IMModel.loginNew(info.huanxin!!.user_id!!,
+            imLoginModel.loginNew(info.huanxin!!.user_id!!,
                 info.huanxin!!.password!!, object : LoginCallback {
                     override fun onSuccess() {
                         progressDialog.dismiss()

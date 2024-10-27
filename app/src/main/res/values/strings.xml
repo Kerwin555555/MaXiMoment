@@ -5,6 +5,7 @@
     <string name="title_profile">Profile</string>
     <string name="facebook_app_id" translatable="false">3935032196729480</string>
     <string name="facebook_client_token" translatable="false">fa935032196729480</string>
+    <string name="im_app_id">xx02190223222824#moment</string>
     <string name="fb_login_protocol_scheme" translatable="false">fbdafd012795165840</string>
     <string name="moment_accost">Accost</string>
     <string name="moment_Chat">Chat</string>

@@ -2,11 +2,18 @@ package com.moment.app.hilt.app_level
 
 import android.app.Application
 import androidx.room.Room
+import androidx.room.RoomDatabase.JournalMode
+import com.moment.app.MomentApp
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
+import com.moment.app.main_chat.ConversationDao
+import com.moment.app.main_chat.ConversationDatabase
+import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.ThreadService
 import com.moment.app.main_home.subfragments.db.HomeRecommendationListDatabase
 import com.moment.app.main_home.subfragments.db.UserInfoEntityDao
 import com.moment.app.main_home.subfragments.service.HomeService
+import com.moment.app.models.IMLoginModel
 import com.moment.app.utils.Constants.BASE_URL
 import dagger.Module
 import dagger.Provides
@@ -53,6 +60,12 @@ class NetWorkModule {
     fun provideFeedService(retrofit: Retrofit) : FeedService {
         return retrofit.create(FeedService::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideThreadService(retrofit: Retrofit) : ThreadService {
+        return retrofit.create(ThreadService::class.java)
+    }
 }
 
 @Module
@@ -68,6 +81,35 @@ class RoomModule {
     @Singleton
     fun provideUserInfoEntityDao(db: HomeRecommendationListDatabase): UserInfoEntityDao {
         return db.UserInfoEntityDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideConversationDataBase(application: Application) : ConversationDatabase {
+        return Room.databaseBuilder(
+            application,
+            ConversationDatabase::class.java, "moment_user_db_v2")
+            .allowMainThreadQueries()
+            .setJournalMode(JournalMode.TRUNCATE)
+            .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideConversationDao(db: ConversationDatabase): ConversationDao {
+        return db.conversationDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideConversationHub(conversationDao: ConversationDao, service: ThreadService): GlobalConversationHub {
+        return GlobalConversationHub(conversationDao, service)
+    }
+
+    @Singleton
+    @Provides
+    fun provideIMLoginModel(hub: GlobalConversationHub): IMLoginModel {
+        return IMLoginModel(hub)
     }
 }
 

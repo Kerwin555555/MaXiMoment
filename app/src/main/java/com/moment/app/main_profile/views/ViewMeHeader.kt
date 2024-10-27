@@ -27,6 +27,7 @@ import com.moment.app.R
 import com.moment.app.databinding.ViewMeHeaderBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.dp
+import com.moment.app.utils.formatScore
 import com.moment.app.utils.isRTL
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
 
@@ -86,9 +87,9 @@ class ViewMeHeader : FrameLayout {
     }
 
     private fun initCount(userInfo: UserInfo) {
-        binding.friendsCount.text = "${userInfo.friends_count}"
-        binding.followingCount.text = "${userInfo.following_count}"
-        binding.followerCount.text = "${userInfo.follower_count}"
+        binding.friendsCount.text = "${formatScore(userInfo.friends_count!!.toLong())}"
+        binding.followingCount.text = "${formatScore(userInfo.following_count!!.toLong())}"
+        binding.followerCount.text = "${formatScore(userInfo.follower_count!!.toLong())}"
     }
 }
 

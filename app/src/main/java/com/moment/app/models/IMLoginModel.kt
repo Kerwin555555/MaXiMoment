@@ -1,5 +1,6 @@
 package com.moment.app.models
 
+import android.app.Application
 import android.content.Context
 import android.os.Handler
 import android.os.Looper
@@ -18,22 +19,33 @@ import com.hyphenate.push.EMPushConfig
 import com.hyphenate.push.EMPushHelper
 import com.hyphenate.push.EMPushType
 import com.hyphenate.push.PushListener
+import com.hyphenate.util.NetUtils
 import com.moment.app.BuildConfig
+import com.moment.app.MomentApp
+import com.moment.app.eventbus.ConnectState
 import com.moment.app.login_page.LoginCallback
+import com.moment.app.main_chat.GlobalConversationHub
 import com.moment.app.utils.AppInfo
 import com.moment.app.utils.Constants
 import com.moment.app.utils.ProcessUtil
 import com.moment.app.utils.coroutineScope
+import com.moment.app.utils.coroutineScope2
 import com.moment.app.utils.toast
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.greenrobot.eventbus.EventBus
 import java.util.Locale
+import javax.inject.Inject
 
 
-object IMModel {
+class IMLoginModel(val globalConversationHub: GlobalConversationHub) {
     private var retryCount = 0
     private val handler = Handler(Looper.getMainLooper())
+
+    @Inject
+    lateinit var app: Application
 
     fun initIM(context: Context?) {
         if (true) {
@@ -56,7 +68,7 @@ object IMModel {
 
         if (BuildConfig.DEBUG) {
             if (Constants.isRelease) {
-                options.appKey = "1102190223222824#moment"
+                options.appKey = "1102190223222824#moment" //app key
             }
         }
 
@@ -87,7 +99,7 @@ object IMModel {
             //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
         EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)
         //注册一个监听连接状态的listener
-        EMClient.getInstance().addConnectionListener(connectionListener)
+        EMClient.getInstance().addConnectionListener(MyConnectionListener())
         EMClient.getInstance().chatManager().addMessageListener(messageListener)
         loadChatData()
     }
@@ -203,7 +215,7 @@ object IMModel {
     }
 
     fun initChat() {
-        //EMClient.getInstance().chatManager().loadAllConversations()
+       // EMClient.getInstance().chatManager().loadAllConversations()
     }
 
     private fun isUS(): Boolean {
@@ -228,6 +240,46 @@ object IMModel {
         }
 
         override fun onDisconnected(errorCode: Int) {
+        }
+    }
+
+    inner class MyConnectionListener : EMConnectionListener {
+        override fun onConnected() {
+            coroutineScope2.launch {
+                EventBus.getDefault().post(ConnectState(true))
+                delay(1000)
+                globalConversationHub.loadMetaDataFromLocalDb()
+            }
+        }
+
+        override fun onDisconnected(error: Int) {
+            coroutineScope2.launch {
+                EventBus.getDefault().post(ConnectState(false))
+                if (error == EMError.USER_REMOVED) {
+                    // 显示帐号已经被移除
+                } else if (error == EMError.USER_LOGIN_ANOTHER_DEVICE) {
+                    // 显示帐号在其他设备登录
+                    LoginModel.logout(false, loginService = null)
+                    //单独处理环信退出登录
+                    //unbindToken 如果是true的话 第一次可能失败
+                    EMClient.getInstance().logout(false, object : EMCallBack {
+                        override fun onSuccess() {
+                        }
+
+                        override fun onProgress(progress: Int, status: String) {
+                        }
+
+                        override fun onError(code: Int, message: String) {
+                        }
+                    })
+                } else {
+                    if (NetUtils.hasNetwork(app)) {
+                        //连接不到聊天服务器
+                        //当前网络不可用，请检查网络设置
+                    }
+                }
+            }
+
         }
     }
 

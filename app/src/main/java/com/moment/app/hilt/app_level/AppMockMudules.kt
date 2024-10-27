@@ -9,13 +9,20 @@ import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
+import com.moment.app.main_chat.BackendThread
+import com.moment.app.main_chat.ConversationDao
+import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.ThreadList
+import com.moment.app.main_chat.ThreadService
 import com.moment.app.main_home.subfragments.models.UserInfoList
 import com.moment.app.main_home.subfragments.service.HomeService
 import com.moment.app.main_profile.entities.CreateTimeBean
 import com.moment.app.main_profile.entities.FeedList
 import com.moment.app.main_profile.entities.PicShape
 import com.moment.app.main_profile.entities.PostBean
+import com.moment.app.models.IMLoginModel
 import com.moment.app.utils.Constants.BASE_URL
+import com.moment.app.utils.DateUtil
 import com.scwang.smart.refresh.header.MaterialHeader
 import dagger.Module
 import dagger.Provides
@@ -73,8 +80,28 @@ class MockNetWorkModule {
     fun provideFeedService(retrofit: Retrofit) : FeedService {
         return MockFeedService()
     }
-}
 
+    @Singleton
+    @Provides
+    @MockData
+    fun provideThreadService(retrofit: Retrofit) : ThreadService {
+        return MockThreadService()
+    }
+
+    @Provides
+    @Singleton
+    @MockData
+    fun provideConversationHub(conversationDao: ConversationDao, @MockData service: ThreadService): GlobalConversationHub {
+        return GlobalConversationHub(conversationDao, service)
+    }
+
+    @Singleton
+    @Provides
+    @MockData
+    fun provideIMLoginModel(@MockData hub: GlobalConversationHub): IMLoginModel {
+        return IMLoginModel(hub)
+    }
+}
 
 class MockHomeService: HomeService {
     override suspend fun getOnlineUsersForSlide(startPos: Int, num: Int): Results<UserInfoList> {
@@ -263,6 +290,33 @@ class MockFeedService : FeedService{
 
             }
         }
+    }
+}
+
+
+class MockThreadService: ThreadService {
+    override suspend fun conversations(): Results<ThreadList> {
+        delay(1500)
+        val datas = ThreadList().apply {
+            conversations = mutableListOf()
+            for (t in 0 until 50) {
+                (conversations as MutableList<BackendThread>).add(BackendThread().apply {
+                    this.conversation_id =UUID.randomUUID().toString()
+                    this. create_time = null
+                    this.user_id = UUID.randomUUID().toString()
+                    this. userInfo  =   UserInfo(
+                    userId = UUID.randomUUID().toString(),
+                    name = "Momentfanxxx",
+                    gender = "female",
+                )
+                })
+            }
+        }
+        Log.d("zhouzheng", "怕了点对点")
+         return Results<ThreadList>().apply {
+             data = datas
+
+         }
     }
 }
 

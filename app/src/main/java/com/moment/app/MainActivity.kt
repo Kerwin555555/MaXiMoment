@@ -8,6 +8,8 @@ import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityMainBinding
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.eventbus.LogoutEvent
+import com.moment.app.hilt.app_level.MockData
+import com.moment.app.main_chat.GlobalConversationHub
 import com.moment.app.ui.FragmentNavigator
 import com.moment.app.ui.MainNaviConfig
 import com.moment.app.ui.NaviTab
@@ -17,6 +19,7 @@ import com.moment.app.utils.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import javax.inject.Inject
 
 @AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/main")
@@ -26,6 +29,10 @@ class MainActivity : BaseActivity(){
     private lateinit var pageAdapter: MainNaviConfig.MainPageAdapter
     private lateinit var fragmentNavigator: FragmentNavigator
     private val mainViewModel by viewModels<MainActivityViewModel>()
+
+    @Inject
+    @MockData
+    lateinit var conversationHub: GlobalConversationHub
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +48,7 @@ class MainActivity : BaseActivity(){
         pageAdapter = MainNaviConfig.MainPageAdapter(this)
         fragmentNavigator = FragmentNavigator(supportFragmentManager,pageAdapter, R.id.fragment_container)
         mainViewModel.fetchTabs()
+        conversationHub.loadMetaDataFromBackend()
 
         initObservers()
     }
