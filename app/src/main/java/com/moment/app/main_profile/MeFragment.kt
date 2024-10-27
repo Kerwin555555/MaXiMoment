@@ -12,6 +12,7 @@ import com.moment.app.databinding.FragmentProfileBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.FeedService
+import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
 import com.moment.app.main_profile.adapters.ProfilePostsAdapter
 import com.moment.app.main_profile.views.ViewMeHeader
@@ -27,6 +28,8 @@ import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.dp
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
+import com.moment.app.utils.setBgWithAllCorners
+import com.moment.app.utils.setBgWithCornerRadiusAndColor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -49,6 +52,8 @@ class MeFragment : BaseFragment() {
     @Inject
     @MockData
     lateinit var feedService: FeedService
+    @Inject
+    lateinit var loginService: LoginService
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,6 +73,12 @@ class MeFragment : BaseFragment() {
     }
 
     private fun initUI() {
+        binding.income.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
+        binding.recharge.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
+        binding.setting.applyMargin(top = BarUtils.getStatusBarHeight() + 9.dp)
+        binding.setting.setOnClickListener {
+             LoginModel.logout(true, loginService)
+        }
         adapter = ProfilePostsAdapter()
         adapter.setHeaderAndEmpty(true)
         viewMeHeader = ViewMeHeader(requireContext())
@@ -82,11 +93,12 @@ class MeFragment : BaseFragment() {
             },
             refreshHeader = RefreshView(requireContext()).apply {
                 getBinding().progress.resetGravity(Gravity.CENTER_HORIZONTAL)
-                getBinding().progress.applyMargin(top = BarUtils.getStatusBarHeight())
+                getBinding().progress.applyMargin(top = BarUtils.getStatusBarHeight() + 30.dp)
             }
         ) { isLoadMore ->
             loadData(isLoadMore as Boolean)
         }
+        binding.refreshView.setEnableHeaderTranslationContent(false)
     }
 
     private fun loadData(isLoadMore: Boolean) {

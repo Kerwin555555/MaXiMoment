@@ -8,14 +8,58 @@
         android:src="@mipmap/pic2"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintDimensionRatio="375:406"/>
+        app:layout_constraintDimensionRatio="1:1"/>
     <com.moment.app.ui.uiLibs.MomentRefreshView
         android:id="@+id/refresh_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </com.moment.app.ui.uiLibs.MomentRefreshView>
+    <TextView
+        android:id="@+id/recharge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Recharge"
+        android:includeFontPadding="false"
+        android:gravity="center_vertical"
+        android:layout_marginStart="28dp"
+        android:drawablePadding="2dp"
+        android:paddingStart="7dp"
+        android:paddingVertical="6dp"
+        android:textSize="11sp"
+        android:textColor="@color/white"
+        android:paddingEnd="8dp"
+        app:drawableStartCompat="@mipmap/gold"
+        app:layout_constraintTop_toTopOf="@id/setting"
+        app:layout_constraintBottom_toBottomOf="@id/setting"
+        app:layout_constraintStart_toStartOf="parent"/>
+    <TextView
+        android:id="@+id/income"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:gravity="center_vertical"
+        android:drawablePadding="2dp"
+        android:paddingStart="7dp"
+        android:paddingEnd="8dp"
+        android:textSize="11sp"
+        android:textColor="@color/white"
+        android:paddingVertical="6dp"
+        android:includeFontPadding="false"
+        app:drawableStartCompat="@mipmap/diamond"
+        android:text="Income"
+        app:layout_constraintStart_toEndOf="@id/recharge"
+        app:layout_constraintTop_toTopOf="@id/recharge"
+        app:layout_constraintBottom_toBottomOf="@id/recharge"/>
+    <ImageView
+        android:id="@+id/setting"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_marginEnd="13dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:src="@drawable/three_dot_with_bg"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

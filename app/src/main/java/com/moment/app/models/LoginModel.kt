@@ -110,8 +110,10 @@ object LoginModel {
         if (!isLogin()) {
             return
         }
-        if (logoutIm) {
-            IMModel.logout(null)
+        kotlin.runCatching {
+            if (logoutIm) {
+                //IMModel.logout(null)
+            }
         }
 
 //        val properties = JSONObject()
@@ -128,7 +130,9 @@ object LoginModel {
        // CallModel.getInstance().endVoiceChat()
 
         //META LOGINOUT
-        LoginManager.getInstance().logOut()
+        kotlin.runCatching {
+            //LoginManager.getInstance().logOut()
+        }
         EventBus.getDefault().post(LogoutEvent())
        // AliasModel.getInstance().clearAlias()
        // ConversationManager.getInstance().clearConversations()
@@ -144,9 +148,11 @@ object LoginModel {
         //TLModel.INSTANCE.release()
         //FamilyApi.INSTANCE.clear(true)
         //InspectBridge.updateBlockCanary()
-        signOutGoogle()
+        kotlin.runCatching {
+            //signOutGoogle()
 
-        logoutApi(loginService)
+            //logoutApi(loginService)
+        }
 
         info = null
         forbidden_session = null
@@ -154,7 +160,9 @@ object LoginModel {
 
     private fun logoutApi(loginService: LoginService) {
         coroutineScope2.launch {
-            loginService.logout()
+            kotlin.runCatching {
+                loginService.logout()
+            }
         }
     }
 

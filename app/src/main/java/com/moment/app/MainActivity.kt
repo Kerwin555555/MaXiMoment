@@ -1,11 +1,13 @@
 package com.moment.app
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.didi.drouter.annotation.Router
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityMainBinding
 import com.moment.app.eventbus.LogCancelEvent
+import com.moment.app.eventbus.LogoutEvent
 import com.moment.app.ui.FragmentNavigator
 import com.moment.app.ui.MainNaviConfig
 import com.moment.app.ui.NaviTab
@@ -13,6 +15,7 @@ import com.moment.app.ui.OnTabStatusListener
 import com.moment.app.utils.ActivityHolder
 import com.moment.app.utils.BaseActivity
 import dagger.hilt.android.AndroidEntryPoint
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 
 @AndroidEntryPoint
@@ -26,6 +29,7 @@ class MainActivity : BaseActivity(){
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        EventBus.getDefault().register(this)
         ImmersionBar.with(this)
             .statusBarDarkFont(false)
             .init()
@@ -87,5 +91,15 @@ class MainActivity : BaseActivity(){
 
     override fun onDestroy() {
         super.onDestroy()
+        EventBus.getDefault().unregister(this)
+    }
+
+    @Subscribe
+    fun onLogout(event: LogoutEvent) {
+        //start login page
+        val intent = Intent(this, SplashActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
     }
 }
