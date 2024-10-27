@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.blankj.utilcode.util.BarUtils
+import com.moment.app.R
 import com.moment.app.databinding.FragmentProfileBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
 import com.moment.app.hilt.app_level.MockData
@@ -24,12 +25,15 @@ import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.ui.uiLibs.RefreshView
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyMargin
+import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.dp
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
 import com.moment.app.utils.setBgWithAllCorners
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
+import com.scwang.smart.refresh.header.ClassicsHeader
+import com.scwang.smart.refresh.header.MaterialHeader
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job

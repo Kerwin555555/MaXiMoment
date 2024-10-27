@@ -16,6 +16,7 @@ import com.moment.app.main_profile.entities.FeedList
 import com.moment.app.main_profile.entities.PicShape
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.utils.Constants.BASE_URL
+import com.scwang.smart.refresh.header.MaterialHeader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -122,9 +123,10 @@ class MockLoginService: LoginService {
                 },
                 gender = "male",
                 imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
-                follower_count = 100,
+                follower_count = 10000,
                 following_count= 10,
-                bio = "dsajfadsoihfadsohfioasudp;hfioadsghfiasddghfikasgdfiuasghdfuiasgudf"
+                friends_count = 32,
+                bio = ""
             )
         }
         return Results<UserInfo>().apply {
@@ -147,9 +149,10 @@ class MockLoginService: LoginService {
                 },
                 gender = "male",
                 imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
-                follower_count = 100,
-                following_count= 10,
-                bio = "dsajfadsoihfadsohfioasudp;hfioadsghfiasddghfikasgdfiuasghdfuiasgudf"
+                follower_count = 10000,
+                following_count= 100000,
+                friends_count = 1000000,
+                bio = "hello this is the default from the backend"
             )
         }
         return Results<UserInfo>().apply {
@@ -163,10 +166,28 @@ class MockLoginService: LoginService {
     }
 
     override suspend fun updateInfo(data: Map<String?, String?>?): Results<UserInfo> {
-        withContext(Dispatchers.IO) {
-            delay(400)
+        val res = withContext(Dispatchers.IO) {
+            delay(800)
+            UserInfo(
+                userId = UUID.randomUUID().toString(),
+                name = "Momentfanxxx",
+                session = "mysession",
+                finished_info = false,
+                huanxin = HuanxinBean().apply{
+                    password  = "045xxxx"
+                    user_id = "loveabscdessss"
+                },
+                gender = "male",
+                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
+                follower_count = 10,
+                following_count= 1000,
+                friends_count = 100,
+                bio = "hello this is the default from the backend"
+            )
         }
-        return Results()
+        return Results<UserInfo>().apply {
+            this.data = res
+        }
     }
 
     override suspend fun getUserInfo(userId: String?): Results<UserInfo> {

@@ -297,7 +297,7 @@ class ProgressDrawable : Drawable(), Animatable,
     init {
         mPaint.style = Paint.Style.FILL
         mPaint.isAntiAlias = true
-        mPaint.color = -0x555556
+        mPaint.color = 0xfff93c69.toInt()
     }
 
     override fun onAnimationUpdate(animation: ValueAnimator) {

@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
@@ -76,7 +77,12 @@ class ViewMeHeader : FrameLayout {
         binding.gender.bindGender(userInfo)
         //location
 
-        binding.bio.text = "hello, my name is zheng, tormorrow i'll finish the userinfo cache and chat page,"
+        if (!userInfo.bio.isNullOrEmpty()) {
+            binding.bio.isVisible = true
+            binding.bio.text = userInfo.bio
+        } else {
+            binding.bio.isVisible = false
+        }
     }
 
     private fun initCount(userInfo: UserInfo) {

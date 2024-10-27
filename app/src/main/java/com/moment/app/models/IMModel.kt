@@ -24,6 +24,7 @@ import com.moment.app.utils.AppInfo
 import com.moment.app.utils.Constants
 import com.moment.app.utils.ProcessUtil
 import com.moment.app.utils.coroutineScope
+import com.moment.app.utils.toast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -104,6 +105,7 @@ object IMModel {
             coroutineScope.launch(Dispatchers.Main) {
                 //simulate the IM login
                 delay(300)
+                "mock im end".toast()
                 onLoginSuccess(callback)
             }
 

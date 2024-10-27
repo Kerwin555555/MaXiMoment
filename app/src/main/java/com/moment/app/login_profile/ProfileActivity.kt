@@ -265,9 +265,9 @@ class ProfileViewModel @Inject constructor(
             }
             info.name = data.nickName
             info.birthday = data.ageToString()
+            info.age = DateUtil.getAge(info.birthday)
             info.gender = data.gender
             info.bio = data.bio
-            if (result.data != null) info.age = result.data!!.age
             LoginModel.setUserInfo(info)
             EventBus.getDefault().post(LoginEvent())
             ConfigModel.updateConfig()

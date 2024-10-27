@@ -86,8 +86,8 @@ class ImageItemView: FrameLayout , AdapterItemView{
     }
 
     private fun bindCommon(post: PostBean) {
-        Glide.with(this).load(post.user_info!!.avatar)
-            .into(binding.avatar)
+//        Glide.with(this).load(post.user_info!!.avatar)
+//            .into(binding.avatar)
         binding.name.text = post.user_info!!.name
         binding.content.text = post.content
 
