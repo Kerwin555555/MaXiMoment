@@ -34,6 +34,7 @@
         android:layout_width="156dp"
         android:layout_height="156dp"
         android:background="#EEEEEE"
+        android:scaleType="centerCrop"
         android:layout_marginTop="58.5dp"
         app:roundPercent="1"
         app:layout_constraintBottom_toTopOf="@id/text"

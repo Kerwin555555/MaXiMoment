@@ -23,6 +23,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.didi.drouter.api.DRouter
 import com.moment.app.R
 import com.moment.app.databinding.ViewMeHeaderBinding
 import com.moment.app.datamodel.UserInfo
@@ -30,6 +31,7 @@ import com.moment.app.utils.dp
 import com.moment.app.utils.formatScore
 import com.moment.app.utils.isRTL
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
+import com.moment.app.utils.setOnSingleClickListener
 
 class ViewMeHeader : FrameLayout {
     constructor(context: Context) : super(context)
@@ -71,6 +73,9 @@ class ViewMeHeader : FrameLayout {
 
     fun bindData(userInfo: UserInfo) {
 
+        binding.editPhotos.setOnSingleClickListener({
+            DRouter.build("/edit/photos").putExtra("fileIds", ArrayList(userInfo.imagesWallList)).start()
+        }, 500)
         adapter.setNewData(userInfo.imagesWallList)
         initCount(userInfo)
 

@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import com.moment.app.databinding.ConversationNotificationHeaderBinding
+import com.moment.app.utils.setBadgeBackground
 
 class CvsNotificationHeader : ConstraintLayout{
 
@@ -19,7 +20,7 @@ class CvsNotificationHeader : ConstraintLayout{
         binding.redDot.isVisible = count > 0
         binding.arrow.isVisible = count > 0
         if (count > 0) {
-            binding.redDot.text = "${count}"
+            binding.redDot.setBadgeBackground(count)
             binding.redDot.setOnClickListener {
                 function.invoke()
             }

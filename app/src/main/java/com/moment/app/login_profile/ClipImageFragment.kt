@@ -6,8 +6,9 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.activityViewModels
+import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -16,10 +17,10 @@ import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
 
 class ClipImageFragment : BaseFragment() {
-    private val viewModel by activityViewModels<ProfileViewModel>()
-
-
+    //private val viewModel by activityViewModels<ProfileViewModel>()
     private lateinit var binding: ClipImagePopUpWindowBinding
+
+    var onConfirmListener: OnImageConfirmListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,8 +31,16 @@ class ClipImageFragment : BaseFragment() {
         return binding.root
     }
 
+    // clipMode == isPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!requireArguments().getBoolean("clipMode", false)) {
+            binding.layer.isVisible = false
+            binding.clipImage.isPreview = true
+        } else {
+            binding.layer.isVisible = true
+            binding.clipImage.isPreview = false
+        }
         binding.root.isClickable = true
         binding.confirm.isSelected = true
         kotlin.runCatching {
@@ -50,7 +59,6 @@ class ClipImageFragment : BaseFragment() {
 
             val uri: Uri? = requireArguments().getParcelable("uri") as Uri?
             if (uri != null) {
-                Glide.with(this).pauseAllRequests()
                 Glide.with(this)
                     .setDefaultRequestOptions(
                         RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -63,7 +71,7 @@ class ClipImageFragment : BaseFragment() {
 
 
             binding.confirm.setOnClickListener {
-                viewModel.saveAvatar(binding.clipImage)
+                onConfirmListener?.onConfirm(binding.clipImage)
             }
 
             binding.cancel.setOnClickListener {
@@ -75,4 +83,8 @@ class ClipImageFragment : BaseFragment() {
             Log.d("zhouzheng", ""+it.message)
         }
     }
+}
+
+interface OnImageConfirmListener {
+    fun onConfirm(clipImageView: ClipImageView)
 }

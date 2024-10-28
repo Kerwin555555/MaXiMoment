@@ -59,7 +59,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/user/init")
-class ProfileActivity: BaseActivity() {
+class ProfileActivity: BaseActivity(), OnImageConfirmListener{
     private val viewModel by viewModels<ProfileViewModel>()
     private var progressDialog: ProgressDialog? = null
 
@@ -232,6 +232,10 @@ class ProfileActivity: BaseActivity() {
         binding.bioEditText.clearFocus()
         binding.nicknameEditText.clearFocus()
     }
+
+    override fun onConfirm(imageView: ClipImageView) {
+        viewModel.saveAvatar(imageView)
+    }
 }
 
 @HiltViewModel
@@ -295,7 +299,7 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             val file = withContext(Dispatchers.IO) {
-                saveView(imageView.context, imageView.clipCircle()!!)
+                saveView(imageView.context, imageView.clipOriginalBitmap()!!)
             }
             LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
                 avatar = file // for test

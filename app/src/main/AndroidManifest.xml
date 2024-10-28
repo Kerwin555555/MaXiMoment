@@ -139,6 +139,8 @@
         <activity
             android:name=".login_page.GoogleLoginActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".main_profile_wall.EditPhotosWallActivity"
+            android:screenOrientation="portrait"/>
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

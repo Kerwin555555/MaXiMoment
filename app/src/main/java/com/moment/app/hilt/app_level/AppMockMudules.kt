@@ -1,9 +1,6 @@
 package com.moment.app.hilt.app_level
 
 import android.util.Log
-import com.blankj.utilcode.util.FileUtils
-import com.blankj.utilcode.util.UriUtils
-import com.moment.app.R
 import com.moment.app.datamodel.HuanxinBean
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
@@ -22,8 +19,6 @@ import com.moment.app.main_profile.entities.PicShape
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.models.IMLoginModel
 import com.moment.app.utils.Constants.BASE_URL
-import com.moment.app.utils.DateUtil
-import com.scwang.smart.refresh.header.MaterialHeader
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -119,7 +114,7 @@ class MockHomeService: HomeService {
                 this.name = "MomentFan" + i
                 this.age = i
                 this.followed = i%2 ==0
-                this.imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3")
+                this.imagesWallList = mutableListOf("0","1", "2", "3", "1", "2")
             })
         }
         Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada 4")
@@ -175,7 +170,7 @@ class MockLoginService: LoginService {
                     user_id = "loveabscdessss"
                 },
                 gender = "male",
-                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
+                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2"),
                 follower_count = 10000,
                 following_count= 100000,
                 friends_count = 1000000,
@@ -205,7 +200,7 @@ class MockLoginService: LoginService {
                     user_id = "loveabscdessss"
                 },
                 gender = "male",
-                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
+                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2"),
                 follower_count = 10,
                 following_count= 1000,
                 friends_count = 100,

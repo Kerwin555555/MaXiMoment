@@ -25,6 +25,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.LogUtils
@@ -60,7 +61,7 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
 
     private lateinit var binding: FragmentChooseAlbumBinding
 
-
+    private val viewModel by activityViewModels<ProfileViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -74,7 +75,7 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
         super.onViewCreated(view, savedInstanceState)
         view.isClickable = true
 
-        adapter = MediaAdapter(this, requireContext())
+        adapter = MediaAdapter(this, viewModel, requireContext())
         window = MediaDirectoryWindow((requireContext()))
         loader = IMediaContract.MediaLoader(DialogUtils.getActivity(requireContext()) as AppCompatActivity, requireArguments(),this)
         binding.explorerRecycler.layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 4)
@@ -236,11 +237,11 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
 }
 
 
-class MediaAdapter(private val f: Fragment, private val context: Context) :
+class MediaAdapter(private val f: Fragment, private val viewModel: ProfileViewModel, private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_PHOTO_UPLOAD = 0
     private val TYPE_ALBUM_IMAGE = 1
-
+    val REQUEST_CODE_TAKE = 56386
     private var size = context.resources.displayMetrics.widthPixels / 4
 
     private val imageList: MutableList<MediaFile> = mutableListOf()
@@ -372,8 +373,6 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
         }
     }
 
-    val REQUEST_CODE_TAKE = 56386
-
     inner class MediaPhotoViewHolder(val binding: LayoutUploadImageBinding) : RecyclerView.ViewHolder(binding.root) {
 
     }
@@ -404,6 +403,11 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                         ?.hide(f)
                         ?.add(R.id.root_layout, ClipImageFragment().apply {
                             arguments = bundleOf("file" to file.displayPath())
+                            onConfirmListener = object : OnImageConfirmListener {
+                                override fun onConfirm(clipImageView: ClipImageView) {
+                                    viewModel.saveAvatar(clipImageView)
+                                }
+                            }
                         }, "ClipImageFragment")?.addToBackStack(null)
                         ?.commitAllowingStateLoss()
                 }

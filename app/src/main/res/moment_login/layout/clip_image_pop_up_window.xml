@@ -9,12 +9,13 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
     <com.moment.app.login_profile.LayerView
+        android:id="@+id/layer"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
     <TextView
     android:id="@+id/confirm"
-    android:text="Confirm"
+        android:text="Confirm"
     android:background="@drawable/gender_slector_drawable"
     android:textSize="12sp"
     android:minWidth="66dp" android:textColor="@color/white"

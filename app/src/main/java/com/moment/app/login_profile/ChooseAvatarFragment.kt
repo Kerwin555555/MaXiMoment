@@ -46,7 +46,7 @@ class ChooseAvatarFragment : BaseFragment() {
 
         viewModel.hasAvatarLiveData.observe(this.viewLifecycleOwner) {
             if (it == true) {
-                Glide.with(this).load(LoginModel.getUserInfo()!!.avatar).fitCenter().into(binding.pic)
+                Glide.with(this).load(LoginModel.getUserInfo()!!.avatar).dontTransform().into(binding.pic)
                 binding.upload.isVisible = false
             } else {
                 binding.upload.isVisible = true

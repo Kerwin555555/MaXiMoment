@@ -3,10 +3,9 @@ package com.moment.app.ui
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
-import android.widget.ImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.moment.app.databinding.BottomNavigationChatBinding
+import com.moment.app.utils.setBadgeBackground
 
 class BottomChatView : ConstraintLayout {
     constructor(context: Context) : super(context)
@@ -16,5 +15,9 @@ class BottomChatView : ConstraintLayout {
 
     fun getBinding() : BottomNavigationChatBinding {
         return binding
+    }
+
+    fun setupReddot() {
+        binding.redDot.setBadgeBackground(2)
     }
 }

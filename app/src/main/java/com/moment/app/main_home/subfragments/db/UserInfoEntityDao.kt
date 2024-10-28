@@ -9,9 +9,12 @@ import androidx.room.OnConflictStrategy
 import androidx.room.PrimaryKey
 import androidx.room.Query
 import androidx.room.RoomDatabase
-import com.moment.app.datamodel.HuanxinBean
+import androidx.room.TypeConverters
+import com.moment.app.datamodel.UserInfo
+import com.moment.app.main_chat.Converters
 
 @Database(entities = [UserInfoEntity::class], version = 1, exportSchema = false)
+@TypeConverters(Converters::class)
 abstract class  HomeRecommendationListDatabase : RoomDatabase(){
     abstract fun  UserInfoEntityDao(): UserInfoEntityDao
 }
@@ -38,9 +41,6 @@ interface UserInfoEntityDao {
 data class UserInfoEntity (
     @PrimaryKey
     val userId: String,
-    val gender: String,
-    val age: Int,
-    val name: String,
-    var page:Int,
-    var followed: Boolean,
+
+    var userInfo: UserInfo?
 )

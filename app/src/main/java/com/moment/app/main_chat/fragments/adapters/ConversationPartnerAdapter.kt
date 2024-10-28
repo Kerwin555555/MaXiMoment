@@ -13,6 +13,7 @@ import com.moment.app.databinding.ConversationItemViewBinding
 import com.moment.app.main_chat.fragments.entities.MomentConversation
 import com.moment.app.utils.dp
 import com.moment.app.utils.loadImage
+import com.moment.app.utils.setBadgeBackground
 
 class ConversationPartnerAdapter: BaseQuickAdapter<MomentConversation, ConversationPartnerAdapter.Holder>(null) {
 
@@ -27,6 +28,7 @@ class ConversationPartnerAdapter: BaseQuickAdapter<MomentConversation, Conversat
          helper.binding.avatar.loadImage(conversation.userInfo!!.userId, 60.dp, 60.dp)
          helper.binding.name.text = conversation.userInfo!!.name
          helper.binding.gender.bindGender(conversation.userInfo!!)
+        helper.binding.redDot.setBadgeBackground(2)
 
         if (true){
             return

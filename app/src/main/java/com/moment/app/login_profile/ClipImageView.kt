@@ -13,13 +13,10 @@ import android.graphics.RectF
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import android.view.ScaleGestureDetector.OnScaleGestureListener
 import androidx.appcompat.widget.AppCompatImageView
-import com.bumptech.glide.load.resource.bitmap.BitmapDrawableResource
-import okhttp3.internal.wait
 import kotlin.math.max
 import kotlin.math.min
 
@@ -29,7 +26,7 @@ class ClipImageView(context: Context?, attrs: AttributeSet?) :
     private
     val CIRCLE_CROP_PAINT_FLAGS: Int =
         Paint.DITHER_FLAG or Paint.FILTER_BITMAP_FLAG or Paint.ANTI_ALIAS_FLAG
-
+    var isPreview: Boolean = true
     private
     val CIRCLE_CROP_SHAPE_PAINT: Paint = Paint(CIRCLE_CROP_PAINT_FLAGS)
     private val CIRCLE_CROP_BITMAP_PAINT = Paint(CIRCLE_CROP_PAINT_FLAGS).apply {
@@ -103,6 +100,9 @@ class ClipImageView(context: Context?, attrs: AttributeSet?) :
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
+        if (isPreview) {
+            return true
+        }
         mScaleGestureDetector!!.onTouchEvent(event)
 
         var x = 0f
@@ -320,6 +320,14 @@ class ClipImageView(context: Context?, attrs: AttributeSet?) :
         }
 
         mScaleMatrix.postTranslate(deltaX, deltaY)
+    }
+
+    fun clipOriginalBitmap(): Bitmap? {
+        if (drawable == null || (drawable as BitmapDrawable).bitmap == null) {
+            return null
+        }
+
+        return (drawable as BitmapDrawable).bitmap!! //已经 Center Inside 剪裁过了
     }
 
     override fun onDraw(canvas: Canvas) {

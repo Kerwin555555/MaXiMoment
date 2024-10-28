@@ -1,19 +1,16 @@
 package com.moment.app.main_home.subfragments
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.room.withTransaction
 import com.moment.app.databinding.SubFragmentRecommendationBinding
-import com.moment.app.datamodel.UserInfo
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.main_home.subfragments.adapters.RecommendationAdapter
 import com.moment.app.main_home.subfragments.db.HomeRecommendationListDatabase
 import com.moment.app.main_home.subfragments.db.UserInfoEntity
 import com.moment.app.main_home.subfragments.models.UserInfoList
-import com.moment.app.main_home.subfragments.repository.EntityToModelMapper
 import com.moment.app.main_home.subfragments.service.HomeService
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
 import com.moment.app.models.LoginModel
@@ -47,10 +44,6 @@ class RecommendationFragment: BaseFragment() {
 
     @Inject
     lateinit var userInfoDb: HomeRecommendationListDatabase
-
-    val mapper by lazy {
-        EntityToModelMapper()
-    }
 
     val adapter by lazy {
          RecommendationAdapter()
@@ -97,7 +90,7 @@ class RecommendationFragment: BaseFragment() {
                         withContext(Dispatchers.IO) {
                             userInfoDb.UserInfoEntityDao().getAllUserInfoEntities()
                                 .map {
-                                    mapper.map(it)
+                                    it.userInfo
                                 }
                         }.apply {
                             if (size != 0) {
@@ -123,12 +116,8 @@ class RecommendationFragment: BaseFragment() {
                 this.async(Dispatchers.IO) {
                     val item = (result.data as UserInfoList).user_infos?.map { it ->
                         UserInfoEntity(
-                            name = it.name!! + ":database",
                             userId = it.userId!!,
-                            gender = it.gender!!,
-                            age = it.age!!,
-                            page = 0,
-                            followed = it.followed!!
+                            userInfo = it
                         )
                     }
                     userInfoDb.withTransaction {
