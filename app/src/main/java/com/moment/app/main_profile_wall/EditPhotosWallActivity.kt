@@ -1,22 +1,25 @@
 package com.moment.app.main_profile_wall
 
-import android.Manifest
 import android.app.Application
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
+import android.provider.CalendarContract.Events
 import android.util.Log
+import android.view.Display
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.BarUtils
-import com.blankj.utilcode.util.PermissionUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -27,24 +30,35 @@ import com.didi.drouter.annotation.Router
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.R
 import com.moment.app.databinding.ActivityEditWallPhotosBinding
+import com.moment.app.eventbus.UpdateUserInfoEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.images.Explorer
 import com.moment.app.login_profile.ChooseAlbumFragment
 import com.moment.app.login_profile.ClipImageView
 import com.moment.app.login_profile.OnImageConfirmListener
 import com.moment.app.main_profile_wall.dialogs.ReplaceDeleteDialog
+import com.moment.app.network.startCoroutine
+import com.moment.app.network.toast
 import com.moment.app.permissions.MomentActionDialog
 import com.moment.app.permissions.SetupBundle
-import com.moment.app.permissions.openNotificationSetting
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.BaseBean
 import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
 import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.dp
+import com.moment.app.utils.saveView
 import com.moment.app.utils.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.delay
+import org.greenrobot.eventbus.EventBus
+import java.util.Collections
 import javax.inject.Inject
 
 
@@ -87,8 +101,41 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
             wrapperList[index].remoteFileId = initialList!![index]
         }
         adapter.setNewData(wrapperList)
+        binding.save.setOnClickListener {
+            val progresDialog = ProgressDialog.show(this@EditPhotosWallActivity)
+            progresDialog.isCancelable = false
+            startCoroutine({
+                val list = mutableListOf<Deferred<String?>>()
+                for (item in adapter.data) {
+                    if (item.remoteFileId != null) {
+                        list.add(this.async(Dispatchers.IO) {
+                            item.remoteFileId
+                        })
+                    } else if (item.albumOriginal != null){
+                        list.add(this.async(Dispatchers.IO) {
+                            val drawable = Glide.with(this@EditPhotosWallActivity).load(item.albumOriginal).
+                            centerInside()
+                                .submit(ScreenUtils.getAppScreenWidth()/2, ScreenUtils.getAppScreenHeight()/2).get()
+                            saveView(this@EditPhotosWallActivity, (drawable as BitmapDrawable).bitmap)?.absolutePath ?: ""
+                        })
+                    }
+                }
+                val result = list.awaitAll()
+                delay(400) //mock upload to cloud and backend
+                progresDialog.dismissAllowingStateLoss()
+                EventBus.getDefault().post(UpdateUserInfoEvent())
+                finish()
+            }) {
+                it.toast()
+                progresDialog.dismissAllowingStateLoss()
+            }
+        }
+        ItemTouchHelper(CustomTouchCallback(
+            binding.rv, adapter) {
 
-        (binding.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
+        }).attachToRecyclerView(binding.rv)
+
+        (binding.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false //remove shimmer
     }
 
     override fun onBackPressed() {
@@ -191,7 +238,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         }
 
         override fun convert(helper: BaseViewHolder, item: Wrapper) {
-            Log.d("zhouzheng", ""+helper.absoluteAdapterPosition)
+            Log.d("MomentPhotoWall", ""+helper.absoluteAdapterPosition)
             if (mContext == null) return
             val pos = helper.absoluteAdapterPosition
             val bg = helper.getView<ImageView>(R.id.bg)
@@ -257,6 +304,79 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
 
         override fun equals(other: Any?): Boolean {
             return other is Wrapper && albumOriginal == other.albumOriginal && remoteFileId == other.remoteFileId
+        }
+    }
+
+
+    class CustomTouchCallback(val recyclerView: RecyclerView, val adapter: Adapter, val runnable: Runnable): ItemTouchHelper.Callback() {
+
+        override fun getMovementFlags(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder
+        ): Int {
+            var idx = 6
+            for (i in 0 until adapter.data.size) {
+                if (adapter.data[i].isEmpty()) {
+                    idx = i
+                    break
+                }
+            }
+            if (viewHolder.absoluteAdapterPosition >= idx) {
+                return makeMovementFlags(0, 0)
+            }
+            return makeMovementFlags(ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT or ItemTouchHelper.UP or ItemTouchHelper.DOWN, 0)
+        }
+
+        override fun onMove(
+            recyclerView: RecyclerView,
+            viewHolder: RecyclerView.ViewHolder,
+            target: RecyclerView.ViewHolder
+        ): Boolean {
+            val fromPos = viewHolder.absoluteAdapterPosition
+            val toPos = target.absoluteAdapterPosition
+            var idx = 6
+            for (i in 0 until adapter.data.size) {
+                if (adapter.data[i].isEmpty()) {
+                    idx = i
+                    break
+                }
+            }
+
+            if (fromPos >= idx || toPos >= idx) {
+                return false
+            }
+
+            // 根据滑动方向 交换数据
+            if (fromPos < toPos) {
+                // 含头不含尾
+                for (index in fromPos until toPos) {
+                    Collections.swap(adapter.data, index, index + 1)
+                }
+            } else {
+                // 含头不含尾
+                for (index in fromPos downTo toPos + 1) {
+                    Collections.swap(adapter.data, index, index - 1)
+                }
+            }
+            adapter.notifyItemMoved(fromPos, toPos)
+            runnable.run()
+            return true
+        }
+
+        override fun onSelectedChanged(viewHolder: RecyclerView.ViewHolder?, actionState: Int) {
+            super.onSelectedChanged(viewHolder, actionState)
+            if (actionState != ItemTouchHelper.ACTION_STATE_IDLE) {
+                viewHolder!!.itemView.animate().setDuration(50).scaleX(1.15f).scaleY(1.15f).start()
+            }
+        }
+
+        override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
+            viewHolder!!.itemView.animate().setDuration(50).scaleX(1f).scaleY(1f).start()
+            super.clearView(recyclerView, viewHolder)
+        }
+
+        override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+            //
         }
     }
 }

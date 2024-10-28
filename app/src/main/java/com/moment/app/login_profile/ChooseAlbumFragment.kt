@@ -1,6 +1,7 @@
 package com.moment.app.login_profile
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ContentValues
 import android.content.Context
@@ -375,6 +376,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
     }
 
     inner class MediaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        @SuppressLint("SuspiciousIndentation")
         fun setData(file: MediaFile) {
             try {
                 OkDisplayCompat.loadThumb(itemView.findViewById<ImageView>(R.id.explorer_media_thumb_view), file, 0.3f, {
