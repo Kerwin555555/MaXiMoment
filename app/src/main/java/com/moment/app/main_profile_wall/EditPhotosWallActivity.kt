@@ -2,12 +2,8 @@ package com.moment.app.main_profile_wall
 
 import android.app.Application
 import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.os.Bundle
-import android.provider.CalendarContract.Events
 import android.util.Log
-import android.view.Display
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
@@ -87,9 +83,6 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         binding.cancel.setOnClickListener {
             onBackPressed()
         }
-        binding.save.setOnClickListener {
-
-        }
         adapter = Adapter()
         binding.rv.layoutManager = GridLayoutManager(this, 3)
         binding.rv.adapter = adapter
@@ -115,7 +108,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                         list.add(this.async(Dispatchers.IO) {
                             val drawable = Glide.with(this@EditPhotosWallActivity).load(item.albumOriginal).
                             centerInside()
-                                .submit(ScreenUtils.getAppScreenWidth()/2, ScreenUtils.getAppScreenHeight()/2).get()
+                                .submit(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).get()
                             saveView(this@EditPhotosWallActivity, (drawable as BitmapDrawable).bitmap)?.absolutePath ?: ""
                         })
                     }
@@ -227,14 +220,6 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                 itemView.layoutParams = RecyclerView.LayoutParams(size, size)
                 itemView.setPadding(SizeUtils.dp2px(4.5f))
             }
-        }
-
-        override fun convertPayloads(
-            helper: BaseViewHolder,
-            item: Wrapper?,
-            payloads: MutableList<Any>
-        ) {
-            super.convertPayloads(helper, item, payloads)
         }
 
         override fun convert(helper: BaseViewHolder, item: Wrapper) {

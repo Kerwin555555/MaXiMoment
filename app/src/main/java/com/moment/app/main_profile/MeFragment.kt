@@ -1,13 +1,24 @@
 package com.moment.app.main_profile
 
 //import com.moment.app.main_profile.adapters.MeAdapter
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.blankj.utilcode.util.BarUtils
+import com.blankj.utilcode.util.ScreenUtils
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.moment.app.R
 import com.moment.app.databinding.FragmentProfileBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
@@ -38,6 +49,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
+import okhttp3.internal.wait
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
@@ -86,6 +98,10 @@ class MeFragment : BaseFragment() {
         adapter = ProfilePostsAdapter()
         adapter.setHeaderAndEmpty(true)
         viewMeHeader = ViewMeHeader(requireContext())
+        Glide.with(this).load(R.mipmap.pic2).centerInside().override(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).into(binding.avatar)
+//        binding.avatar.postDelayed({ //别人的图片resource 自己的图片data 因为自己图要编辑
+//            Log.d("zhouzheng", ":"+(binding.avatar.drawable as BitmapDrawable).bitmap.width +":"+(binding.avatar.drawable as BitmapDrawable).bitmap.height )
+//        }, 3000)
         viewMeHeader.bindData(LoginModel.getUserInfo()!!)
         adapter.setHeaderView(viewMeHeader)
 

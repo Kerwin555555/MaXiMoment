@@ -7,8 +7,10 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout
+import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -105,20 +107,21 @@ class Adapter: BaseQuickAdapter<PicShape, BaseViewHolder>(null) {
     override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
         return  BaseViewHolder(ImageFilterView(mContext).apply {
             layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+            scaleType = ImageView.ScaleType.CENTER_CROP
             round = 4.dp.toFloat()
         })
     }
-
+//https://svgconverter.app/free  如何把大图换svg, image_sizer换成小图片
     override fun convert(helper: BaseViewHolder, item: PicShape?) {
         Glide.with(mContext)
             .setDefaultRequestOptions(RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
             .load(R.mipmap.user_post_test_image)
             .dontTransform()
-            .placeholder(R.mipmap.image_place_holder)
+            .placeholder(R.drawable.moment)
             .thumbnail(0.3f)
-            .centerCrop()
-            .timeout(3000)
-            .error(R.mipmap.image_place_holder)
+            .centerInside()
+            .override(ScreenUtils.getAppScreenWidth() * 2/3, ScreenUtils.getAppScreenHeight() * 2/3)
+            .error(R.drawable.moment)
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,

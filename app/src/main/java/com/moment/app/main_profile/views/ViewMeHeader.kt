@@ -14,6 +14,7 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
+import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -124,11 +125,11 @@ class HeaderAdapter : BaseQuickAdapter<String, BaseViewHolder>(null) {
                 }
             )
             .dontTransform()
-            .placeholder(R.mipmap.image_place_holder)
+            .placeholder(R.drawable.moment)
             .thumbnail(0.3f)
             .centerInside()
             .timeout(3000)
-            .error(R.mipmap.image_place_holder)
+            .error(R.drawable.moment)
             .addListener(object : RequestListener<Drawable> {
                 override fun onLoadFailed(
                     e: GlideException?,
