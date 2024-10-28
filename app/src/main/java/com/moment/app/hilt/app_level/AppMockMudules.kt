@@ -114,7 +114,7 @@ class MockHomeService: HomeService {
                 this.name = "MomentFan" + i
                 this.age = i
                 this.followed = i%2 ==0
-                this.imagesWallList = mutableListOf("0","1", "2", "3", "1", "2")
+                this.imagesWallList = mutableListOf("0","1", "2", "3", "1")
             })
         }
         Log.d("Moment", "dafdasfdfasfadasfadsdfafdafdada 4")
@@ -144,7 +144,7 @@ class MockLoginService: LoginService {
                     user_id = "loveabscdessss"
                 },
                 gender = "male",
-                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2", "3"),
+                imagesWallList = mutableListOf("0","1", "2", "3", "1"),
                 follower_count = 10000,
                 following_count= 10,
                 friends_count = 32,
@@ -170,7 +170,7 @@ class MockLoginService: LoginService {
                     user_id = "loveabscdessss"
                 },
                 gender = "male",
-                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2"),
+                imagesWallList = mutableListOf("0","1", "2", "3", "1"),
                 follower_count = 10000,
                 following_count= 100000,
                 friends_count = 1000000,
@@ -200,7 +200,7 @@ class MockLoginService: LoginService {
                     user_id = "loveabscdessss"
                 },
                 gender = "male",
-                imagesWallList = mutableListOf("0","1", "2", "3", "1", "2"),
+                imagesWallList = mutableListOf("0","1", "2", "3", "1"),
                 follower_count = 10,
                 following_count= 1000,
                 friends_count = 100,

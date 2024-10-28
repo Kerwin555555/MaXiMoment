@@ -1,33 +1,38 @@
 package com.moment.app.main_profile_wall
 
 import android.app.Application
-import android.content.Context
-import android.net.Uri
 import android.os.Bundle
 import android.view.ViewGroup
 import android.widget.ImageView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.ScreenUtils
+import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.didi.drouter.annotation.Router
 import com.gyf.immersionbar.ImmersionBar
-import com.moment.app.MomentApp
 import com.moment.app.R
 import com.moment.app.databinding.ActivityEditWallPhotosBinding
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.images.Explorer
 import com.moment.app.login_profile.ChooseAlbumFragment
+import com.moment.app.login_profile.ClipImageView
+import com.moment.app.login_profile.OnImageConfirmListener
 import com.moment.app.main_profile_wall.dialogs.ReplaceDeleteDialog
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.BaseBean
 import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.applyMargin
+import com.moment.app.utils.bottomInBottomOut
+import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.dp
 import com.moment.app.utils.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,7 +41,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/edit/photos")
-class EditPhotosWallActivity : BaseActivity() {
+class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
 
     @Inject
     lateinit var app: Application
@@ -52,8 +57,10 @@ class EditPhotosWallActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityEditWallPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        cleanSaveFragments()
         ImmersionBar.with(this).statusBarDarkFont(false).fitsSystemWindows(false).init()
 
+        binding.cancel.applyMargin(top = 15.dp + BarUtils.getStatusBarHeight())
         binding.cancel.setOnClickListener {
             finish()
         }
@@ -64,18 +71,22 @@ class EditPhotosWallActivity : BaseActivity() {
         binding.rv.layoutManager = GridLayoutManager(this, 3)
         binding.rv.adapter = adapter
 
-        initialList = ArrayList((intent.getSerializableExtra("fileIds") as ArrayList<String>).subList(0, 6))
+        initialList = (intent.getSerializableExtra("fileIds") as ArrayList<String>)
         val wrapperList =
             mutableListOf(Wrapper(), Wrapper(), Wrapper(), Wrapper(), Wrapper(), Wrapper())
         for (index in 0 until initialList!!.size) {
-            wrapperList[index].fileId = initialList!![index]
+            wrapperList[index].remoteFileId = initialList!![index]
         }
         adapter.setNewData(wrapperList)
     }
 
-    data class Wrapper(var uri: Uri? = null, var fileId: String? = null) {
-        fun isEmpty(): Boolean{
-            return uri == null && fileId == null
+
+    /**
+     * albumOriginal 在这个activity用户从相册原图本地数据， remoteFileId 进这个act前的后端数据。
+     */
+    data class Wrapper(var albumOriginal: String? = null,  var remoteFileId: String? = null) : BaseBean(){
+        fun isEmpty(): Boolean{ //
+            return albumOriginal == null && remoteFileId == null
         }
     }
 
@@ -94,33 +105,51 @@ class EditPhotosWallActivity : BaseActivity() {
 
             val filterView = helper.getView<ImageFilterView>(R.id.image)
             filterView.setImageResource(0)
-            filterView.setOnSingleClickListener({
+            helper.itemView.setOnSingleClickListener({
                  if (item.isEmpty()) {
-                      this@EditPhotosWallActivity.supportFragmentManager
-                         .beginTransaction()
-                         .setCustomAnimations(
-                             R.anim.f_slide_in_right, // 进入动画
-                             0, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
-                             0, // 弹出动画（这里没有设置，所以为0）
-                             R.anim.f_slide_out_right ,  // 弹入动画（这里没有设置，所以为0）
-                         )
+                     this@EditPhotosWallActivity.bottomInBottomOut()
                          .add(R.id.root_layout, ChooseAlbumFragment().apply {
-                             arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
+                             arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE,
+                                 "item" to item)
                          }, "ChooseAlbumFragment").addToBackStack(null)
                          .commitAllowingStateLoss()
                  } else {
                      DialogUtils.show(this@EditPhotosWallActivity, ReplaceDeleteDialog().apply {
-                         runnable = {
+                         onReplaceListener = object : ReplaceDeleteDialog.OnReplaceListener{
+                             override fun onReplace() {
+                                 this@EditPhotosWallActivity.bottomInBottomOut()
+                                     .add(R.id.root_layout, ChooseAlbumFragment().apply {
+                                         arguments = bundleOf(
+                                             "extra_mode" to Explorer.MODE_ONLY_IMAGE,
+                                             "item" to item)
+                                     }, "ChooseAlbumFragment").addToBackStack(null)
+                                     .commitAllowingStateLoss()
+                             }
 
+                             override fun onDelete() {
+                                  item.albumOriginal = null
+                                  item.remoteFileId = null
+                                  reArrangeData()
+                                  adapter.notifyDataSetChanged()
+                             }
                          }
                      })
                  }
             }, 100)
 
-            if (item.fileId != null) {
-                Glide.with(mContext).asBitmap().load(getResourceIdFromFileId(item.fileId!!)).into(filterView)
-            } else if (item.uri != null) {
-                Glide.with(mContext).asBitmap().load(item.uri).into(filterView)
+            if (item.remoteFileId != null) {
+                filterView.isVisible = true
+                bg.isVisible = false
+                Glide.with(mContext).load(getResourceIdFromFileId(item.remoteFileId!!)).into(filterView)
+            } else if (item.albumOriginal != null) {
+                filterView.isVisible = true
+                bg.isVisible = false
+                Glide.with(mContext).setDefaultRequestOptions(
+                        RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                        ).load(item.albumOriginal).into(filterView)
+            } else {
+                filterView.isVisible = false
+                bg.isVisible = true
             }
         }
     }
@@ -130,11 +159,54 @@ class EditPhotosWallActivity : BaseActivity() {
     private fun getResourceIdFromFileId(id: String) : Int{
         //"0","1", "2", "3", "1", "2"
         return when (id) {
-            "0" -> R.mipmap.pic1
-            "1" -> R.mipmap.pic2
+            "0" -> R.mipmap.pic2
+            "1" -> R.mipmap.pic1
             "2" -> R.mipmap.pic4
             "3" -> R.mipmap.pic3
             else -> R.mipmap.light_profile
         }
     }
+
+    override fun onConfirm(clipImageView: ClipImageView, map: Map<String, Any?>?) {
+        kotlin.runCatching {
+            supportFragmentManager.let {
+                val f = it.findFragmentByTag("ClipImageFragment")
+                val f2 = it.findFragmentByTag("ChooseAlbumFragment")
+                it.beginTransaction()
+                    .setCustomAnimations(0,R.anim.slide_down,0,0)
+                    .remove(f!!)
+                    .remove(f2!!)
+                    .commitNowAllowingStateLoss()
+            }
+        }
+        if (map?.containsKey("item") == true) {
+            val item = map["item"] as? Wrapper?
+            item?.let {
+                item.albumOriginal = map["file"] as? String?
+                item.remoteFileId = null
+                reArrangeData()
+                adapter.notifyDataSetChanged()
+            } ?: let {
+
+            }
+        }
+        //Glide.with(this).load("xxx").fitCenter().submit(ScreenUtils.getAppScreenWidth(), ScreenUtils.getAppScreenHeight()).get()
+
+    }
+
+    fun reArrangeData() {
+        val data = adapter.data
+        var idx = 0
+        for (index in 0 until data.size) {
+            if (!data[index].isEmpty()) {
+                val temp = data[idx]
+                data[idx] = data[index]
+                data[index] = temp
+                idx++
+            }
+        }
+    }
 }
+
+//如果glide第2次加载图是resource, 第1次不管是resource/data 都从本地读
+//如果glide第2次加载图是data, 第1次不管是只有是data 从本地读

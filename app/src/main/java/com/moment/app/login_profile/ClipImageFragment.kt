@@ -12,8 +12,10 @@ import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
+import com.google.android.gms.common.internal.Objects
 import com.moment.app.databinding.ClipImagePopUpWindowBinding
 import com.moment.app.utils.BaseFragment
+import com.moment.app.utils.copyFragmentArgumentsToMap
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
 
 class ClipImageFragment : BaseFragment() {
@@ -71,7 +73,21 @@ class ClipImageFragment : BaseFragment() {
 
 
             binding.confirm.setOnClickListener {
-                onConfirmListener?.onConfirm(binding.clipImage)
+                val map = copyFragmentArgumentsToMap()
+                if (file != null) {
+                    map["file"] = file
+                    onConfirmListener?.onConfirm(binding.clipImage, map)
+                } else if (uri != null) {
+                    val map = mutableMapOf<String, Any?>()
+                    arguments?.let {
+                        for (key in it.keySet()) {
+                            val value = it.get(key)
+                            map[key] = value
+                        }
+                    }
+                    map["uri"] = uri
+                    onConfirmListener?.onConfirm(binding.clipImage, map)
+                }
             }
 
             binding.cancel.setOnClickListener {
@@ -86,5 +102,5 @@ class ClipImageFragment : BaseFragment() {
 }
 
 interface OnImageConfirmListener {
-    fun onConfirm(clipImageView: ClipImageView)
+    fun onConfirm(clipImageView: ClipImageView, resourceFileId: Map<String, Any?>?)
 }

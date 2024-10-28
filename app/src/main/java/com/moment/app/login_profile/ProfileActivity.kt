@@ -40,6 +40,7 @@ import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
 import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.immersion
+import com.moment.app.utils.saveView
 import com.moment.app.utils.setOnSingleClickListener
 import com.moment.app.utils.setTextColorStateSelectList
 import dagger.hilt.android.AndroidEntryPoint
@@ -233,7 +234,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
         binding.nicknameEditText.clearFocus()
     }
 
-    override fun onConfirm(imageView: ClipImageView) {
+    override fun onConfirm(imageView: ClipImageView, map: Map<String, Any?>?) {
         viewModel.saveAvatar(imageView)
     }
 }
@@ -315,26 +316,6 @@ class ProfileViewModel @Inject constructor(
                 .start()
         }) {
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
-        }
-    }
-
-    private fun saveView(context: Context, bitmap: Bitmap): File? {
-        val fileName = "moment_" + System.currentTimeMillis() + ".jpg"
-        val pictureFile = File(context.cacheDir, fileName)
-
-        try {
-            val fos = FileOutputStream(pictureFile)
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-            fos.flush()
-            fos.close()
-            return pictureFile
-        } catch (e: FileNotFoundException) {
-            LogUtils.d("ClipImage", "File not found: " + e.message)
-            return null
-        } catch (e: IOException) {
-            LogUtils.d("ClipImage", "Error accessing file: " + e.message)
-            return null
-        } finally {
         }
     }
 

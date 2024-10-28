@@ -1,7 +1,10 @@
 package com.moment.app.utils
 
+import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Bundle
 import android.util.LayoutDirection.RTL
 import android.view.View
 import android.widget.FrameLayout
@@ -11,7 +14,10 @@ import androidx.annotation.ColorRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
+import com.blankj.utilcode.util.LogUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -21,6 +27,10 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.R
+import java.io.File
+import java.io.FileNotFoundException
+import java.io.FileOutputStream
+import java.io.IOException
 
 
 // TextView 设置textColor扩展函数
@@ -225,6 +235,68 @@ fun formatScore(calculator_score: Long): String {
         return calculator_score.toString()
     }
 }
+
+fun saveView(context: Context, bitmap: Bitmap): File? {
+    val fileName = "moment_" + System.currentTimeMillis() + ".jpg"
+    val pictureFile = File(context.cacheDir, fileName)
+
+    try {
+        val fos = FileOutputStream(pictureFile)
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
+        fos.flush()
+        fos.close()
+        return pictureFile
+    } catch (e: FileNotFoundException) {
+        LogUtils.d("ClipImage", "File not found: " + e.message)
+        return null
+    } catch (e: IOException) {
+        LogUtils.d("ClipImage", "Error accessing file: " + e.message)
+        return null
+    } finally {
+    }
+}
+
+fun AppCompatActivity.rightInRightOut() : FragmentTransaction{
+    return this.supportFragmentManager
+        .beginTransaction()
+        .setCustomAnimations(
+            R.anim.f_slide_in_right, // 进入动画
+            0, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
+            0, // 弹出动画（这里没有设置，所以为0）
+            R.anim.f_slide_out_right ,  // 弹入动画（这里没有设置，所以为0）
+        )
+}
+
+fun AppCompatActivity.bottomInBottomOut() : FragmentTransaction {
+    return this.supportFragmentManager
+        .beginTransaction()
+        .setCustomAnimations(
+            R.anim.slide_up, // 进入动画
+            0, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
+            0, // 弹出动画（这里没有设置，所以为0）
+            R.anim.slide_down ,  // 弹入动画（这里没有设置，所以为0）
+        )
+}
+
+fun AppCompatActivity.cleanSaveFragments() {
+    val transaction = supportFragmentManager.beginTransaction()
+    for (f in supportFragmentManager.fragments) {
+        transaction.remove(f)
+    }
+    transaction.commitNow()
+}
+
+fun Fragment.copyFragmentArgumentsToMap() : MutableMap<String, Any?>{
+    val map = mutableMapOf<String, Any?>()
+    arguments?.let {
+        for (key in it.keySet()) {
+            val value = it.get(key)
+            map[key] = value
+        }
+    }
+    return map
+}
+
 
 
 

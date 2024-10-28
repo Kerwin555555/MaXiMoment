@@ -25,11 +25,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.LogUtils
-import com.blankj.utilcode.util.UriUtils
 import com.moment.app.MomentApp
 import com.moment.app.R
 import com.moment.app.databinding.FragmentChooseAlbumBinding
@@ -61,7 +59,6 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
 
     private lateinit var binding: FragmentChooseAlbumBinding
 
-    private val viewModel by activityViewModels<ProfileViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -75,7 +72,7 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
         super.onViewCreated(view, savedInstanceState)
         view.isClickable = true
 
-        adapter = MediaAdapter(this, viewModel, requireContext())
+        adapter = MediaAdapter(this, requireContext())
         window = MediaDirectoryWindow((requireContext()))
         loader = IMediaContract.MediaLoader(DialogUtils.getActivity(requireContext()) as AppCompatActivity, requireArguments(),this)
         binding.explorerRecycler.layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 4)
@@ -237,7 +234,7 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
 }
 
 
-class MediaAdapter(private val f: Fragment, private val viewModel: ProfileViewModel, private val context: Context) :
+class MediaAdapter(private val f: Fragment, private val context: Context) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val TYPE_PHOTO_UPLOAD = 0
     private val TYPE_ALBUM_IMAGE = 1
@@ -392,6 +389,10 @@ class MediaAdapter(private val f: Fragment, private val viewModel: ProfileViewMo
 //                        adapterPosition,
 //                        latestDirId,
 //                        extras)
+                    val bundle = bundleOf("file" to file.displayPath())
+                      f.arguments?.getSerializable("item")?.let {
+                          bundle.putSerializable("item", it)
+                      }
                     (context as? AppCompatActivity?)?.supportFragmentManager
                         ?.beginTransaction()
                         ?.setCustomAnimations(
@@ -402,12 +403,8 @@ class MediaAdapter(private val f: Fragment, private val viewModel: ProfileViewMo
                         )
                         ?.hide(f)
                         ?.add(R.id.root_layout, ClipImageFragment().apply {
-                            arguments = bundleOf("file" to file.displayPath())
-                            onConfirmListener = object : OnImageConfirmListener {
-                                override fun onConfirm(clipImageView: ClipImageView) {
-                                    viewModel.saveAvatar(clipImageView)
-                                }
-                            }
+                            arguments = bundle
+                            onConfirmListener = f.context as? OnImageConfirmListener?
                         }, "ClipImageFragment")?.addToBackStack(null)
                         ?.commitAllowingStateLoss()
                 }

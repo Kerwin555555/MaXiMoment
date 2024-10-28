@@ -5,11 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.moment.app.databinding.DialogPhotoChooseBottomSheetBinding
+import com.moment.app.main_profile_wall.EditPhotosWallActivity.Wrapper
 import com.moment.app.utils.BaseBottomSheetDialogFragment
 
 class ReplaceDeleteDialog : BaseBottomSheetDialogFragment() {
     private lateinit var binding: DialogPhotoChooseBottomSheetBinding
-    var runnable: (() -> Unit)? = null
+    var onReplaceListener: OnReplaceListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -25,11 +26,17 @@ class ReplaceDeleteDialog : BaseBottomSheetDialogFragment() {
         binding.takePhoto.text = "Replace"
         binding.chooseLibrary.text = "Delete"
         binding.takePhoto.setOnClickListener {
-
+            onReplaceListener?.onReplace()
             dismissAllowingStateLoss()
         }
         binding.chooseLibrary.setOnClickListener {
+            onReplaceListener?.onDelete()
             dismissAllowingStateLoss()
         }
+    }
+
+    interface OnReplaceListener {
+        fun onReplace()
+        fun onDelete()
     }
 }
