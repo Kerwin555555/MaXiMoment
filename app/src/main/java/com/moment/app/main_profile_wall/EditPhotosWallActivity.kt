@@ -1,16 +1,22 @@
 package com.moment.app.main_profile_wall
 
+import android.Manifest
 import android.app.Application
 import android.os.Bundle
+import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.core.view.setPadding
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.BarUtils
+import com.blankj.utilcode.util.PermissionUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -27,6 +33,9 @@ import com.moment.app.login_profile.ChooseAlbumFragment
 import com.moment.app.login_profile.ClipImageView
 import com.moment.app.login_profile.OnImageConfirmListener
 import com.moment.app.main_profile_wall.dialogs.ReplaceDeleteDialog
+import com.moment.app.permissions.MomentActionDialog
+import com.moment.app.permissions.SetupBundle
+import com.moment.app.permissions.openNotificationSetting
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.BaseBean
 import com.moment.app.utils.DialogUtils
@@ -59,10 +68,10 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         setContentView(binding.root)
         cleanSaveFragments()
         ImmersionBar.with(this).statusBarDarkFont(false).fitsSystemWindows(false).init()
-
+        setSwipeBackEnable(false)
         binding.cancel.applyMargin(top = 15.dp + BarUtils.getStatusBarHeight())
         binding.cancel.setOnClickListener {
-            finish()
+            onBackPressed()
         }
         binding.save.setOnClickListener {
 
@@ -78,82 +87,39 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
             wrapperList[index].remoteFileId = initialList!![index]
         }
         adapter.setNewData(wrapperList)
+
+        (binding.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false
     }
 
-
-    /**
-     * albumOriginal 在这个activity用户从相册原图本地数据， remoteFileId 进这个act前的后端数据。
-     */
-    data class Wrapper(var albumOriginal: String? = null,  var remoteFileId: String? = null) : BaseBean(){
-        fun isEmpty(): Boolean{ //
-            return albumOriginal == null && remoteFileId == null
-        }
-    }
-
-    inner class Adapter : BaseQuickAdapter<Wrapper, BaseViewHolder>(R.layout.item_choose_photos) {
-        override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
-            return super.onCreateDefViewHolder(parent, viewType).apply {
-                itemView.layoutParams = RecyclerView.LayoutParams(size, size)
-                itemView.setPadding(SizeUtils.dp2px(4.5f))
+    override fun onBackPressed() {
+        for (i in 0 until initialList!!.size) {
+            if (adapter.data[i].remoteFileId != initialList?.get(i)) {
+                showSaveReminderDialog()
+                //shodialog
+                return
             }
         }
-
-        override fun convert(helper: BaseViewHolder, item: Wrapper) {
-            if (mContext == null) return
-            val pos = helper.absoluteAdapterPosition
-            val bg = helper.getView<ImageView>(R.id.bg)
-
-            val filterView = helper.getView<ImageFilterView>(R.id.image)
-            filterView.setImageResource(0)
-            helper.itemView.setOnSingleClickListener({
-                 if (item.isEmpty()) {
-                     this@EditPhotosWallActivity.bottomInBottomOut()
-                         .add(R.id.root_layout, ChooseAlbumFragment().apply {
-                             arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE,
-                                 "item" to item)
-                         }, "ChooseAlbumFragment").addToBackStack(null)
-                         .commitAllowingStateLoss()
-                 } else {
-                     DialogUtils.show(this@EditPhotosWallActivity, ReplaceDeleteDialog().apply {
-                         onReplaceListener = object : ReplaceDeleteDialog.OnReplaceListener{
-                             override fun onReplace() {
-                                 this@EditPhotosWallActivity.bottomInBottomOut()
-                                     .add(R.id.root_layout, ChooseAlbumFragment().apply {
-                                         arguments = bundleOf(
-                                             "extra_mode" to Explorer.MODE_ONLY_IMAGE,
-                                             "item" to item)
-                                     }, "ChooseAlbumFragment").addToBackStack(null)
-                                     .commitAllowingStateLoss()
-                             }
-
-                             override fun onDelete() {
-                                  item.albumOriginal = null
-                                  item.remoteFileId = null
-                                  reArrangeData()
-                                  adapter.notifyDataSetChanged()
-                             }
-                         }
-                     })
-                 }
-            }, 100)
-
-            if (item.remoteFileId != null) {
-                filterView.isVisible = true
-                bg.isVisible = false
-                Glide.with(mContext).load(getResourceIdFromFileId(item.remoteFileId!!)).into(filterView)
-            } else if (item.albumOriginal != null) {
-                filterView.isVisible = true
-                bg.isVisible = false
-                Glide.with(mContext).setDefaultRequestOptions(
-                        RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                        ).load(item.albumOriginal).into(filterView)
-            } else {
-                filterView.isVisible = false
-                bg.isVisible = true
+        for (i in initialList!!.size until 6) {
+            if (!adapter.data[i].isEmpty()) {
+                showSaveReminderDialog()
+                return
             }
         }
+        super.onBackPressed()
     }
 
+    fun showSaveReminderDialog() {
+        MomentActionDialog.showBundle(this@EditPhotosWallActivity, object : SetupBundle {
+            override fun setBundle(bundle: Bundle): Bundle {
+                bundle.putString("content", "Do you want leave as your changes haven't been saved!")
+                return bundle
+            }
+            override fun cancel() {}
+            override fun confirm() {
+                super@EditPhotosWallActivity.onBackPressed()
+            }
+        })
+    }
 
     @MockData
     private fun getResourceIdFromFileId(id: String) : Int{
@@ -185,7 +151,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                 item.albumOriginal = map["file"] as? String?
                 item.remoteFileId = null
                 reArrangeData()
-                adapter.notifyDataSetChanged()
+                adapter.notifyItemRangeChanged(0, 6)
             } ?: let {
 
             }
@@ -194,7 +160,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
 
     }
 
-    fun reArrangeData() {
+    private fun reArrangeData() {
         val data = adapter.data
         var idx = 0
         for (index in 0 until data.size) {
@@ -204,6 +170,93 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                 data[index] = temp
                 idx++
             }
+        }
+    }
+
+
+    inner class Adapter : BaseQuickAdapter<Wrapper, BaseViewHolder>(R.layout.item_choose_photos) {
+        override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
+            return super.onCreateDefViewHolder(parent, viewType).apply {
+                itemView.layoutParams = RecyclerView.LayoutParams(size, size)
+                itemView.setPadding(SizeUtils.dp2px(4.5f))
+            }
+        }
+
+        override fun convertPayloads(
+            helper: BaseViewHolder,
+            item: Wrapper?,
+            payloads: MutableList<Any>
+        ) {
+            super.convertPayloads(helper, item, payloads)
+        }
+
+        override fun convert(helper: BaseViewHolder, item: Wrapper) {
+            Log.d("zhouzheng", ""+helper.absoluteAdapterPosition)
+            if (mContext == null) return
+            val pos = helper.absoluteAdapterPosition
+            val bg = helper.getView<ImageView>(R.id.bg)
+
+            val filterView = helper.getView<ImageFilterView>(R.id.image)
+            filterView.setImageResource(0)
+            helper.itemView.setOnSingleClickListener({
+                if (item.isEmpty()) {
+                    this@EditPhotosWallActivity.bottomInBottomOut()
+                        .add(R.id.root_layout, ChooseAlbumFragment().apply {
+                            arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE,
+                                "item" to item)
+                        }, "ChooseAlbumFragment").addToBackStack(null)
+                        .commitAllowingStateLoss()
+                } else {
+                    DialogUtils.show(this@EditPhotosWallActivity, ReplaceDeleteDialog().apply {
+                        onReplaceListener = object : ReplaceDeleteDialog.OnReplaceListener{
+                            override fun onReplace() {
+                                this@EditPhotosWallActivity.bottomInBottomOut()
+                                    .add(R.id.root_layout, ChooseAlbumFragment().apply {
+                                        arguments = bundleOf(
+                                            "extra_mode" to Explorer.MODE_ONLY_IMAGE,
+                                            "item" to item)
+                                    }, "ChooseAlbumFragment").addToBackStack(null)
+                                    .commitAllowingStateLoss()
+                            }
+
+                            override fun onDelete() {
+                                item.albumOriginal = null
+                                item.remoteFileId = null
+                                reArrangeData()
+                                adapter.notifyItemRangeChanged(0, 6)
+                            }
+                        }
+                    })
+                }
+            }, 100)
+
+            if (item.remoteFileId != null) {
+                filterView.isVisible = true
+                bg.isVisible = false
+                Glide.with(mContext).load(getResourceIdFromFileId(item.remoteFileId!!)).into(filterView)
+            } else if (item.albumOriginal != null) {
+                filterView.isVisible = true
+                bg.isVisible = false
+                Glide.with(mContext).setDefaultRequestOptions(
+                    RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                ).load(item.albumOriginal).into(filterView)
+            } else {
+                filterView.isVisible = false
+                bg.isVisible = true
+            }
+        }
+    }
+
+    /**
+     * albumOriginal 在这个activity用户从相册原图本地数据， remoteFileId 进这个act前的后端数据。
+     */
+    data class Wrapper(var albumOriginal: String? = null,  var remoteFileId: String? = null) : BaseBean(){
+        fun isEmpty(): Boolean{ //
+            return albumOriginal == null && remoteFileId == null
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return other is Wrapper && albumOriginal == other.albumOriginal && remoteFileId == other.remoteFileId
         }
     }
 }
