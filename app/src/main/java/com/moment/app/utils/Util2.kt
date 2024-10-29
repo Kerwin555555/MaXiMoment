@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.provider.ContactsContract.CommonDataKinds.Im
 import android.util.LayoutDirection.RTL
 import android.view.View
 import android.widget.FrameLayout
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
@@ -30,6 +32,7 @@ import com.google.common.collect.ImmutableList
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.MomentApp
 import com.moment.app.R
+import com.moment.app.models.LoginModel
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -345,6 +348,15 @@ fun getScreenHeight() : Int{
         return h
     }
     return MomentApp.appContext.resources.displayMetrics.heightPixels
+}
+
+
+fun Fragment.loadAvatarBig(view: ImageView) {
+    Glide.with(this).load(LoginModel.getUserInfo()!!.avatar)
+        .placeholder(R.drawable.bg_avatar_big)
+        .error(R.drawable.bg_avatar_big)
+        .centerInside().override(ScreenUtils.getAppScreenWidth()*3/5,
+            ScreenUtils.getAppScreenHeight()*3/5).into(view)
 }
 
 

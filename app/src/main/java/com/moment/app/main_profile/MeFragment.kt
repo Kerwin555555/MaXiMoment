@@ -28,6 +28,7 @@ import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.dp
+import com.moment.app.utils.loadAvatarBig
 import com.moment.app.utils.resetGravity
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
 import com.moment.app.utils.setOnSingleClickListener
@@ -82,7 +83,7 @@ class MeFragment : BaseFragment() {
         adapter = ProfilePostsAdapter()
         adapter.setHeaderAndEmpty(true)
         viewMeHeader = ViewMeHeader(requireContext())
-        Glide.with(this).load(LoginModel.getUserInfo()!!.avatar!!).centerInside().override(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).into(binding.avatar)
+        loadAvatarBig(binding.avatar)
         viewMeHeader.bindData(LoginModel.getUserInfo()!!)
         adapter.setHeaderView(viewMeHeader)
 
@@ -129,7 +130,7 @@ class MeFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
         viewMeHeader.bindData(LoginModel.getUserInfo()!!)
-        Glide.with(this).load(LoginModel.getUserInfo()!!.avatar).centerInside().override(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).into(binding.avatar)
+        loadAvatarBig(binding.avatar)
     }
 
     @Subscribe
