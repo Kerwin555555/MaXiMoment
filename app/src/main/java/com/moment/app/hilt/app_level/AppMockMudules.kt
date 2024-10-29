@@ -3,6 +3,7 @@ package com.moment.app.hilt.app_level
 import android.util.Log
 import com.moment.app.datamodel.HuanxinBean
 import com.moment.app.datamodel.Results
+import com.moment.app.datamodel.UpdateInfoResult
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
@@ -211,6 +212,13 @@ class MockLoginService: LoginService {
             this.data = res
         }
     }
+
+//    override suspend fun updateInfo(data: Map<String, String>): Results<UserInfo> {
+//        withContext(Dispatchers.IO) {
+//            delay(400)
+//        }
+//        return Results()
+//    }
 
     override suspend fun getUserInfo(userId: String?): Results<UserInfo> {
         withContext(Dispatchers.IO) {

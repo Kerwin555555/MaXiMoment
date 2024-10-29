@@ -3,7 +3,6 @@ package com.moment.app.login_profile
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Bitmap
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -19,7 +18,6 @@ import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.bigkoo.pickerview.view.TimePickerView
 import com.blankj.utilcode.util.KeyboardUtils
-import com.blankj.utilcode.util.LogUtils
 import com.didi.drouter.annotation.Router
 import com.didi.drouter.api.DRouter
 import com.didi.drouter.api.Extend
@@ -39,6 +37,7 @@ import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
 import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.immersion
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
@@ -50,10 +49,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
-import java.io.File
-import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
 import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
@@ -72,14 +67,9 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSwipeBackEnable(false)
-        kotlin.runCatching {
-            val transaction: FragmentTransaction = supportFragmentManager.beginTransaction()
-            for (f in supportFragmentManager.getFragments()) {
-                transaction.remove(f!!)
-            }
-            transaction.commitNow()
-        }
+        cleanSaveFragments()
         immersion()
+
         initUI()
         initObservers()
     }
@@ -113,6 +103,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
             })
             pickerView.show()
             clearEditTextsFocus()
+            binding.birthday.requestFocus()
             KeyboardUtils.hideSoftInput(this)
         }
         binding.boy.setTextColorStateSelectList(
@@ -262,7 +253,7 @@ class ProfileViewModel @Inject constructor(
         startCoroutine({
             val data = _liveData.value
             val result =  loginService.updateInfo(mutableMapOf(
-                "age" to data!!.ageToString(),
+                "age" to data!!.birthDateToString(),
                 "name" to data.nickName,
                 "gender" to data.gender,
                 "bio" to data.bio
@@ -272,7 +263,7 @@ class ProfileViewModel @Inject constructor(
                 return@startCoroutine
             }
             info.name = data.nickName
-            info.birthday = data.ageToString()
+            info.birthday = data.birthDateToString()
             info.age = DateUtil.getAge(info.birthday)
             info.gender = data.gender
             info.bio = data.bio
@@ -327,11 +318,12 @@ class ProfileViewModel @Inject constructor(
         var nickName: String? = null,
         var gender: String? = null,
         var bio: String? = null,
+        var avatar: String? = null,
 
         var dataOk: Boolean = false
     ) {
         @SuppressLint("DefaultLocale")
-        fun ageToString(): String {
+        fun birthDateToString(): String {
             if (timeSelect == null) return ""
             val calendar = Calendar.getInstance()
             calendar.time = timeSelect
@@ -340,6 +332,12 @@ class ProfileViewModel @Inject constructor(
                     calendar[Calendar.MONTH] + 1,
                     calendar[Calendar.DAY_OF_MONTH]
                 )
+        }
+
+        override fun equals(other: Any?): Boolean {
+            return other is ProfileData && birthDateToString() == other.birthDateToString()
+                    && gender == other.gender && bio == other.bio && avatar == other.avatar
+                    && bio == other.bio
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.moment.app.utils
 
 import android.content.Context
-import android.text.TextUtils
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.bigkoo.pickerview.builder.TimePickerBuilder
@@ -134,5 +133,15 @@ object DateUtil {
             .setTimeSelectChangeListener(selectChangeListener)
             .setLabel("", "", "", "hours", "mins", "seconds")
             .build()
+    }
+
+    fun birthdayToDate(dateString: String) : Date {
+
+        // 使用 SimpleDateFormat 解析字符串为 Date 对象
+        val parsedDate = format.parse(dateString)
+        // 如果你一定要使用 Calendar，你可以这样做：
+        val calendar = Calendar.getInstance()
+        calendar.time = parsedDate
+        return parsedDate!!
     }
 }

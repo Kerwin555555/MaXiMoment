@@ -281,11 +281,13 @@ fun AppCompatActivity.bottomInBottomOut() : FragmentTransaction {
 }
 
 fun AppCompatActivity.cleanSaveFragments() {
-    val transaction = supportFragmentManager.beginTransaction()
-    for (f in supportFragmentManager.fragments) {
-        transaction.remove(f)
+    kotlin.runCatching {
+        val transaction = supportFragmentManager.beginTransaction()
+        for (f in supportFragmentManager.fragments) {
+            transaction.remove(f)
+        }
+        transaction.commitNow()
     }
-    transaction.commitNow()
 }
 
 fun Fragment.copyFragmentArgumentsToMap() : MutableMap<String, Any?>{

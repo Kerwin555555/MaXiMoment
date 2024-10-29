@@ -37,3 +37,13 @@ class HuanxinBean : BaseBean() {
 class UserSettings : BaseBean() {
     //var allowCrossRegionMatch: Boolean = true //默认勾选
 }
+
+
+data class UpdateInfoResult(
+    var update_info_loc: Boolean = false,
+    var show_loc_as_region: Boolean = false,
+    var loc_list: List<String> = emptyList(),
+    var updated_info: UserInfo?,
+    var register_prefer_select: Boolean = false,
+//    var user_settings: UserSift?
+): BaseBean()
