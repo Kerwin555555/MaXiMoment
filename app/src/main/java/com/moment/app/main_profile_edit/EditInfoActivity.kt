@@ -1,6 +1,8 @@
 package com.moment.app.main_profile_edit
 
+import android.Manifest
 import android.content.Context
+import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -8,7 +10,8 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
-import androidx.lifecycle.LiveData
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.os.bundleOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bigkoo.pickerview.listener.OnDismissListener
@@ -20,35 +23,63 @@ import com.blankj.utilcode.util.CloneUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.bumptech.glide.Glide
 import com.didi.drouter.annotation.Router
-import com.gyf.immersionbar.ImmersionBar
+import com.moment.app.R
 import com.moment.app.databinding.ActivityEditInfoBinding
 import com.moment.app.datamodel.UserInfo
+import com.moment.app.hilt.app_level.MockData
+import com.moment.app.images.Explorer
+import com.moment.app.login_page.service.LoginService
+import com.moment.app.login_profile.ChooseAlbumFragment
+import com.moment.app.login_profile.ClipImageView
+import com.moment.app.login_profile.OnImageConfirmListener
 import com.moment.app.login_profile.ProfileViewModel
 import com.moment.app.models.LoginModel
+import com.moment.app.network.ProgressDialogStatus
+import com.moment.app.network.refreshProgressDialog
+import com.moment.app.network.startCoroutine
+import com.moment.app.network.toast
+import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
 import com.moment.app.utils.JsonUtil
+import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
+import com.moment.app.utils.bottomInBottomOut
+import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.dp
+import com.moment.app.utils.getScreenHeight
+import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.immersion
+import com.moment.app.utils.saveView
+import com.moment.app.utils.setOnSingleClickListener
 import com.moment.app.utils.setTextColorStateSelectList
 import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import java.util.Calendar
 import java.util.Date
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/edit/userInfo")
-class EditInfoActivity : BaseActivity(){
+class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
 
     private lateinit var binding: ActivityEditInfoBinding
     private val viewModel by viewModels<EditProfileViewModel>()
     private var initialProfileData: ProfileViewModel.ProfileData? = null
+    private var progressDialog: ProgressDialog? = null
+
+    @Inject
+    @MockData
+    lateinit var loginService: LoginService
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        cleanSaveFragments()
         binding = ActivityEditInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.back.applyMargin(top = 15.dp + BarUtils.getStatusBarHeight())
@@ -59,6 +90,10 @@ class EditInfoActivity : BaseActivity(){
         binding.back.setOnClickListener {
             finish()
         }
+
+        binding.save.setOnSingleClickListener({
+            viewModel.submitData(initialProfileData!!, this@EditInfoActivity, loginService)
+        }, 500)
 
         viewModel.liveData.observe(this) {
 
@@ -89,22 +124,30 @@ class EditInfoActivity : BaseActivity(){
         LoginModel.getUserInfo()?.let {
             initUI(userInfo = it)
             initialProfileData = ProfileViewModel.ProfileData(
-                avatar = it.avatar!!.absolutePath,
+                avatar = it.avatar!!,
                 nickName = it.name,
                 bio = it.bio,
                 gender = it.gender,
                 timeSelect = DateUtil.birthdayToDate(it.birthday!!)
             )
+            Log.d("zhouzheng copy", initialProfileData.toString())
             val copy = CloneUtils.deepClone(initialProfileData!!, ProfileViewModel.ProfileData::class.java)
+            Log.d("zhouzheng copy", copy.toString())
             viewModel.liveData.value = copy
         } ?: let {
             "Initial profile not set".toast()
              viewModel.liveData.value = ProfileViewModel.ProfileData()
         }
+
+        viewModel.showProgressDialog.observe(this) {
+            progressDialog = it.refreshProgressDialog(progressDialog, this)
+        }
     }
 
     private fun initUI(userInfo: UserInfo) {
-
+        binding.avatar.setOnClickListener {
+            onChooseFromLibrary()
+        }
         binding.nicknameEditText.setText(userInfo.name ?: "")
         binding.nicknameEditText.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -195,15 +238,116 @@ class EditInfoActivity : BaseActivity(){
             selectChangeListener
         )
     }
+
+    fun onChooseFromLibrary() {
+        try {
+            PermissionHelper.check(
+                this, "Choose from library",
+                arrayOf<String>(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ), object : PermissionHelper.Callback {
+                    override fun result(res: Int) {
+                        if (res == 0) {
+                            Log.d("zhouzheng", Thread.currentThread().name)
+                            this@EditInfoActivity.bottomInBottomOut().add(R.id.root_layout, ChooseAlbumFragment().apply {
+                                    arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
+                                }, "ChooseAlbumFragment").addToBackStack(null).commitAllowingStateLoss()
+                        }
+                    }
+                })
+        } catch (e: Exception) {
+            e.printStackTrace()
+            (e.message + "requestPermissions error").toast()
+        }
+    }
+
+    override fun onConfirm(clipImageView: ClipImageView, map: Map<String, Any?>?) {
+        supportFragmentManager.let {
+            val f = it.findFragmentByTag("ClipImageFragment")
+            val f2 = it.findFragmentByTag("ChooseAlbumFragment")
+            it.beginTransaction()
+                .setCustomAnimations(0,R.anim.slide_down,0,0)
+                .remove(f!!)
+                .remove(f2!!)
+                .commitNowAllowingStateLoss()
+        }
+
+        if (map?.get("file") != null) {
+            viewModel.liveData.value?.avatar = map["file"] as? String?
+            viewModel.refresh()
+        }
+    }
 }
 
-class EditProfileViewModel: ViewModel() {
+class EditProfileViewModel : ViewModel() {
     var liveData = MutableLiveData<ProfileViewModel.ProfileData>()
+    val _showProgressDialog = MutableLiveData<ProgressDialogStatus>()
+    val showProgressDialog = _showProgressDialog
 
     fun refresh() {
         liveData.value = liveData.value
     }
 
+    fun submitData(initData: ProfileViewModel.ProfileData, context: Context, loginService: LoginService) {
+        _showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(true)
+        startCoroutine({
+            val profileData = liveData.value
+            val map = mutableMapOf<String?,String?>()
+            if (profileData?.avatar != null && initData.avatar != profileData.avatar) {
+                val file = withContext(Dispatchers.IO) {
+                    val drawable =
+                        Glide.with(context).load(profileData.avatar).centerInside().submit(
+                            getScreenWidth(), getScreenHeight()
+                        ).get()
+                    saveView(context, (drawable as BitmapDrawable).bitmap)?.absolutePath ?: ""
+                }
+                "clip and save to local ok".toast()
+                //upload file to cloud
+                delay(300)
+                "upload to cloud".toast()
+                map["avatar"] = file
+            }
+            if (profileData?.nickName!= null && initData.gender != profileData.nickName) {
+                map["name"] = profileData.nickName!!
+            }
+            if (profileData?.birthDateToString() != null && initData.birthDateToString() != profileData.birthDateToString()) {
+                map["birthday"] = profileData.birthDateToString()
+            }
+            if (profileData?.gender != null && initData.gender != profileData.gender) {
+                map["gender"] = profileData.gender!!
+            }
+            if (profileData?.bio!= null && initData.bio != profileData.bio) {
+                map["bio"] = profileData.bio!!
+            }
+            val result = loginService.updateInfo(map)
+            "upload to backend".toast()
+            LoginModel.getUserInfo()?.apply {
+                map["name"]?.let{
+                    this.name = it
+                }
+                map["gender"]?.let{
+                    this.gender = it
+                }
+                map["avatar"]?.let{
+                    this.avatar = it
+                }
+                map["bio"]?.let{
+                    this.bio = it
+                }
+                map["birthday"]?.let{
+                    this.birthday = it
+                }
+                Log.d("zhouzheng save", JsonUtil.toJson(this))
+                LoginModel.setUserInfo(this)
+                _showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
+                (context as? AppCompatActivity)?.finish()
+            }
+        }) {
+            it.toast()
+            _showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
+        }
+    }
 }
 
 // Date -> "xxxx:xx:xx" -> 15

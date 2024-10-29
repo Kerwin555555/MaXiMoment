@@ -46,6 +46,8 @@ import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
 import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.dp
+import com.moment.app.utils.getScreenHeight
+import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.saveView
 import com.moment.app.utils.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -103,6 +105,8 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
             progresDialog.isCancelable = false
             startCoroutine({
                 val list = mutableListOf<Deferred<String?>>()
+                val w = getScreenWidth()
+                val h = getScreenHeight()
                 for (item in adapter.data) {
                     if (item.remoteFileId != null) {
                         list.add(this.async(Dispatchers.IO) {
@@ -110,9 +114,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                         })
                     } else if (item.albumOriginal != null){
                         list.add(this.async(Dispatchers.IO) {
-                            val drawable = Glide.with(this@EditPhotosWallActivity).load(item.albumOriginal).
-                            centerInside()
-                                .submit(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).get()
+                            val drawable = Glide.with(this@EditPhotosWallActivity).load(item.albumOriginal).centerInside().submit(w, h).get()
                             saveView(this@EditPhotosWallActivity, (drawable as BitmapDrawable).bitmap)?.absolutePath ?: ""
                         })
                     }

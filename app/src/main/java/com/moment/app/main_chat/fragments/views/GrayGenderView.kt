@@ -32,7 +32,7 @@ class GrayGenderView  : LinearLayout {
     }
 
     fun bindGender(userInfo: UserInfo) {
-        (binding.genderView.drawable as? LevelListDrawable)?.setLevel(if (userInfo.gender == "male")1 else 0)
+        (binding.genderView.drawable as? LevelListDrawable)?.setLevel(if (userInfo.gender == "boy")1 else 0)
         binding.text.text = "${userInfo.age}"
     }
 }

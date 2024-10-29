@@ -24,8 +24,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PermissionChecker.PERMISSION_GRANTED
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.IntentUtils
 import com.blankj.utilcode.util.LogUtils
@@ -178,26 +176,26 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
         }
     }
 
-    // 切换Fragment的方法
-    private fun showClip(showClip: Boolean) {
-        activity?.let {
-            val fragmentManager: FragmentManager = (activity as AppCompatActivity).supportFragmentManager
-            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
-            if (showClip) {
-                fragmentTransaction.setCustomAnimations(
-                    R.anim.f_slide_out_left,  // A Fragment退出动画
-                    R.anim.f_slide_in_right,  // B Fragment进入动画
-                    R.anim.f_slide_out_right,  // B Fragment退出动画（之后使用）
-                    R.anim.f_slide_in_left // A Fragment重新进入动画（之后使用）
-                )
-
-                fragmentTransaction
-                    .add(R.id.root_layout, ClipImageFragment())
-                    .addToBackStack(null)
-                    .commitNowAllowingStateLoss()
-            }
-        }
-    }
+//    // 切换Fragment的方法
+//    private fun showClip(showClip: Boolean) {
+//        activity?.let {
+//            val fragmentManager: FragmentManager = (activity as AppCompatActivity).supportFragmentManager
+//            val fragmentTransaction: FragmentTransaction = fragmentManager.beginTransaction()
+//            if (showClip) {
+//                fragmentTransaction.setCustomAnimations(
+//                    R.anim.f_slide_out_left,  // A Fragment退出动画
+//                    R.anim.f_slide_in_right,  // B Fragment进入动画
+//                    R.anim.f_slide_out_right,  // B Fragment退出动画（之后使用）
+//                    R.anim.f_slide_in_left // A Fragment重新进入动画（之后使用）
+//                )
+//
+//                fragmentTransaction
+//                    .add(R.id.root_layout, ClipImageFragment())
+//                    .addToBackStack(null)
+//                    .commitNowAllowingStateLoss()
+//            }
+//        }
+//    }
 
     private fun setResultToPrevious() {
         val intent = Intent()
@@ -392,9 +390,12 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
 //                        latestDirId,
 //                        extras)
                     val bundle = bundleOf("file" to file.displayPath())
+
+                    //来自 EditPhotosWallActivity
                       f.arguments?.getSerializable("item")?.let {
                           bundle.putSerializable("item", it)
                       }
+                    //来自 EditInfoActifity
                     (context as? AppCompatActivity?)?.supportFragmentManager
                         ?.beginTransaction()
                         ?.setCustomAnimations(

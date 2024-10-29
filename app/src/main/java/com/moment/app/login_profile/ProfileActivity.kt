@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bigkoo.pickerview.listener.OnDismissListener
@@ -36,6 +36,7 @@ import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
+import com.moment.app.utils.JsonUtil
 import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.immersion
@@ -294,12 +295,13 @@ class ProfileViewModel @Inject constructor(
                 }
             }
             val file = withContext(Dispatchers.IO) {
-                saveView(imageView.context, imageView.clipOriginalBitmap()!!)
+                saveView(imageView.context, imageView.clipOriginalBitmap()!!)?.absolutePath
             }
             LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
                 avatar = file // for test
                 finished_info = true
             })
+            Log.d("zhouzheng save", JsonUtil.toJson(LoginModel.getUserInfo()))
             hasAvatarLiveData.value = true
             delay(2000) // mock upload to backend and cloud storage
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog

@@ -1,10 +1,7 @@
 package com.moment.app.main_profile
 
 //import com.moment.app.main_profile.adapters.MeAdapter
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +9,6 @@ import android.view.ViewGroup
 import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.Key
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.didi.drouter.api.DRouter
 import com.moment.app.R
 import com.moment.app.databinding.FragmentProfileBinding
@@ -45,8 +37,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
-import java.security.MessageDigest
-import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
 
 
@@ -77,7 +67,6 @@ class MeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        EventBus.getDefault().register(this)
         initUI()
 
         loadData(false)
@@ -93,7 +82,7 @@ class MeFragment : BaseFragment() {
         adapter = ProfilePostsAdapter()
         adapter.setHeaderAndEmpty(true)
         viewMeHeader = ViewMeHeader(requireContext())
-        Glide.with(this).load(R.mipmap.pic2).centerInside().override(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).into(binding.avatar)
+        Glide.with(this).load(LoginModel.getUserInfo()!!.avatar!!).centerInside().override(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).into(binding.avatar)
         viewMeHeader.bindData(LoginModel.getUserInfo()!!)
         adapter.setHeaderView(viewMeHeader)
 
@@ -136,13 +125,15 @@ class MeFragment : BaseFragment() {
         }
     }
 
+
+    override fun onResume() {
+        super.onResume()
+        viewMeHeader.bindData(LoginModel.getUserInfo()!!)
+        Glide.with(this).load(LoginModel.getUserInfo()!!.avatar).centerInside().override(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).into(binding.avatar)
+    }
+
     @Subscribe
     fun updateUserInfo(event: UpdateUserInfoEvent) {
         val a= 1
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        EventBus.getDefault().unregister(this)
     }
 }

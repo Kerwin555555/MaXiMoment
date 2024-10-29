@@ -18,6 +18,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.blankj.utilcode.util.LanguageUtils
 import com.blankj.utilcode.util.LogUtils
+import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -27,6 +28,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.google.common.collect.ImmutableList
 import com.gyf.immersionbar.ImmersionBar
+import com.moment.app.MomentApp
 import com.moment.app.R
 import java.io.File
 import java.io.FileNotFoundException
@@ -330,6 +332,20 @@ fun getSelectedLoc(): Locale {
     return Locale.ENGLISH
 }
 
+fun getScreenWidth() : Int{
+    val w = ScreenUtils.getAppScreenWidth()
+    if (w > 0) {
+        return w
+    }
+    return MomentApp.appContext.resources.displayMetrics.widthPixels
+}
+fun getScreenHeight() : Int{
+    val h = ScreenUtils.getAppScreenHeight()
+    if (h > 0) {
+        return h
+    }
+    return MomentApp.appContext.resources.displayMetrics.heightPixels
+}
 
 
 

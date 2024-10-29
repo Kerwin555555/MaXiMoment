@@ -22,6 +22,7 @@ import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_TAKE
 import com.moment.app.models.LoginModel
 import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseFragment
+import com.moment.app.utils.bottomInBottomOut
 import com.moment.app.utils.toast
 
 
@@ -102,14 +103,7 @@ class ChooseAvatarFragment : BaseFragment() {
 
 
     private fun choosePhoto() {
-         (activity as? AppCompatActivity?)?.supportFragmentManager
-            ?.beginTransaction()
-            ?.setCustomAnimations(
-                R.anim.slide_up, // 进入动画
-                0, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
-                0, // 弹出动画（这里没有设置，所以为0）
-                R.anim.slide_down ,  // 弹入动画（这里没有设置，所以为0）
-           )
+         (activity as? AppCompatActivity?)?.bottomInBottomOut()
            ?.add(R.id.root_layout, ChooseAlbumFragment().apply {
                    arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
            }, "ChooseAlbumFragment")?.addToBackStack(null)

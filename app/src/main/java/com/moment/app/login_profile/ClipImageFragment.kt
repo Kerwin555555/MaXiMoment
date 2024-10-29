@@ -48,7 +48,6 @@ class ClipImageFragment : BaseFragment() {
         kotlin.runCatching {
             val file: String? = requireArguments().getSerializable("file") as String?
             if (file != null) {
-                Glide.with(this).pauseAllRequests()
                 Glide.with(this)
                     .setDefaultRequestOptions(
                         RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
@@ -102,5 +101,8 @@ class ClipImageFragment : BaseFragment() {
 }
 
 interface OnImageConfirmListener {
-    fun onConfirm(clipImageView: ClipImageView, resourceFileId: Map<String, Any?>?)
+    /**
+     *  clipImageView: 提供剪裁后的Bitmap, map: 其他启动信息
+     */
+    fun onConfirm(clipImageView: ClipImageView, map: Map<String, Any?>?)
 }

@@ -16,7 +16,7 @@ data class UserInfo(
     var forbidden_session: String? ="",
     var huanxin:HuanxinBean? = null,
     var followed: Boolean? = false,
-    var avatar: File? = null,
+    var avatar: String? = null,
     var imagesWallList: MutableList<String> = mutableListOf(),
     var friends_count: Int? = 0,
     var following_count: Int? = 0,

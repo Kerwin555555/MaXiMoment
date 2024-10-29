@@ -111,7 +111,7 @@ class MockHomeService: HomeService {
         for (i in startPos until  startPos + num) {
             list.add(UserInfo().apply {
                 this.userId = ""+java.util.UUID.randomUUID()
-                this.gender = if (i%2 ==0)"male" else "female"
+                this.gender = if (i%2 ==0)"boy" else "girl"
                 this.name = "MomentFan" + i
                 this.age = i
                 this.followed = i%2 ==0
@@ -144,7 +144,7 @@ class MockLoginService: LoginService {
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
                 },
-                gender = "male",
+                gender = "boy",
                 imagesWallList = mutableListOf("0","1", "2", "3", "1"),
                 follower_count = 10000,
                 following_count= 10,
@@ -170,7 +170,7 @@ class MockLoginService: LoginService {
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
                 },
-                gender = "male",
+                gender = "boy",
                 imagesWallList = mutableListOf("0","1", "2", "3", "1"),
                 follower_count = 10000,
                 following_count= 100000,
@@ -200,7 +200,7 @@ class MockLoginService: LoginService {
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
                 },
-                gender = "male",
+                gender = "boy",
                 imagesWallList = mutableListOf("0","1", "2", "3", "1"),
                 follower_count = 10,
                 following_count= 1000,
@@ -256,7 +256,7 @@ class MockFeedService : FeedService{
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
                 },
-                gender = "female",
+                gender = "girl",
             )
             delay(1500)
             val list = mutableListOf<PostBean>()
@@ -310,7 +310,7 @@ class MockThreadService: ThreadService {
                     this. userInfo  =   UserInfo(
                     userId = UUID.randomUUID().toString(),
                     name = "Momentfanxxx",
-                    gender = "female",
+                    gender = "girl",
                 )
                 })
             }
