@@ -42,14 +42,14 @@ inline fun ViewModel.startCoroutine(
 inline fun AppCompatActivity.startCoroutine(
     crossinline block: suspend CoroutineScope.() -> Unit,
     crossinline errorAction: (it: MomentNetError) -> Unit,
-) {
+) : Job  {
     val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
         this.lifecycleScope.launch(Dispatchers.Main) {
             val pair = throwable.format()
             errorAction.invoke(MomentNetError(pair.first, pair.second, throwable))
         }
     }
-    this.lifecycleScope.launch(coroutineHandler) {
+    return this.lifecycleScope.launch(coroutineHandler) {
         this.block()
     }
 }

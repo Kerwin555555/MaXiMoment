@@ -30,6 +30,9 @@ class PostBean: BaseBean() {
     fun isPictureFeed(): Boolean {
         return pics_shape != null && !pics_shape!!.isEmpty()
     }
+
+
+    var isMe = false
 }
 
 class CreateTimeBean : BaseBean() {

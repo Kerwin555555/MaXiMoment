@@ -22,6 +22,7 @@ import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_TAKE
 import com.moment.app.models.LoginModel
 import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseFragment
+import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.bottomInBottomOut
 import com.moment.app.utils.toast
 
@@ -66,7 +67,7 @@ class ChooseAvatarFragment : BaseFragment() {
                 ), object : PermissionHelper.Callback {
                     override fun result(res: Int) {
                         if (res == 0) {
-                            Log.d("zhouzheng", Thread.currentThread().name)
+                            Log.d(MOMENT_APP, Thread.currentThread().name)
                             choosePhoto()
                         }
                     }
@@ -80,7 +81,7 @@ class ChooseAvatarFragment : BaseFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
-            //Log.d("zhouzheng", "" + requestCode)
+            //Log.d(MOMENT_APP, "" + requestCode)
             if (requestCode == REQUEST_CODE_CHOOSE) {
 //                if (chooseListener != null) chooseListener!!.onPhotoChoose(
 //                    Explorer.obtainResult(

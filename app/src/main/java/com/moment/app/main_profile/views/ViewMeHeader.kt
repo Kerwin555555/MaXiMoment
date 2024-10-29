@@ -120,14 +120,7 @@ class HeaderAdapter : BaseQuickAdapter<String, BaseViewHolder>(null) {
                     DiskCacheStrategy.RESOURCE
                 )
             )
-            .load(
-                when (item) {
-                    "0" -> R.mipmap.pic1
-                    "1" -> R.mipmap.pic2
-                    "2" -> R.mipmap.pic3
-                    else -> R.mipmap.pic4
-                }
-            )
+            .load(item ?: "")
             .dontTransform()
             .placeholder(R.drawable.moment)
             .thumbnail(0.3f)

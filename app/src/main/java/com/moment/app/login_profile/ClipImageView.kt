@@ -178,7 +178,7 @@ class ClipImageView(context: Context?, attrs: AttributeSet?) :
             return
         }
         super.setImageDrawable(drawable)
-        //Log.d("zhouzheng", "setup scalematix" + (drawable as? BitmapDrawable)?.bitmap?.width)
+        //Log.d(MOMENT_APP, "setup scalematix" + (drawable as? BitmapDrawable)?.bitmap?.width)
         // super.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.monster_icon_6))
         postInitImageMatrix()
     }
@@ -219,7 +219,7 @@ class ClipImageView(context: Context?, attrs: AttributeSet?) :
             (dx + 0.5f).toInt().toFloat(),
             (dy + 0.5f).toInt().toFloat()
         )
-        //Log.d("zhouzheng", "setup scalematix" + mScaleMatrix)
+        //Log.d(MOMENT_APP, "setup scalematix" + mScaleMatrix)
         imageMatrix = mScaleMatrix
 
         mInitScale = scale

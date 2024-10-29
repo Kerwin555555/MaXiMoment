@@ -31,6 +31,7 @@ import com.chad.library.adapter.base.loadmore.LoadMoreView
 import com.moment.app.R
 import com.moment.app.databinding.BasicRefreshHeaderBinding
 import com.moment.app.databinding.MomentRefreshviewBinding
+import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.dp
 import com.scwang.smart.refresh.header.FalsifyHeader
 import com.scwang.smart.refresh.header.MaterialHeader
@@ -372,7 +373,7 @@ class ProgressDrawable : Drawable(), Animatable,
         mValueAnimator.repeatCount = ValueAnimator.INFINITE
         mValueAnimator.repeatMode = ValueAnimator.RESTART
         mValueAnimator.addUpdateListener(this)
-        Log.d("zhouzheng", "attach")
+        Log.d(MOMENT_APP, "attach")
     }
 }
 

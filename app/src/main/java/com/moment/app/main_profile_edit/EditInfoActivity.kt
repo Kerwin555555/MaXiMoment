@@ -3,6 +3,7 @@ package com.moment.app.main_profile_edit
 import android.Manifest
 import android.content.Context
 import android.graphics.drawable.BitmapDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
@@ -42,6 +43,7 @@ import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
 import com.moment.app.utils.JsonUtil
+import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
@@ -97,7 +99,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
 
         viewModel.liveData.observe(this) {
 
-            Glide.with(this).load(it.avatar).into(binding.avatar)
+            Glide.with(this).asBitmap().load(it.avatar).into(binding.avatar)
 
             binding.birthday.setText(it.birthDateToString())
 
@@ -249,7 +251,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
                 ), object : PermissionHelper.Callback {
                     override fun result(res: Int) {
                         if (res == 0) {
-                            Log.d("zhouzheng", Thread.currentThread().name)
+                            Log.d(MOMENT_APP, Thread.currentThread().name)
                             this@EditInfoActivity.bottomInBottomOut().add(R.id.root_layout, ChooseAlbumFragment().apply {
                                     arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
                                 }, "ChooseAlbumFragment").addToBackStack(null).commitAllowingStateLoss()
@@ -276,6 +278,9 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
         if (map?.get("file") != null) {
             viewModel.liveData.value?.avatar = map["file"] as? String?
             viewModel.refresh()
+        } else if (map?.get("uri") != null) {
+            viewModel.liveData.value?.avatar = map["uri"] as? Uri?
+            viewModel.refresh()
         }
     }
 }
@@ -296,11 +301,11 @@ class EditProfileViewModel : ViewModel() {
             val map = mutableMapOf<String?,String?>()
             if (profileData?.avatar != null && initData.avatar != profileData.avatar) {
                 val file = withContext(Dispatchers.IO) {
-                    val drawable =
-                        Glide.with(context).load(profileData.avatar).centerInside().submit(
+                    val bitmap =
+                        Glide.with(context).asBitmap().load(profileData.avatar).centerInside().submit(
                             getScreenWidth(), getScreenHeight()
                         ).get()
-                    saveView(context, (drawable as BitmapDrawable).bitmap)?.absolutePath ?: ""
+                    saveView(context, bitmap)?.absolutePath ?: ""
                 }
                 "clip and save to local ok".toast()
                 //upload file to cloud
@@ -331,6 +336,7 @@ class EditProfileViewModel : ViewModel() {
                 }
                 map["avatar"]?.let{
                     this.avatar = it
+                    this.imagesWallList[0] = it
                 }
                 map["bio"]?.let{
                     this.bio = it

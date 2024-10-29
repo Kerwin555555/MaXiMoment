@@ -28,10 +28,12 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.didi.drouter.api.DRouter
 import com.google.common.collect.ImmutableList
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.MomentApp
 import com.moment.app.R
+import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.models.LoginModel
 import java.io.File
 import java.io.FileNotFoundException
@@ -295,6 +297,17 @@ fun AppCompatActivity.cleanSaveFragments() {
     }
 }
 
+fun AppCompatActivity.stackAnimation() : FragmentTransaction{
+    return supportFragmentManager
+        .beginTransaction()
+        .setCustomAnimations(
+            R.anim.f_slide_in_right,    // clip enter from right 1
+            R.anim.f_slide_out_left,    // album out to left 1
+            R.anim.f_slide_in_left,    // album back from left 2
+            R.anim.f_slide_out_right   // clip out to right 2
+        )
+}
+
 fun Fragment.copyFragmentArgumentsToMap() : MutableMap<String, Any?>{
     val map = mutableMapOf<String, Any?>()
     arguments?.let {
@@ -360,5 +373,26 @@ fun Fragment.loadAvatarBig(view: ImageView) {
 }
 
 
+val MOMENT_APP = "zhouzheng"
 
+//   /data/user/0/com.moment.app/cache/moment_1730249503340.jpg
+
+
+fun View.gotoPostDetail(post: PostBean) {
+    post.user_info?.let {
+        DRouter.build("/feed/detail")
+            .putExtra("post", post)
+            .start()
+    } ?: let {
+        if (post.isMe) {
+            DRouter.build("/feed/detail")
+                .putExtra("post", post.apply {
+                    user_info = LoginModel.getUserInfo()
+                })
+                .start()
+        } else {
+            // avoid !!
+        }
+    }
+}
 

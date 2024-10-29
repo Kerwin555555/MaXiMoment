@@ -37,6 +37,7 @@ import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
 import com.moment.app.utils.JsonUtil
+import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.immersion
@@ -44,6 +45,7 @@ import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
 import com.moment.app.utils.setOnSingleClickListener
 import com.moment.app.utils.setTextColorStateSelectList
+import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -281,6 +283,8 @@ class ProfileViewModel @Inject constructor(
 
 
     fun saveAvatar(imageView: ClipImageView) {
+        Log.d(MOMENT_APP, "wro")
+        Log.d(MOMENT_APP, "dxx xxxxdasdfas")
         startCoroutine({
             showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(cancellable = false)
             kotlin.runCatching {
@@ -299,6 +303,7 @@ class ProfileViewModel @Inject constructor(
             }
             LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
                 avatar = file // for test
+                imagesWallList = mutableListOf(file!!)
                 finished_info = true
             })
             Log.d("zhouzheng save", JsonUtil.toJson(LoginModel.getUserInfo()))
@@ -320,7 +325,7 @@ class ProfileViewModel @Inject constructor(
         var nickName: String? = null,
         var gender: String? = null,
         var bio: String? = null,
-        var avatar: String? = null,
+        var avatar: Any? = null, //目前只在EditInfoActivity使用
 
         var dataOk: Boolean = false
     ) {

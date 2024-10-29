@@ -11,7 +11,9 @@ import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.gotoPostDetail
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
+import com.moment.app.utils.setOnSingleClickListener
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -54,14 +56,17 @@ class PureContentItemView: FrameLayout, AdapterItemView {
     }
 
     private fun bindCommon(post: PostBean) {
-//        Glide.with(this).load(post.user_info!!.avatar)
-//            .into(binding.avatar)
+        Glide.with(this).load(post.user_info!!.avatar)
+            .into(binding.avatar)
         binding.name.text = post.user_info!!.name
         binding.content.text = post.content
+        binding.gender.bindGender(post.user_info!!)
 
         binding.time.text = SimpleDateFormat("yyyy.MM.dd HH:mm")
             .format(Date(post.create_time!!.time.toLong()))
-
+        binding.root.setOnSingleClickListener( {
+            gotoPostDetail(post)
+        },500)
         binding.like.isSelected = post.liked
 
         binding.commentCount.text = "${post.comment_num}"

@@ -9,6 +9,7 @@ import com.hyphenate.chat.EMConversation.EMConversationType
 import com.hyphenate.chat.EMMessage
 import com.moment.app.main_chat.fragments.entities.MomentConversation
 import com.moment.app.models.LoginModel
+import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.coroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -41,13 +42,13 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
         coroutineScope.launch(Dispatchers.IO){
             val ids = ArrayList<String>()
             val result = threadService.conversations().data
-            Log.d("zhouzheng", ""+result?.conversations?.size ?: "0")
+            Log.d(MOMENT_APP, ""+result?.conversations?.size ?: "0")
             val res = mutableListOf<Deferred<*>>()
             for (bean in result!!.conversations!!) {
                 res.add(
                     this.async (Dispatchers.IO){
                         val code = insertNewConversation(bean.conversation_id ?: "", bean)
-                        Log.d("zhouzheng", "insert code"+(code))
+                        Log.d(MOMENT_APP, "insert code"+(code))
                     }
                 )
 //                conversationDao.updatePin(bean.conversation_id, if (bean.pinned) 1 else 0)
@@ -64,7 +65,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
             //update userinfos
             //asyncLoadMessages(undeletedConversations)
             val list = getAllFromDb()
-            Log.d("zhouzheng", "list size"+(list.size))
+            Log.d(MOMENT_APP, "list size"+(list.size))
             withContext(Dispatchers.Main) {
                 ChatSPUtil.save(ChatSPUtil.HAS_LOAD_CLOUD_CONVERSATION, true)
                 conversations.clear()
@@ -111,7 +112,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
             this.userInfo = backend.userInfo
         }
         bean.conversationType = 0
-        Log.d("zhouzheng", id +"xxxfdsafd" + bean.userId)
+        Log.d(MOMENT_APP, id +"xxxfdsafd" + bean.userId)
         if (TextUtils.isEmpty(bean.id) || TextUtils.isEmpty(bean.userId)) {
             return -1
         }

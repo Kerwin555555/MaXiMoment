@@ -444,7 +444,7 @@ fun printStack(start: String) {
             builder.append(element.className).append(".").append(element.methodName).append("\n")
         }
     }
-    Log.d("zhouzheng", start + builder.toString())
+    Log.d(MOMENT_APP, start + builder.toString())
 }
 
 internal fun View.setBgStateListDrawable(

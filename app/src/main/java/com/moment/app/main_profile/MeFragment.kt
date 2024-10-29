@@ -1,16 +1,17 @@
 package com.moment.app.main_profile
 
 //import com.moment.app.main_profile.adapters.MeAdapter
+import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.BarUtils
-import com.blankj.utilcode.util.ScreenUtils
-import com.bumptech.glide.Glide
+import com.blankj.utilcode.util.SizeUtils
 import com.didi.drouter.api.DRouter
-import com.moment.app.R
 import com.moment.app.databinding.FragmentProfileBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
 import com.moment.app.hilt.app_level.MockData
@@ -26,9 +27,12 @@ import com.moment.app.network.toast
 import com.moment.app.ui.uiLibs.RefreshView
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyMargin
+import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.dp
+import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.loadAvatarBig
+import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
 import com.moment.app.utils.setOnSingleClickListener
@@ -36,7 +40,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
@@ -74,9 +77,10 @@ class MeFragment : BaseFragment() {
     }
 
     private fun initUI() {
+        binding.toolbar.applyPaddingsWithDefaultZero(top = BarUtils.getStatusBarHeight())
+        binding.toolbar.requestNewSize(width = -1, height = BarUtils.getStatusBarHeight() + 50.dp)
         binding.income.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
         binding.recharge.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
-        binding.setting.applyMargin(top = BarUtils.getStatusBarHeight() + 9.dp)
         binding.setting.setOnSingleClickListener({
             DRouter.build("/settings").start()
         }, 500)
@@ -101,6 +105,21 @@ class MeFragment : BaseFragment() {
             loadData(isLoadMore as Boolean)
         }
         binding.refreshView.setEnableHeaderTranslationContent(false)
+        (binding.refreshView.getRecyclerView().itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false //remove shimmer
+        binding.refreshView.getRecyclerView().addOnScrollListener(object: RecyclerView.OnScrollListener(){
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {}
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                if (recyclerView.computeVerticalScrollOffset().toFloat() >= 2* getScreenWidth() /3) {
+                    val mBgColor = Color.parseColor("#ffffff")
+                    binding.toolbar.setBackgroundColor(mBgColor)
+                } else {
+                    val scrollRange = 2* getScreenWidth() /3
+                    val mAlpha = Math.abs(255f / scrollRange * recyclerView.computeVerticalScrollOffset().toFloat()).toInt()
+                    val mBgColor = Color.argb(mAlpha, 0xff, 0xff, 0xff)
+                    binding.toolbar.setBackgroundColor(mBgColor)
+                }
+            }
+        })
     }
 
     private fun loadData(isLoadMore: Boolean) {
@@ -115,6 +134,8 @@ class MeFragment : BaseFragment() {
 //                }
                 feedService.getFeeds(LoginModel.getUserId(), startPos, pageSize)
             }
+            result.data?.feeds?.forEach{ it.isMe = true }
+            LoginModel.getUserInfo()?.let { adapter.userInfo = it }
             startPos = result.data!!.next_start
             binding.refreshView.onSuccess(result.data!!.feeds!!.toMutableList(), isLoadMore, result.data!!.has_next)
         }){
@@ -129,8 +150,12 @@ class MeFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        viewMeHeader.bindData(LoginModel.getUserInfo()!!)
-        loadAvatarBig(binding.avatar)
+        LoginModel.getUserInfo()?.let {
+            viewMeHeader.bindData(it)
+            adapter.userInfo = it
+            adapter.notifyItemRangeChanged(0, adapter.data.size)
+            loadAvatarBig(binding.avatar)
+        }
     }
 
     @Subscribe

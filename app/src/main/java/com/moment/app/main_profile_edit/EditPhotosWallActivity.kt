@@ -1,7 +1,6 @@
 package com.moment.app.main_profile_edit
 
 import android.app.Application
-import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.ViewGroup
@@ -15,11 +14,9 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.BarUtils
-import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.SizeUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.didi.drouter.annotation.Router
@@ -27,12 +24,12 @@ import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.R
 import com.moment.app.databinding.ActivityEditWallPhotosBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
-import com.moment.app.hilt.app_level.MockData
 import com.moment.app.images.Explorer
 import com.moment.app.login_profile.ChooseAlbumFragment
 import com.moment.app.login_profile.ClipImageView
 import com.moment.app.login_profile.OnImageConfirmListener
 import com.moment.app.main_profile_edit.dialogs.ReplaceDeleteDialog
+import com.moment.app.models.LoginModel
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.permissions.MomentActionDialog
@@ -40,6 +37,8 @@ import com.moment.app.permissions.SetupBundle
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.BaseBean
 import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.JsonUtil
+import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
@@ -114,13 +113,21 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                         })
                     } else if (item.albumOriginal != null){
                         list.add(this.async(Dispatchers.IO) {
-                            val drawable = Glide.with(this@EditPhotosWallActivity).load(item.albumOriginal).centerInside().submit(w, h).get()
-                            saveView(this@EditPhotosWallActivity, (drawable as BitmapDrawable).bitmap)?.absolutePath ?: ""
+                            val bitmap = Glide.with(this@EditPhotosWallActivity).asBitmap().load(item.albumOriginal).centerInside().submit(w, h).get()
+                            saveView(this@EditPhotosWallActivity, bitmap)?.absolutePath ?: ""
                         })
                     }
                 }
                 val result = list.awaitAll()
                 delay(400) //mock upload to cloud and backend
+                LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
+                    val mutableList = mutableListOf<String>()
+                    result.forEach { fileid->
+                        mutableList.add(fileid!!)
+                    }
+                    imagesWallList = mutableList
+                    avatar = imagesWallList[0]
+                })
                 progresDialog.dismissAllowingStateLoss()
                 EventBus.getDefault().post(UpdateUserInfoEvent())
                 finish()
@@ -184,18 +191,6 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         })
     }
 
-    @MockData
-    private fun getResourceIdFromFileId(id: String) : Int{
-        //"0","1", "2", "3", "1", "2"
-        return when (id) {
-            "0" -> R.mipmap.pic2
-            "1" -> R.mipmap.pic1
-            "2" -> R.mipmap.pic4
-            "3" -> R.mipmap.pic3
-            else -> R.mipmap.light_profile
-        }
-    }
-
     override fun onConfirm(clipImageView: ClipImageView, map: Map<String, Any?>?) {
         kotlin.runCatching {
             supportFragmentManager.let {
@@ -211,7 +206,14 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         if (map?.containsKey("item") == true) {
             val item = map["item"] as? Wrapper?
             item?.let {
-                item.albumOriginal = map["file"] as? String?
+                map["file"]?.let { f ->
+                    item.albumOriginal = f
+                } ?: let {
+                    map["uri"]?.let { uri ->
+                        item.albumOriginal = uri
+                    }
+                }
+                Log.d(MOMENT_APP, "dddd:"+ item.albumOriginal.toString())
                 item.remoteFileId = null
                 reArrangeData()
                 adapter.notifyItemRangeChanged(0, 6)
@@ -221,6 +223,14 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         }
         //Glide.with(this).load("xxx").fitCenter().submit(ScreenUtils.getAppScreenWidth(), ScreenUtils.getAppScreenHeight()).get()
 
+    }
+
+    private fun getNonEmptyCount(): Int {
+        var count = 0
+        for (i in adapter.data) {
+            if (!i.isEmpty()) count++
+        }
+        return count
     }
 
     private fun reArrangeData() {
@@ -263,6 +273,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                         .commitAllowingStateLoss()
                 } else {
                     DialogUtils.show(this@EditPhotosWallActivity, ReplaceDeleteDialog().apply {
+                        arguments = bundleOf("hideDelete" to (getNonEmptyCount() == 1))
                         onReplaceListener = object : ReplaceDeleteDialog.OnReplaceListener{
                             override fun onReplace() {
                                 this@EditPhotosWallActivity.bottomInBottomOut()
@@ -288,13 +299,13 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
             if (item.remoteFileId != null) {
                 filterView.isVisible = true
                 bg.isVisible = false
-                Glide.with(mContext).load(getResourceIdFromFileId(item.remoteFileId!!)).into(filterView)
+                Glide.with(mContext).load(item.remoteFileId!!).into(filterView)
             } else if (item.albumOriginal != null) {
                 filterView.isVisible = true
                 bg.isVisible = false
-                Glide.with(mContext).setDefaultRequestOptions(
-                    RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
-                ).load(item.albumOriginal).into(filterView)
+                Glide.with(mContext).asBitmap().load(item.albumOriginal)
+                    .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+                    .into(filterView)
             } else {
                 filterView.isVisible = false
                 bg.isVisible = true
@@ -303,9 +314,9 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
     }
 
     /**
-     * albumOriginal 在这个activity用户从相册原图本地数据， remoteFileId 进这个act前的后端数据。
+     * albumOriginal 在这个activity用户从相册原图本地数据 可以为fileid,也可以是uri， remoteFileId 进这个act前的后端数据。
      */
-    data class Wrapper(var albumOriginal: String? = null,  var remoteFileId: String? = null) : BaseBean(){
+    data class Wrapper(var albumOriginal: Any? = null,  var remoteFileId: String? = null) : BaseBean(){
         fun isEmpty(): Boolean{ //
             return albumOriginal == null && remoteFileId == null
         }

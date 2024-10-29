@@ -1,6 +1,9 @@
 package com.moment.app.hilt.app_level
 
 import android.util.Log
+import com.moment.app.datamodel.CommentItem
+import com.moment.app.datamodel.CommentItem.TimeInfoBean
+import com.moment.app.datamodel.CommentsList
 import com.moment.app.datamodel.HuanxinBean
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UpdateInfoResult
@@ -20,6 +23,7 @@ import com.moment.app.main_profile.entities.PicShape
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.models.IMLoginModel
 import com.moment.app.utils.Constants.BASE_URL
+import com.moment.app.utils.MOMENT_APP
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -145,10 +149,10 @@ class MockLoginService: LoginService {
                     user_id = "loveabscdessss"
                 },
                 gender = "boy",
-                imagesWallList = mutableListOf("0","1", "2", "3", "1"),
+                imagesWallList = mutableListOf(),
                 follower_count = 10000,
-                following_count= 10,
-                friends_count = 32,
+                following_count= 0,
+                friends_count = 0,
                 bio = ""
             )
         }
@@ -274,11 +278,11 @@ class MockFeedService : FeedService{
                             fileKey = ""
                         )
                     ) else mutableListOf()
-                    user_info = user
+                    user_info = null
                     create_time = CreateTimeBean().apply {
                         time = System.currentTimeMillis()
                     }
-                    content = "hi, today is a nice, I'm thrilling to meet you in Moment, you can chat with me!"
+                    content = "hi, today is nice, I'm thrilled to meet you at Moment, you can chat with me at any time!"
                 }
                 list.add(f)
             }
@@ -292,6 +296,62 @@ class MockFeedService : FeedService{
                 this.result = 0
 
             }
+        }
+    }
+
+    override suspend fun getFeedDetail(id: String?): Results<PostBean> {
+        withContext(Dispatchers.IO) {
+            delay(400)
+        }
+        return Results()
+    }
+
+    /**
+     *     var comment_id: String? = null
+     *     var content: String? = null
+     *     var time_info: TimeInfoBean? = null
+     *     var hasImpressionTrack: Boolean = false //曝光埋点标志
+     *     var user_info: UserInfo? = null
+     *     var inner_comments: List<InnerCommentsBean>? = null
+     *     var show_outside: List<InnerCommentsBean>? = ArrayList()
+     *     var hasClickedSeeMore: Boolean = false // 本地数据
+     *     var show_pos: Int = 0
+     *     var is_fold: Boolean = false
+     *     var isFakeCommentId: Boolean = false
+     *     var loadingStatus: Int = 1 // 本地数据 0 isLoading -> 1 load success无需显示 -> 2 LoadFailed
+     *     var comment_like_num: Int = 0
+     *     var comment_liked: Boolean = false
+     */
+    override suspend fun getComments(id: String?, cursor: Int): Results<CommentsList> {
+        val comment = withContext(Dispatchers.IO) {
+            delay(400)
+            CommentsList().apply {
+                this.cursor = 0
+                this.comments = mutableListOf()
+                for (i in 0 until 10) {
+                    this.comments!!.add(CommentItem().apply {
+                        time_info = TimeInfoBean().apply {
+                            time = System.currentTimeMillis().toInt()
+                        }
+                        comment_id = UUID.randomUUID().toString()
+                        content = "You are cute let us chat"
+                        user_info = UserInfo(
+                            avatar = "avatar",
+                            userId = UUID.randomUUID().toString(),
+                            name = "MomentComment",
+                            huanxin = HuanxinBean().apply{
+                                password  = "045xxxx"
+                                user_id = "loveabscdessss"
+                            },
+                            gender = "girl",
+                        )
+                    })
+                }
+            }
+        }
+        return Results<CommentsList>().apply {
+            isOk = true
+            data = comment
         }
     }
 }
@@ -315,7 +375,7 @@ class MockThreadService: ThreadService {
                 })
             }
         }
-        Log.d("zhouzheng", "怕了点对点")
+        Log.d(MOMENT_APP, "怕了点对点")
          return Results<ThreadList>().apply {
              data = datas
 

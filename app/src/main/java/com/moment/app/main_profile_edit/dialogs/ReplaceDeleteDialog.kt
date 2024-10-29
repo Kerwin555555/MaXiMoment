@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.moment.app.databinding.DialogPhotoChooseBottomSheetBinding
 import com.moment.app.utils.BaseBottomSheetDialogFragment
 
@@ -22,6 +23,9 @@ class ReplaceDeleteDialog : BaseBottomSheetDialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (requireArguments().getBoolean("hideDelete")) {
+            binding.chooseLibrary.isVisible = false
+        }
         binding.takePhoto.text = "Replace"
         binding.chooseLibrary.text = "Delete"
         binding.takePhoto.setOnClickListener {

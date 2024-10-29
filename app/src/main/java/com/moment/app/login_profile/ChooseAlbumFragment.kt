@@ -43,6 +43,7 @@ import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.DialogUtils
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
 import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.stackAnimation
 import com.moment.app.utils.toast
 
 
@@ -154,13 +155,16 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
             //这里接收通知，处理数据给最上层
             setResultToPrevious()
         } else if (requestCode == adapter.REQUEST_CODE_TAKE) {
-            /**
-             *           R.anim.f_slide_in_right,    // clip enter from right 1
-             *                             R.anim.f_slide_out_left,    // clip out from left 2
-             *                             R.anim.f_slide_in_left,    // album back from left 2
-             *                             R.anim.f_slide_out_right   // album out from right 1
-             */
-            adapter.mCurrentPhotoPath?.let {
+            adapter.mCurrentPhotoPath?.let { it ->
+                val itt = context
+                val bundle = bundleOf("uri" to it)
+
+
+                //来自 EditPhotosWallActivity
+                arguments?.getSerializable("item")?.let {
+                    bundle.putSerializable("item", it)
+                }
+
                 (context as? AppCompatActivity?)?.supportFragmentManager
                     ?.beginTransaction()
                     ?.setCustomAnimations(
@@ -169,7 +173,8 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
                        0,
                         R.anim.f_slide_out_right)
                     ?.add(R.id.root_layout, ClipImageFragment().apply {
-                        arguments = bundleOf("uri" to it)
+                        arguments = bundle
+                        onConfirmListener = itt as OnImageConfirmListener
                     }, "ClipImageFragment")?.addToBackStack(null)
                     ?.commitAllowingStateLoss()
             }
@@ -382,7 +387,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                 })
 
 
-                itemView.setOnClickListener {
+                itemView.setOnSingleClickListener({
                     // clipiamgeview
 //                    Explorer.mediaPreview(context as AppCompatActivity,
 //                        false,
@@ -396,21 +401,14 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                           bundle.putSerializable("item", it)
                       }
                     //来自 EditInfoActifity
-                    (context as? AppCompatActivity?)?.supportFragmentManager
-                        ?.beginTransaction()
-                        ?.setCustomAnimations(
-                            R.anim.f_slide_in_right,    // clip enter from right 1
-                            R.anim.f_slide_out_left,    // album out to left 1
-                            R.anim.f_slide_in_left,    // album back from left 2
-                            R.anim.f_slide_out_right   // clip out to right 2
-                        )
+                    (context as? AppCompatActivity?)?.stackAnimation()
                         ?.hide(f)
                         ?.add(R.id.root_layout, ClipImageFragment().apply {
                             arguments = bundle
                             onConfirmListener = f.context as? OnImageConfirmListener?
                         }, "ClipImageFragment")?.addToBackStack(null)
                         ?.commitAllowingStateLoss()
-                }
+                },500)
 
 
                 itemView.isEnabled = true
