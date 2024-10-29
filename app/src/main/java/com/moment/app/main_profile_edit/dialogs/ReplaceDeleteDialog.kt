@@ -1,4 +1,4 @@
-package com.moment.app.main_profile_target.dialogs
+package com.moment.app.main_profile_edit.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater

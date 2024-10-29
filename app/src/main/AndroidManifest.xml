@@ -121,7 +121,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".settings.SettingActivity"
+            android:name=".main_profile_settings.SettingActivity"
             android:screenOrientation="portrait" />
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
@@ -141,8 +141,12 @@
         <activity
             android:name=".login_page.GoogleLoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".main_profile_target.EditPhotosWallActivity"
+        <activity android:name=".main_profile_edit.EditPhotosWallActivity"
             android:screenOrientation="portrait"/>
+        <activity android:name=".main_profile_edit.EditInfoActivity"
+            android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait">
+        </activity>
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />

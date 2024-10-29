@@ -1,4 +1,4 @@
-package com.moment.app.settings.subpages
+package com.moment.app.main_profile_settings.subpages
 
 import android.content.Intent
 import android.os.Bundle
@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.blankj.utilcode.util.LanguageUtils
 import com.chad.library.adapter.base.BaseQuickAdapter
@@ -16,6 +15,8 @@ import com.moment.app.MainActivity
 import com.moment.app.databinding.FragmentLanguageSettingBinding
 import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseFragment
+import com.moment.app.utils.applyEnabledColorIntStateList
+import com.moment.app.utils.getSelectedLoc
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
 import com.moment.app.utils.setOnSingleClickListener
 import java.util.Arrays
@@ -27,6 +28,7 @@ class LanguageSettingFragment : BaseFragment(){
     private val adapter by lazy {
         LanguageAdapter()
     }
+    val initial: Locale? = getSelectedLoc()
 
     private val locEntityList: List<LocEntity> = Arrays.asList(
         LocEntity("English", "English", "en"),
@@ -59,6 +61,8 @@ class LanguageSettingFragment : BaseFragment(){
         binding.back.setOnSingleClickListener({
             (context as? AppCompatActivity?)?.supportFragmentManager?.popBackStackNowAllowingStateLoss()
         }, 500)
+        binding.save.applyEnabledColorIntStateList(enableId =
+        0xff1d1d1d.toInt() , disableId = 0xffE5E5E5.toInt())
 
         binding.rv.setLayoutManager(LinearLayoutManager(requireContext()))
         binding.rv.setAdapter(adapter)
@@ -67,6 +71,7 @@ class LanguageSettingFragment : BaseFragment(){
             BaseQuickAdapter.OnItemClickListener { baseQuickAdapter, view, i ->
                 val entity = adapter.getItem(i) ?: return@OnItemClickListener
                 adapter.selected = entity.locale
+                binding.save.isEnabled = adapter.selected?.language != initial?.language
                 adapter.notifyDataSetChanged()
             }
 

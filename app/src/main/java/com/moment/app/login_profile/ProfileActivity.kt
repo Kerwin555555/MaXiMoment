@@ -40,6 +40,7 @@ import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateUtil
 import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.immersion
+import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
 import com.moment.app.utils.setOnSingleClickListener
 import com.moment.app.utils.setTextColorStateSelectList
@@ -84,6 +85,8 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
     }
 
     private fun initUI() {
+        val w = resources.displayMetrics.widthPixels
+        binding.bg.requestNewSize(width = w, height = w * 313/390 )
         binding.bioEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {

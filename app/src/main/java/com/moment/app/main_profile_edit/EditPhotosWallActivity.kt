@@ -1,4 +1,4 @@
-package com.moment.app.main_profile_target
+package com.moment.app.main_profile_edit
 
 import android.app.Application
 import android.graphics.drawable.BitmapDrawable
@@ -32,7 +32,7 @@ import com.moment.app.images.Explorer
 import com.moment.app.login_profile.ChooseAlbumFragment
 import com.moment.app.login_profile.ClipImageView
 import com.moment.app.login_profile.OnImageConfirmListener
-import com.moment.app.main_profile_target.dialogs.ReplaceDeleteDialog
+import com.moment.app.main_profile_edit.dialogs.ReplaceDeleteDialog
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.permissions.MomentActionDialog

@@ -1,4 +1,4 @@
-package com.moment.app.settings.subpages
+package com.moment.app.main_profile_settings.subpages
 
 import android.text.TextUtils
 import com.chad.library.adapter.base.BaseQuickAdapter

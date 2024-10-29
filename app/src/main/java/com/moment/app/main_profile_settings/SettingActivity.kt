@@ -1,20 +1,18 @@
-package com.moment.app.settings
+package com.moment.app.main_profile_settings
 
 import android.os.Bundle
-import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.didi.drouter.annotation.Router
-import com.facebook.login.Login
 import com.moment.app.R
 import com.moment.app.databinding.ActivityLayoutSettingBinding
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.models.LoginModel
-import com.moment.app.settings.subpages.LanguageSettingFragment
+import com.moment.app.main_profile_settings.subpages.LanguageSettingFragment
 import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.rightInRightOut
