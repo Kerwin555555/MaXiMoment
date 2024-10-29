@@ -81,7 +81,7 @@ class ViewMeHeader : FrameLayout {
         initCount(userInfo)
 
         binding.edit.setOnSingleClickListener({
-
+            DRouter.build("/edit/userInfo").start()
         }, 500)
 
 
