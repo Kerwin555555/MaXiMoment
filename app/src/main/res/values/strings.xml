@@ -10,6 +10,7 @@
     <string name="moment_accost">Accost</string>
     <string name="moment_Chat">Chat</string>
     <string name="enable_push_content_he">Turn on notifications so you know right away when he messages you.</string>
+    <string name="following">Following</string>
 
     <string name="request_audio_permission">In order to %s, you need to allow Moment to access your microphone.</string>
     <string name="request_audio_permission_fail">You need to allow Moment to access your microphone.\nMethod: Setting> Application >Moment >Permission >Microphone</string>

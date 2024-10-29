@@ -120,7 +120,9 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
+        <activity
+            android:name=".settings.SettingActivity"
+            android:screenOrientation="portrait" />
         <meta-data
             android:name="com.facebook.sdk.AutoLogAppEventsEnabled"
             android:value="false" />
@@ -139,7 +141,7 @@
         <activity
             android:name=".login_page.GoogleLoginActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".main_profile_wall.EditPhotosWallActivity"
+        <activity android:name=".main_profile_target.EditPhotosWallActivity"
             android:screenOrientation="portrait"/>
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"

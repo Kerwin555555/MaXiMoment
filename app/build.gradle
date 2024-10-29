@@ -130,6 +130,7 @@ dependencies {
     implementation "androidx.emoji2:emoji2-views:$emoji2_version"
     implementation "androidx.emoji2:emoji2-views-helper:$emoji2_version"
     implementation 'io.hyphenate:hyphenate-chat:3.9.1.2'
+    implementation "com.google.guava:guava:33.3.1-android"
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
 }

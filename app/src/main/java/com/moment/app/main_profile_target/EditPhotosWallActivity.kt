@@ -1,4 +1,4 @@
-package com.moment.app.main_profile_wall
+package com.moment.app.main_profile_target
 
 import android.app.Application
 import android.graphics.drawable.BitmapDrawable
@@ -32,7 +32,7 @@ import com.moment.app.images.Explorer
 import com.moment.app.login_profile.ChooseAlbumFragment
 import com.moment.app.login_profile.ClipImageView
 import com.moment.app.login_profile.OnImageConfirmListener
-import com.moment.app.main_profile_wall.dialogs.ReplaceDeleteDialog
+import com.moment.app.main_profile_target.dialogs.ReplaceDeleteDialog
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.permissions.MomentActionDialog
@@ -41,6 +41,7 @@ import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.BaseBean
 import com.moment.app.utils.DialogUtils
 import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
 import com.moment.app.utils.cleanSaveFragments
@@ -77,6 +78,9 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         binding = ActivityEditWallPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
         cleanSaveFragments()
+        binding.save.applyEnabledColorIntStateList(enableId =
+           0xff1d1d1d.toInt() , disableId = 0xffE5E5E5.toInt())
+        binding.save.isEnabled = false
         ImmersionBar.with(this).statusBarDarkFont(false).fitsSystemWindows(false).init()
         setSwipeBackEnable(false)
         binding.cancel.applyMargin(top = 15.dp + BarUtils.getStatusBarHeight())
@@ -128,24 +132,41 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
 
         }).attachToRecyclerView(binding.rv)
 
+        adapter.registerAdapterDataObserver(object : RecyclerView.AdapterDataObserver(){
+            override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+                super.onItemRangeChanged(positionStart, itemCount)
+                binding.save.isEnabled = hasChangeComparedToInit()
+            }
+
+            override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+                super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+                binding.save.isEnabled = hasChangeComparedToInit()
+            }
+        })
+
         (binding.rv.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false //remove shimmer
     }
 
     override fun onBackPressed() {
+        if (hasChangeComparedToInit()) {
+            showSaveReminderDialog()
+            return
+        }
+        super.onBackPressed()
+    }
+
+    private fun hasChangeComparedToInit(): Boolean {
         for (i in 0 until initialList!!.size) {
             if (adapter.data[i].remoteFileId != initialList?.get(i)) {
-                showSaveReminderDialog()
-                //shodialog
-                return
+                return true
             }
         }
         for (i in initialList!!.size until 6) {
             if (!adapter.data[i].isEmpty()) {
-                showSaveReminderDialog()
-                return
+                return true
             }
         }
-        super.onBackPressed()
+        return false
     }
 
     fun showSaveReminderDialog() {
@@ -356,7 +377,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         }
 
         override fun clearView(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder) {
-            viewHolder!!.itemView.animate().setDuration(50).scaleX(1f).scaleY(1f).start()
+            viewHolder.itemView.animate().setDuration(50).scaleX(1f).scaleY(1f).start()
             super.clearView(recyclerView, viewHolder)
         }
 
@@ -365,6 +386,14 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         }
     }
 }
-
-//如果glide第2次加载图是resource, 第1次不管是resource/data 都从本地读
-//如果glide第2次加载图是data, 第1次不管是只有是data 从本地读
+//skipmemcache(true) 前提
+//如果glide第1次resource (key"urlxxx"), 第二次resource(key"urlxyy")/data(key"url) 依然远程
+//(但是 resource "key "urlxxx" 可以本地，而 data "key  urlxxx" 不可以 本地)
+//如果glide第1次加载图是data (key"url"), 第2次是data (key"url" 存在)从本地读,
+//RESOURCE (key"urlxxx" 不从本地,依然远程)
+//Glide.with(mContext)
+//.load("https://pic1.zhimg.com/v2-a6b58e82c8cdb830ad7bd85d86469458_l.jpg?source=172ae18b")
+//.centerInside().override(89, 89)
+//.diskCacheStrategy(DiskCacheStrategy.RESOURCE)
+//.skipMemoryCache(true)
+//.into(filterView)

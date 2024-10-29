@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Bundle
 import android.util.LayoutDirection.RTL
 import android.view.View
 import android.widget.FrameLayout
@@ -17,6 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import com.blankj.utilcode.util.LanguageUtils
 import com.blankj.utilcode.util.LogUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -25,12 +25,14 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.google.common.collect.ImmutableList
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.R
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.Locale
 
 
 // TextView 设置textColor扩展函数
@@ -295,6 +297,35 @@ fun Fragment.copyFragmentArgumentsToMap() : MutableMap<String, Any?>{
         }
     }
     return map
+}
+
+val LOCALE_IMMUTABLE_SET: ImmutableList<Locale> = ImmutableList.Builder<Locale>().add(
+    Locale("en"),
+    Locale("th"),
+    Locale("vi"),
+    Locale("in"),
+    Locale("ms"),
+    Locale("es"),
+    Locale("pt"),
+    Locale("tr"),
+    Locale("ru"),
+    Locale("ar"),
+    Locale("ja"),
+    Locale("zh")
+).build()
+
+fun getSelectedLoc(): Locale {
+    var locale = LanguageUtils.getAppliedLanguage()
+    if (locale == null) {
+        locale = LanguageUtils.getSystemLanguage()
+    }
+    if (locale == null) return Locale.ENGLISH
+    for (loc in LOCALE_IMMUTABLE_SET) {
+        if (loc.language == locale.language) {
+            return locale
+        }
+    }
+    return Locale.ENGLISH
 }
 
 

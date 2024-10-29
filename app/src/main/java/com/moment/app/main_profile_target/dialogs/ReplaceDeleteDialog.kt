@@ -1,11 +1,10 @@
-package com.moment.app.main_profile_wall.dialogs
+package com.moment.app.main_profile_target.dialogs
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.moment.app.databinding.DialogPhotoChooseBottomSheetBinding
-import com.moment.app.main_profile_wall.EditPhotosWallActivity.Wrapper
 import com.moment.app.utils.BaseBottomSheetDialogFragment
 
 class ReplaceDeleteDialog : BaseBottomSheetDialogFragment() {

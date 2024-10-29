@@ -9,16 +9,15 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.Key
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.didi.drouter.api.DRouter
 import com.moment.app.R
 import com.moment.app.databinding.FragmentProfileBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
@@ -32,26 +31,22 @@ import com.moment.app.models.LoginModel
 import com.moment.app.network.UserCancelException
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
-import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.ui.uiLibs.RefreshView
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyMargin
-import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.dp
-import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
-import com.moment.app.utils.setBgWithAllCorners
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
-import com.scwang.smart.refresh.header.ClassicsHeader
-import com.scwang.smart.refresh.header.MaterialHeader
+import com.moment.app.utils.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.withContext
-import okhttp3.internal.wait
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
 import javax.inject.Inject
 
 
@@ -92,16 +87,13 @@ class MeFragment : BaseFragment() {
         binding.income.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
         binding.recharge.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
         binding.setting.applyMargin(top = BarUtils.getStatusBarHeight() + 9.dp)
-        binding.setting.setOnClickListener {
-             LoginModel.logout(true, loginService)
-        }
+        binding.setting.setOnSingleClickListener({
+            DRouter.build("/settings").start()
+        }, 500)
         adapter = ProfilePostsAdapter()
         adapter.setHeaderAndEmpty(true)
         viewMeHeader = ViewMeHeader(requireContext())
         Glide.with(this).load(R.mipmap.pic2).centerInside().override(ScreenUtils.getAppScreenWidth()*3/5, ScreenUtils.getAppScreenHeight()*3/5).into(binding.avatar)
-//        binding.avatar.postDelayed({ //别人的图片resource 自己的图片data 因为自己图要编辑
-//            Log.d("zhouzheng", ":"+(binding.avatar.drawable as BitmapDrawable).bitmap.width +":"+(binding.avatar.drawable as BitmapDrawable).bitmap.height )
-//        }, 3000)
         viewMeHeader.bindData(LoginModel.getUserInfo()!!)
         adapter.setHeaderView(viewMeHeader)
 

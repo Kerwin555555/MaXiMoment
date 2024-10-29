@@ -80,6 +80,10 @@ class ViewMeHeader : FrameLayout {
         adapter.setNewData(userInfo.imagesWallList)
         initCount(userInfo)
 
+        binding.edit.setOnSingleClickListener({
+
+        }, 500)
+
 
         binding.gender.bindGender(userInfo)
         //location
