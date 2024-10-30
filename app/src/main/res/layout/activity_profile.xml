@@ -135,7 +135,6 @@
                         android:layout_height="match_parent"
                         android:background="@null"
                         android:editable="false"
-                        android:focusable="false"
                         android:textAlignment="viewStart"
                         android:textColor="@color/moment_text_ff666666"
                         android:textColorHint="@color/moment_text_ffdcdcdc"

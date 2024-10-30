@@ -181,9 +181,9 @@
             app:layout_constraintTop_toTopOf="@id/gender"
             app:layout_constraintBottom_toBottomOf="@id/gender">
             <TextView
-                android:layout_width="24dp"
-                android:layout_height="17dp"
-                android:text="展开"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Expand"
                 android:textColor="#ff333333"
                 android:textSize="12sp"
                 />

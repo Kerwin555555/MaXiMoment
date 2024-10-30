@@ -179,7 +179,7 @@ class MockLoginService: LoginService {
                 follower_count = 10000,
                 following_count= 100000,
                 friends_count = 1000000,
-                bio = "hello this is the default from the backend"
+                bio = "hello this is the default from the backend mhello this is the default from the backend hello this is the default from the backend hello this is the default from the backend"
             )
         }
         return Results<UserInfo>().apply {
@@ -209,7 +209,7 @@ class MockLoginService: LoginService {
                 follower_count = 10,
                 following_count= 1000,
                 friends_count = 100,
-                bio = "hello this is the default from the backend"
+                bio = "hello this is the default from the backend hello this is the default hello this is the default hello this is the default hello this is the default hello this is the default"
             )
         }
         return Results<UserInfo>().apply {
@@ -374,7 +374,7 @@ class MockFeedService : FeedService{
                 follower_count = 10,
                 following_count= 1000,
                 friends_count = 100,
-                bio = "hello this is the default from the backend"
+                bio = "hello this is the default from the backend hello this is the default hello this is the default hello this is the default hello this is the default hello this is the default hello this is the default"
             )
         }
     }

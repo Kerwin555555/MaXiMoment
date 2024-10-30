@@ -3,6 +3,7 @@ package com.moment.app.main_profile.views
 import android.content.Context
 import android.graphics.Rect
 import android.graphics.drawable.Drawable
+import android.text.TextUtils
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
@@ -74,6 +75,22 @@ class ViewMeHeader : FrameLayout {
         })
     }
 
+    fun init(isMe: Boolean) {
+        this.isMe = isMe
+        if (isMe) {
+            binding.editPhotos.isVisible = true
+        } else {
+            binding.editPhotos.visibility = View.INVISIBLE
+        }
+        if (isMe) {
+            binding.edit.isVisible = true
+            binding.expand.isVisible = false
+        } else {
+            binding.edit.isVisible = false
+            binding.expand.isVisible = true
+        }
+    }
+
     fun bindData(userInfo: UserInfo, isMe: Boolean) {
         this.isMe = isMe
         if (isMe) {
@@ -97,6 +114,8 @@ class ViewMeHeader : FrameLayout {
         } else {
             binding.edit.isVisible = false
             binding.expand.isVisible = true
+            binding.bio.maxLines = 2
+            binding.bio.ellipsize = TextUtils.TruncateAt.END
             binding.expand.setOnSingleClickListener({
                 if (isOpen) {
                     binding.bio.maxLines = 2

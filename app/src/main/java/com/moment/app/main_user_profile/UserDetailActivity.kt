@@ -64,7 +64,9 @@ class UserDetailActivity : BaseActivity(){
         immersion()
         binding = ActivityUserDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        binding.back.setOnClickListener {
+            finish()
+        }
 
         binding.toolbar.applyPaddingsWithDefaultZero(top = BarUtils.getStatusBarHeight())
         binding.toolbar.requestNewSize(width = -1, height = BarUtils.getStatusBarHeight() + 50.dp)
@@ -74,6 +76,8 @@ class UserDetailActivity : BaseActivity(){
         userInfo?.let {
             viewMeHeader.bindData(userInfo = it, isMe = false)
             loadAvatarBig(binding.avatar, it)
+        } ?: let {
+            viewMeHeader.init(isMe = false)
         }
 
         adapter = ProfilePostsAdapter(isMe = false)

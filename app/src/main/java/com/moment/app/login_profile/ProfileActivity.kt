@@ -90,6 +90,10 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
         })
         binding.birthday.setOnClickListener {
             //timeSelect = null
+            clearEditTextsFocus()
+            binding.birthday.isFocusableInTouchMode = true
+            binding.birthday.requestFocus()
+            KeyboardUtils.hideSoftInput(this)
             val pickerView: TimePickerView = chooseDate(
                 this,
                 null, null,
@@ -105,9 +109,6 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
                 }
             })
             pickerView.show()
-            clearEditTextsFocus()
-            binding.birthday.requestFocus()
-            KeyboardUtils.hideSoftInput(this)
         }
         binding.boy.setTextColorStateSelectList(
             selectedColor = 0xffFFFFFF.toInt(),
