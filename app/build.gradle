@@ -68,6 +68,7 @@ android {
             res.srcDirs = [
                 'src/main/res',
                 'src/main/res/moment_login',
+                'src/main/res/moment_user_profile',
                 'src/main/res/moment_home',
                 'src/main/res/moment_chat',
                 'src/main/res/moment_feed',
@@ -122,9 +123,9 @@ dependencies {
     implementation ("com.squareup.okhttp3:okhttp-brotli:4.9.1")
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'org.greenrobot:eventbus:3.3.1'
-    api "io.github.didi:drouter-api:2.4.6"           // Router、Service
-    api "io.github.didi:drouter-api-page:1.0.0"      // Page
-    api "io.github.didi:drouter-api-process:1.0.0"   // Process
+    implementation "io.github.didi:drouter-api:2.4.6"           // Router、Service
+    implementation "io.github.didi:drouter-api-page:1.0.0"      // Page
+    implementation "io.github.didi:drouter-api-process:1.0.0"   // Process
     def emoji2_version = "1.0.0"
     implementation "androidx.emoji2:emoji2:$emoji2_version"
     implementation 'com.alexvasilkov:gesture-views:2.8.3'

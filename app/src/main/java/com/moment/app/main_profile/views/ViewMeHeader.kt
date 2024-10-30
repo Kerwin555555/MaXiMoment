@@ -45,6 +45,8 @@ class ViewMeHeader : FrameLayout {
 
     private val binding = ViewMeHeaderBinding.inflate(LayoutInflater.from(context), this)
     private var userInfo: UserInfo? = null
+    var isMe = false
+    var isOpen = false
 
     private val adapter by lazy {
         HeaderAdapter()
@@ -72,17 +74,41 @@ class ViewMeHeader : FrameLayout {
         })
     }
 
-    fun bindData(userInfo: UserInfo) {
-
-        binding.editPhotos.setOnSingleClickListener({
-            DRouter.build("/edit/photos").putExtra("fileIds", ArrayList(userInfo.imagesWallList)).start()
-        }, 500)
+    fun bindData(userInfo: UserInfo, isMe: Boolean) {
+        this.isMe = isMe
+        if (isMe) {
+            binding.editPhotos.isVisible = true
+            binding.editPhotos.setOnSingleClickListener({
+                DRouter.build("/edit/photos")
+                    .putExtra("fileIds", ArrayList(userInfo.imagesWallList)).start()
+            }, 500)
+        } else {
+            binding.editPhotos.visibility = View.INVISIBLE
+        }
         adapter.setNewData(userInfo.imagesWallList)
         initCount(userInfo)
 
-        binding.edit.setOnSingleClickListener({
-            DRouter.build("/edit/userInfo").start()
-        }, 500)
+        if (isMe) {
+            binding.edit.isVisible = true
+            binding.expand.isVisible = false
+            binding.edit.setOnSingleClickListener({
+                DRouter.build("/edit/userInfo").start()
+            }, 500)
+        } else {
+            binding.edit.isVisible = false
+            binding.expand.isVisible = true
+            binding.expand.setOnSingleClickListener({
+                if (isOpen) {
+                    binding.bio.maxLines = 2
+                    isOpen = false
+                    binding.ivArrow.rotation = if (binding.expand.isRTL()) 270f else 90f
+                } else {
+                    binding.bio.maxLines = 1000_000
+                    binding.ivArrow.rotation = 0f
+                    isOpen = true
+                }
+            }, 500)
+        }
 
 
         binding.gender.bindGender(userInfo)
@@ -97,7 +123,12 @@ class ViewMeHeader : FrameLayout {
     }
 
     private fun initCount(userInfo: UserInfo) {
-        binding.friendsCount.text = "${formatScore(userInfo.friends_count!!.toLong())}"
+        if (isMe) {
+            binding.friends.isVisible = true
+            binding.friendsCount.text = "${formatScore(userInfo.friends_count!!.toLong())}"
+        } else {
+            binding.friends.isVisible = false
+        }
         binding.followingCount.text = "${formatScore(userInfo.following_count!!.toLong())}"
         binding.followerCount.text = "${formatScore(userInfo.follower_count!!.toLong())}"
     }

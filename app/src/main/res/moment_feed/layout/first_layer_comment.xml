@@ -117,5 +117,14 @@
         app:layout_constraintTop_toBottomOf="@id/time"
         app:layout_constraintEnd_toEndOf="parent">
     </LinearLayout>
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:background="#F1F1F1"
+        app:layout_constraintStart_toStartOf="@id/name"
+        app:layout_constraintEnd_toEndOf="@id/content"
+        app:layout_constraintTop_toBottomOf="@id/inner_comment">
+    </View>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

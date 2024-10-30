@@ -45,10 +45,9 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/photo_rv">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:id="@+id/friends"
@@ -56,14 +55,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="20dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/photo_rv">
+                    app:layout_constraintTop_toTopOf="parent">
                     <TextView
                         android:id="@+id/friends_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textStyle="bold"
                         android:layout_gravity="center_vertical"
-                        android:text="10"
+                        android:text="0"
                         android:textColor="#ff1d1d1d"
                         android:textSize="21sp" />
 
@@ -83,15 +82,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
-                    app:layout_constraintStart_toEndOf="@id/friends"
-                    app:layout_constraintTop_toBottomOf="@id/photo_rv">
+                    app:layout_goneMarginStart="20dp"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/friends">
 
                     <TextView
                         android:id="@+id/following_count"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:text="10"
+                        android:text="0"
                         android:textStyle="bold"
                         android:textColor="#ff1d1d1d"
                         android:textSize="21sp" />
@@ -113,7 +113,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="24dp"
                     app:layout_constraintStart_toEndOf="@id/following"
-                    app:layout_constraintTop_toBottomOf="@id/photo_rv">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <TextView
                         android:id="@+id/follower_count"
@@ -121,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
                         android:textStyle="bold"
-                        android:text="10"
+                        android:text="0"
                         android:textColor="#ff1d1d1d"
                         android:textSize="21sp" />
 
@@ -135,7 +135,7 @@
                         android:textColor="#ff999999"
                         android:textSize="15sp" />
                 </LinearLayout>
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </HorizontalScrollView>
 
         <com.moment.app.ui.uiLibs.GenderView
@@ -171,6 +171,32 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/gender"
             app:layout_constraintBottom_toBottomOf="@id/gender"/>
+        <LinearLayout
+            android:id="@+id/expand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginEnd="20dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/gender"
+            app:layout_constraintBottom_toBottomOf="@id/gender">
+            <TextView
+                android:layout_width="24dp"
+                android:layout_height="17dp"
+                android:text="展开"
+                android:textColor="#ff333333"
+                android:textSize="12sp"
+                />
+            <com.moment.app.ui.AutoMirroredImageView
+                android:id="@+id/ivArrow"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_marginStart="6dp"
+                android:layout_gravity="center_vertical|start"
+                android:src="@mipmap/arrow_new"
+                android:rotation="90"
+                app:tint="#333333" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/bio"

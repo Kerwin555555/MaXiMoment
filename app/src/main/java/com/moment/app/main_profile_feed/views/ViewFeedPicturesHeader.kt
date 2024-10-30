@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
@@ -22,10 +23,11 @@ import com.bumptech.glide.request.target.Target
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.R
+import com.moment.app.databinding.DetailsToolbarBinding
 import com.moment.app.databinding.ViewFeedPicturesHeaderBinding
 import com.moment.app.main_profile.entities.PicShape
 import com.moment.app.main_profile.entities.PostBean
-import com.moment.app.main_profile.views.AdapterItemView
+import com.moment.app.models.LoginModel
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
@@ -34,7 +36,7 @@ import com.moment.app.utils.setImageResourceSelectedStateListDrawable
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ViewFeedPicturesHeader : FrameLayout, AdapterItemView {
+class ViewFeedPicturesHeader : FrameLayout, DetailsFeedView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -76,9 +78,9 @@ class ViewFeedPicturesHeader : FrameLayout, AdapterItemView {
         }
     }
 
-    override fun bindData(post: PostBean) {
+    override fun bindData(post: PostBean, toolbarBindng: DetailsToolbarBinding) {
         this.post = post
-        bindCommon(post)
+        bindCommon(post, toolbarBindng)
 
         //image logic
         adapter.setNewData(post.pics_shape)
@@ -90,15 +92,22 @@ class ViewFeedPicturesHeader : FrameLayout, AdapterItemView {
         )
     }
 
-    private fun bindCommon(post: PostBean) {
+    private fun bindCommon(post: PostBean, toolbarBinding: DetailsToolbarBinding) {
         post.user_info?.let {
             Glide.with(this).load(it.avatar)
-                .into(binding.avatar)
-            binding.gender.bindGender(it)
-            binding.name.text = it.name
+                .into(toolbarBinding.avatar)
+            toolbarBinding.gender.bindGender(it)
+            toolbarBinding.name.text = it.name
+            LoginModel.getUserInfo()?.let { userInfo ->
+                  if (userInfo.userId == it.userId) {
+                      toolbarBinding.more.isVisible = false
+                  } else {
+                      toolbarBinding.more.isVisible = true
+                  }
+            }
         }
         binding.content.text = post.content
-        binding.back.setOnClickListener {
+        toolbarBinding.back.setOnClickListener {
             (context as? AppCompatActivity?)?.finish()
         }
         binding.time.text = SimpleDateFormat("yyyy.MM.dd HH:mm")
@@ -155,4 +164,8 @@ class Adapter: BaseQuickAdapter<PicShape, BaseViewHolder>(null) {
             })
             .into(helper.itemView as ImageFilterView)
     }
+}
+
+interface DetailsFeedView {
+    fun bindData(post: PostBean, binding: DetailsToolbarBinding)
 }

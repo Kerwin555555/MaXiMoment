@@ -4,11 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.didi.drouter.api.DRouter
 import com.moment.app.R
 import com.moment.app.databinding.FragmentHomeItemViewBinding
 import com.moment.app.datamodel.UserInfo
+import com.moment.app.models.LoginModel
 import com.moment.app.utils.applyDrawable
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
+import com.moment.app.utils.setOnSingleClickListener
 
 class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.FragmentHomeItemHolder>(null) {
 
@@ -20,7 +23,11 @@ class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.Fr
 
     override fun convert(helper: FragmentHomeItemHolder, item: UserInfo) {
         val binding= helper.binding
-        binding.desc
+        binding.avatar.setOnSingleClickListener({
+            DRouter.build("/user")
+                .putExtra("id", item.userId)
+                .start()
+        }, 500)
 
         binding.name.text = item.name
 

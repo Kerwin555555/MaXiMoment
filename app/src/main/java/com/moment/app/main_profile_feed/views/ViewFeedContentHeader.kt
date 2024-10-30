@@ -7,9 +7,9 @@ import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.moment.app.R
+import com.moment.app.databinding.DetailsToolbarBinding
 import com.moment.app.databinding.ViewFeedHeaderBinding
 import com.moment.app.main_profile.entities.PostBean
-import com.moment.app.main_profile.views.AdapterItemView
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
@@ -17,7 +17,7 @@ import com.moment.app.utils.setImageResourceSelectedStateListDrawable
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ViewFeedContentHeader : FrameLayout, AdapterItemView{
+class ViewFeedContentHeader : FrameLayout, DetailsFeedView{
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -47,20 +47,20 @@ class ViewFeedContentHeader : FrameLayout, AdapterItemView{
         }
     }
 
-    override fun bindData(post: PostBean) {
+    override fun bindData(post: PostBean,detailBinding :DetailsToolbarBinding) {
         this.post = post
-        bindCommon(post)
+        bindCommon(post, detailBinding)
     }
 
-    private fun bindCommon(post: PostBean) {
+    private fun bindCommon(post: PostBean, detailBinding:DetailsToolbarBinding) {
         post.user_info?.let {
             Glide.with(this).load(it.avatar)
-                .into(binding.avatar)
-            binding.gender.bindGender(it)
-            binding.name.text = it.name
+                .into(detailBinding.avatar)
+            detailBinding.gender.bindGender(it)
+            detailBinding.name.text = it.name
         }
         binding.content.text = post.content
-        binding.back.setOnClickListener {
+        detailBinding.back.setOnClickListener {
             (context as? AppCompatActivity?)?.finish()
         }
         binding.time.text = SimpleDateFormat("yyyy.MM.dd HH:mm")

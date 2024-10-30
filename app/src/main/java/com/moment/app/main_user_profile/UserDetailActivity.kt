@@ -1,114 +1,103 @@
-package com.moment.app.main_profile
+package com.moment.app.main_user_profile
 
-//import com.moment.app.main_profile.adapters.MeAdapter
 import android.graphics.Color
 import android.os.Bundle
 import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import androidx.recyclerview.widget.SimpleItemAnimator
 import com.blankj.utilcode.util.BarUtils
-import com.didi.drouter.api.DRouter
-import com.moment.app.databinding.FragmentProfileBinding
-import com.moment.app.eventbus.UpdateUserInfoEvent
+import com.didi.drouter.annotation.Router
+import com.moment.app.databinding.ActivityUserDetailBinding
+import com.moment.app.datamodel.Results
+import com.moment.app.datamodel.UserInfo
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
 import com.moment.app.main_profile.adapters.ProfilePostsAdapter
+import com.moment.app.main_profile.entities.FeedList
+import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.main_profile.views.ViewMeHeader
 import com.moment.app.models.LoginModel
 import com.moment.app.network.UserCancelException
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.ui.uiLibs.RefreshView
-import com.moment.app.utils.BaseFragment
+import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenWidth
+import com.moment.app.utils.immersion
 import com.moment.app.utils.loadAvatarBig
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
-import com.moment.app.utils.setBgWithCornerRadiusAndColor
-import com.moment.app.utils.setOnSingleClickListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.withContext
-import org.greenrobot.eventbus.Subscribe
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
-class MeFragment : BaseFragment() {
-    private lateinit var binding: FragmentProfileBinding
+@Router(scheme = ".*", host = ".*", path = "/user")
+class UserDetailActivity : BaseActivity(){
+
+    private lateinit var binding: ActivityUserDetailBinding
+    private var userId: String? = ""
+    private var userInfo: UserInfo? = null
+    private lateinit var viewMeHeader: ViewMeHeader
     private lateinit var adapter: ProfilePostsAdapter
+    private var currentJob: Job? = null
     private var startPos = -1
     private var pageSize = 10
-    private var currentJob: Job? = null
-    private lateinit var viewMeHeader: ViewMeHeader
 
 
     @Inject
     @MockData
     lateinit var feedService: FeedService
-    @Inject
-    lateinit var loginService: LoginService
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        binding = FragmentProfileBinding.inflate(inflater)
-        return binding.root
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        immersion()
+        binding = ActivityUserDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        initUI()
 
-        loadData(false)
-    }
-
-    private fun initUI() {
-        binding.toolbar.isClickable = true
         binding.toolbar.applyPaddingsWithDefaultZero(top = BarUtils.getStatusBarHeight())
         binding.toolbar.requestNewSize(width = -1, height = BarUtils.getStatusBarHeight() + 50.dp)
-        binding.income.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
-        binding.recharge.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
-        binding.setting.setOnSingleClickListener({
-            DRouter.build("/settings").start()
-        }, 500)
-        binding.feedPublish.setOnSingleClickListener({
+        ensureParam()
 
-        }, 500)
-        adapter = ProfilePostsAdapter(isMe = true)
-        adapter.setHeaderAndEmpty(true)
-        viewMeHeader = ViewMeHeader(requireContext())
-        loadAvatarBig(binding.avatar)
-        viewMeHeader.bindData(userInfo = LoginModel.getUserInfo()!!, isMe = true)
+        viewMeHeader = ViewMeHeader(this)
+        userInfo?.let {
+            viewMeHeader.bindData(userInfo = it, isMe = false)
+            loadAvatarBig(binding.avatar, it)
+        }
+
+        adapter = ProfilePostsAdapter(isMe = false)
         adapter.setHeaderView(viewMeHeader)
-
         binding.refreshView.initWith(
             adapter = adapter,
-            emptyView = RecommendationEmptyView(this.requireContext()).apply {
+            emptyView = RecommendationEmptyView(this).apply {
                 getLoadingPage().resetGravity(Gravity.CENTER_HORIZONTAL)
                 getLoadingPage().applyMargin(top = 80.dp)
             },
-            refreshHeader = RefreshView(requireContext()).apply {
+            refreshHeader = RefreshView(this).apply {
                 getBinding().progress.resetGravity(Gravity.CENTER_HORIZONTAL)
                 getBinding().progress.applyMargin(top = BarUtils.getStatusBarHeight() + 30.dp)
             }
         ) { isLoadMore ->
-            loadData(isLoadMore as Boolean)
+            val loadMore = isLoadMore as Boolean
+            if (loadMore) {
+                loadData(loadMore)
+            } else {
+                firstLoad()
+            }
+
         }
         binding.refreshView.setEnableHeaderTranslationContent(false)
-        (binding.refreshView.getRecyclerView().itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false //remove shimmer
         binding.refreshView.getRecyclerView().addOnScrollListener(object: RecyclerView.OnScrollListener(){
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {}
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -123,6 +112,54 @@ class MeFragment : BaseFragment() {
                 }
             }
         })
+        firstLoad()
+    }
+
+    private fun ensureParam() {
+        val userInfo = intent.getSerializableExtra("userInfo")  as UserInfo?
+        userInfo?.let {
+            it.userId?.let { id ->
+                this.userId = id
+            }
+        }
+        if (!intent.getStringExtra("id").isNullOrEmpty()) {
+            userId = intent.getStringExtra("id")
+        }
+    }
+
+    private fun firstLoad() {
+        currentJob?.cancelIfActive()
+        currentJob = startCoroutine({
+            startPos = 0
+            val list = listOf(this.async(Dispatchers.IO){
+                return@async withContext(Dispatchers.IO) {
+//                if (!NetworkUtils.isConnected()) {
+//                    throw RuntimeException("Net work Error")
+//                }
+                    feedService.getFeeds(userId, startPos, pageSize)
+                }
+            }, this.async(Dispatchers.IO) {
+                   feedService.getUserInfo(userId)
+            })
+            val r = list.awaitAll()
+            userInfo = (r[1] as Results<UserInfo>).data ?: userInfo
+            val feedList = (r[0] as Results<FeedList?>).data
+            feedList?.feeds?.forEach{ it.isMe = false }
+            userInfo?.let { it ->
+                adapter.userInfo = it
+                viewMeHeader.bindData(userInfo = it, isMe = false)
+                loadAvatarBig(binding.avatar, it)
+            }
+            startPos = feedList?.next_start ?: -1
+            binding.refreshView.onSuccess(feedList?.feeds?.toMutableList() ?: mutableListOf<PostBean>(),
+                false, feedList?.has_next ?: false)
+        }){
+            if (it.throwable is UserCancelException) {
+                return@startCoroutine
+            }
+            it.toast()
+            binding.refreshView.onFail(false, it.message)
+        }
     }
 
     private fun loadData(isLoadMore: Boolean) {
@@ -137,8 +174,7 @@ class MeFragment : BaseFragment() {
 //                }
                 feedService.getFeeds(LoginModel.getUserId(), startPos, pageSize)
             }
-            result.data?.feeds?.forEach{ it.isMe = true }
-            LoginModel.getUserInfo()?.let { adapter.userInfo = it }
+            result.data?.feeds?.forEach{ it.isMe = false }
             startPos = result.data!!.next_start
             binding.refreshView.onSuccess(result.data!!.feeds!!.toMutableList(), isLoadMore, result.data!!.has_next)
         }){
@@ -148,21 +184,5 @@ class MeFragment : BaseFragment() {
             it.toast()
             binding.refreshView.onFail(isLoadMore, it.message)
         }
-    }
-
-
-    override fun onResume() {
-        super.onResume()
-        LoginModel.getUserInfo()?.let {
-            viewMeHeader.bindData(userInfo = it, isMe = true)
-            adapter.userInfo = it
-            adapter.notifyItemRangeChanged(0, adapter.data.size)
-            loadAvatarBig(binding.avatar)
-        }
-    }
-
-    @Subscribe
-    fun updateUserInfo(event: UpdateUserInfoEvent) {
-        val a= 1
     }
 }

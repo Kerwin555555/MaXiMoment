@@ -5,7 +5,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
 import com.didi.drouter.api.DRouter
-import com.facebook.login.LoginManager
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.moment.app.MomentApp
@@ -164,6 +163,13 @@ object LoginModel {
                 loginService.logout()
             }
         }
+    }
+
+    fun isMe(id: String?): Boolean {
+        if (info != null) {
+            return TextUtils.equals(id, info?.userId)
+        }
+        return false
     }
 
     private fun signOutGoogle() {

@@ -6,9 +6,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <ImageView
         android:id="@+id/avatar"
-        android:src="@mipmap/pic2"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:src="@drawable/bg_avatar_big"
         android:scaleType="centerCrop"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -19,6 +19,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     </com.moment.app.ui.uiLibs.MomentRefreshView>
+    
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/feed_publish"
+        android:layout_width="43dp"
+        android:layout_height="43dp"
+        android:src="@mipmap/feed_send"
+        android:scaleType="centerInside"
+        android:background="@drawable/add_feed_drawable"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:roundPercent="1"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"

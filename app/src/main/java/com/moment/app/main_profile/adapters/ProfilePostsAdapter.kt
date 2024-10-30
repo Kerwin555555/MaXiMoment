@@ -11,7 +11,7 @@ import com.moment.app.main_profile.views.AdapterItemView
 import com.moment.app.main_profile.views.ImageItemView
 import com.moment.app.main_profile.views.PureContentItemView
 
-class ProfilePostsAdapter : BaseQuickAdapter<PostBean, BaseViewHolder>(null){
+class ProfilePostsAdapter(val isMe: Boolean) : BaseQuickAdapter<PostBean, BaseViewHolder>(null){
     companion object {
         const val VIEW_TYPE_PURE_TEXT = 1
         const val VIEW_TYPE_IMAGE = 2

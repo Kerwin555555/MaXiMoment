@@ -33,6 +33,7 @@ import com.google.common.collect.ImmutableList
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.MomentApp
 import com.moment.app.R
+import com.moment.app.datamodel.UserInfo
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.models.LoginModel
 import java.io.File
@@ -364,13 +365,21 @@ fun getScreenHeight() : Int{
 }
 
 
-fun Fragment.loadAvatarBig(view: ImageView) {
+internal fun Fragment.loadAvatarBig(view: ImageView) {
     Glide.with(this).load(LoginModel.getUserInfo()!!.avatar)
         .placeholder(R.drawable.bg_avatar_big)
         .error(R.drawable.bg_avatar_big)
         .centerInside().override(ScreenUtils.getAppScreenWidth()*3/5,
             ScreenUtils.getAppScreenHeight()*3/5).into(view)
 }
+internal fun AppCompatActivity.loadAvatarBig(view: ImageView, userInfo: UserInfo) {
+    Glide.with(this).load(userInfo!!.avatar)
+        .placeholder(R.drawable.bg_avatar_big)
+        .error(R.drawable.bg_avatar_big)
+        .centerInside().override(ScreenUtils.getAppScreenWidth()*3/5,
+            ScreenUtils.getAppScreenHeight()*3/5).into(view)
+}
+
 
 
 val MOMENT_APP = "zhouzheng"

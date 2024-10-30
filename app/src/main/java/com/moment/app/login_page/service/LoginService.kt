@@ -40,4 +40,7 @@ interface FeedService {
 
     @GET("api/sns/v1/moment/feed/comment_page/{id}")
     suspend fun getComments(@Path("id") id: String?, @Query("cursor") cursor: Int): Results<CommentsList>
+
+    @GET("api/sns/v1/moment/user/get_info/{userId}")
+    suspend fun getUserInfo(@Path("userId") userId: String?): Results<UserInfo>
 }

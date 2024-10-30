@@ -278,7 +278,7 @@ class MockFeedService : FeedService{
                             fileKey = ""
                         )
                     ) else mutableListOf()
-                    user_info = null
+                    user_info = user
                     create_time = CreateTimeBean().apply {
                         time = System.currentTimeMillis()
                     }
@@ -352,6 +352,30 @@ class MockFeedService : FeedService{
         return Results<CommentsList>().apply {
             isOk = true
             data = comment
+        }
+    }
+
+    override suspend fun getUserInfo(userId: String?): Results<UserInfo> {
+        withContext(Dispatchers.IO) {
+            delay(400)
+        }
+        return Results<UserInfo>().apply {
+            data =             UserInfo(
+                userId = UUID.randomUUID().toString(),
+                name = "Momentfanxxx",
+                session = "mysession",
+                finished_info = false,
+                huanxin = HuanxinBean().apply{
+                    password  = "045xxxx"
+                    user_id = "loveabscdessss"
+                },
+                gender = "boy",
+                imagesWallList = mutableListOf("0","1", "2", "3", "1"),
+                follower_count = 10,
+                following_count= 1000,
+                friends_count = 100,
+                bio = "hello this is the default from the backend"
+            )
         }
     }
 }

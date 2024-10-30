@@ -11,7 +11,7 @@
         android:layout_height="10dp"/>
     <TextView
         android:id="@+id/text"
-        android:text="14"
+        android:text="0"
         android:textColor="@color/gender_view_age_color"
         android:fontFamily="sans-serif-medium"
         android:layout_gravity="center_vertical"
