@@ -3,7 +3,7 @@ package com.moment.app.main_profile.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
 import com.moment.app.R
 import com.moment.app.databinding.ViewItemTextBinding
@@ -13,11 +13,11 @@ import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.gotoPostDetail
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class PureContentItemView: FrameLayout, AdapterItemView {
+class PureContentItemView: ConstraintLayout, AdapterItemView {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -64,7 +64,7 @@ class PureContentItemView: FrameLayout, AdapterItemView {
 
         binding.time.text = SimpleDateFormat("yyyy.MM.dd HH:mm")
             .format(Date(post.create_time!!.time.toLong()))
-        binding.root.setOnSingleClickListener( {
+        binding.root.setOnAvoidMultipleClicksListener( {
             gotoPostDetail(post)
         },500)
         binding.like.isSelected = post.liked

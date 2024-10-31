@@ -16,11 +16,14 @@ import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.widget.FrameLayout
+import androidx.core.view.ViewConfigurationCompat
 import androidx.core.view.children
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,11 +50,26 @@ import kotlin.math.max
 
 class MomentRefreshView<D>(context: Context?, attrs: AttributeSet?) :
     SmartRefreshLayout(context, attrs) {
-
+    var onMoveCallback: (() -> Unit)? = null
     private val binding = MomentRefreshviewBinding.inflate(LayoutInflater.from(context), this)
     private var adapter: BaseQuickAdapter<D, *>? = null
     private val layoutManager = LinearLayoutManager(context)
+    var downx = 0f
+    var downy = 0f
 
+    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
+        ev?.let {
+            if (it.action == MotionEvent.ACTION_DOWN) {
+                downx = ev.x
+                downy = ev.y
+            } else if (it.action == MotionEvent.ACTION_MOVE
+                && Math.sqrt(((downx - it.x) * (downx - it.x) + (downy - it.y) * (downy - it.y)).toDouble()) >
+                ViewConfiguration.get(context).getScaledTouchSlop()) {
+                onMoveCallback?.invoke()
+            }
+        }
+        return super.dispatchTouchEvent(ev)
+    }
     fun initWith(
         adapter: BaseQuickAdapter<D, *>,
         emptyView: EmptyView,

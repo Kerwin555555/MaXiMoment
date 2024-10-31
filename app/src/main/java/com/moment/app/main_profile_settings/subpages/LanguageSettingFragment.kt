@@ -18,7 +18,7 @@ import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.getSelectedLoc
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import java.util.Arrays
 import java.util.Locale
 
@@ -58,7 +58,7 @@ class LanguageSettingFragment : BaseFragment(){
         super.onViewCreated(view, savedInstanceState)
         view.isClickable = true
 
-        binding.back.setOnSingleClickListener({
+        binding.back.setOnAvoidMultipleClicksListener({
             (context as? AppCompatActivity?)?.supportFragmentManager?.popBackStackNowAllowingStateLoss()
         }, 500)
         binding.save.applyEnabledColorIntStateList(enableId =
@@ -83,7 +83,7 @@ class LanguageSettingFragment : BaseFragment(){
                 horizontalMargin = 26)
         )
 
-        binding.save.setOnSingleClickListener({
+        binding.save.setOnAvoidMultipleClicksListener({
             adapter.selected?.let {
                 changeLanguage(it)
             }

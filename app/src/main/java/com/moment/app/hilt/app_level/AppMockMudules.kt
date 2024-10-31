@@ -19,11 +19,11 @@ import com.moment.app.main_home.subfragments.models.UserInfoList
 import com.moment.app.main_home.subfragments.service.HomeService
 import com.moment.app.main_profile.entities.CreateTimeBean
 import com.moment.app.main_profile.entities.FeedList
-import com.moment.app.main_profile.entities.PicShape
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.models.IMLoginModel
 import com.moment.app.utils.Constants.BASE_URL
 import com.moment.app.utils.MOMENT_APP
+import com.moment.app.utils.ViewerPhoto
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -114,6 +114,10 @@ class MockHomeService: HomeService {
 
         for (i in startPos until  startPos + num) {
             list.add(UserInfo().apply {
+                this.huanxin = HuanxinBean().apply {
+                    this.user_id = ""+java.util.UUID.randomUUID()
+                    this.password = "dsds"
+                }
                 this.userId = ""+java.util.UUID.randomUUID()
                 this.gender = if (i%2 ==0)"boy" else "girl"
                 this.name = "MomentFan" + i
@@ -268,13 +272,13 @@ class MockFeedService : FeedService{
                 val f = PostBean().apply {
                     id = "feed"+UUID.randomUUID().toString()
                     pics_shape = if (i %3 != 0) mutableListOf(
-                        PicShape(
+                        ViewerPhoto.PicShape(
                             fileKey = ""
                         ),
-                        PicShape(
+                        ViewerPhoto.PicShape(
                             fileKey = ""
                         ),
-                        PicShape(
+                        ViewerPhoto.PicShape(
                             fileKey = ""
                         )
                     ) else mutableListOf()
@@ -404,6 +408,31 @@ class MockThreadService: ThreadService {
              data = datas
 
          }
+    }
+
+    override suspend fun getUserInfo(userId: String?): Results<UserInfo> {
+        val res = withContext(Dispatchers.IO) {
+            delay(800)
+            UserInfo(
+                userId = UUID.randomUUID().toString(),
+                name = "Momentfanxxx",
+                session = "mysession",
+                finished_info = false,
+                huanxin = HuanxinBean().apply{
+                    password  = "045xxxx"
+                    user_id = "loveabscdessss"
+                },
+                gender = "boy",
+                imagesWallList = mutableListOf("0","1", "2", "3", "1"),
+                follower_count = 10,
+                following_count= 1000,
+                friends_count = 100,
+                bio = "hello this is the default from the backend hello this is the default hello this is the default hello this is the default hello this is the default hello this is the default"
+            )
+        }
+        return Results<UserInfo>().apply {
+            this.data = res
+        }
     }
 }
 

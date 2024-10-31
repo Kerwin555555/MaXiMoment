@@ -1,240 +1,250 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <ImageView
+        android:id="@+id/photo_click"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bg">
+    </ImageView>
+    <ImageView
+        android:id="@+id/edit_photos"
+        android:layout_width="33dp"
+        android:layout_height="31.5dp"
+        android:layout_marginTop="190dp"
+        android:layout_marginEnd="20dp"
+        android:src="@mipmap/small_camera"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/photo_rv"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="59dp"
+        android:layout_marginTop="20dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        android:paddingStart="24dp"
+        app:layout_constraintTop_toBottomOf="@id/edit_photos" />
 
-        <ImageView
-            android:id="@+id/edit_photos"
-            android:layout_width="33dp"
-            android:layout_height="31.5dp"
-            android:layout_marginTop="190dp"
-            android:layout_marginEnd="20dp"
-            android:src="@mipmap/small_camera"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+    <View
+        android:id="@+id/bg"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="-10dp"
+        android:background="@drawable/bg_header"
+        app:layout_constraintBottom_toBottomOf="@id/posts"
+        app:layout_constraintTop_toBottomOf="@id/photo_rv" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/photo_rv"
+    <HorizontalScrollView
+        android:id="@+id/count_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="33dp"
+        android:scrollbars="none"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/photo_rv">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="59dp"
-            android:layout_marginTop="20dp"
-            android:clipChildren="false"
-            android:clipToPadding="false"
-            android:paddingStart="24dp"
-            app:layout_constraintTop_toBottomOf="@id/edit_photos" />
+            android:layout_height="wrap_content">
 
-        <View
-            android:id="@+id/bg"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="-10dp"
-            android:background="@drawable/bg_header"
-            app:layout_constraintBottom_toBottomOf="@id/posts"
-            app:layout_constraintTop_toBottomOf="@id/photo_rv" />
-
-        <HorizontalScrollView
-            android:id="@+id/count_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="33dp"
-            android:scrollbars="none"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/photo_rv">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:id="@+id/friends"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="20dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-                    <TextView
-                        android:id="@+id/friends_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textStyle="bold"
-                        android:layout_gravity="center_vertical"
-                        android:text="0"
-                        android:textColor="#ff1d1d1d"
-                        android:textSize="21sp" />
-
-                    <TextView
-                        android:id="@+id/friends_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5.5dp"
-                        android:text="friends"
-                        android:textColor="#ff999999"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/following"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    app:layout_goneMarginStart="20dp"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/friends">
-
-                    <TextView
-                        android:id="@+id/following_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:text="0"
-                        android:textStyle="bold"
-                        android:textColor="#ff1d1d1d"
-                        android:textSize="21sp" />
-
-                    <TextView
-                        android:id="@+id/following_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5.5dp"
-                        android:text="@string/following"
-                        android:textColor="@color/moment_text_ff999999"
-                        android:textSize="15sp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/followers"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="24dp"
-                    app:layout_constraintStart_toEndOf="@id/following"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/follower_count"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:textStyle="bold"
-                        android:text="0"
-                        android:textColor="#ff1d1d1d"
-                        android:textSize="21sp" />
-
-                    <TextView
-                        android:id="@+id/follower_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:layout_marginStart="5.5dp"
-                        android:text="followers"
-                        android:textColor="#ff999999"
-                        android:textSize="15sp" />
-                </LinearLayout>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </HorizontalScrollView>
-
-        <com.moment.app.ui.uiLibs.GenderView
-            android:id="@+id/gender"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/count_container" />
-
-        <TextView
-            android:id="@+id/location"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="6dp"
-            android:backgroundTint="#ED9D1D"
-            android:paddingHorizontal="9dp"
-            android:paddingVertical="2dp"
-            android:text="My City"
-            android:textColor="#ffed9d1d"
-            android:textSize="11sp"
-            app:layout_constraintBottom_toBottomOf="@id/gender"
-            app:layout_constraintStart_toEndOf="@id/gender"
-            app:layout_constraintTop_toTopOf="@id/gender" />
-
-        <ImageView
-            android:id="@+id/edit"
-            android:src="@mipmap/bianji"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/gender"
-            app:layout_constraintBottom_toBottomOf="@id/gender"/>
-        <LinearLayout
-            android:id="@+id/expand"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginEnd="20dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/gender"
-            app:layout_constraintBottom_toBottomOf="@id/gender">
-            <TextView
+            <LinearLayout
+                android:id="@+id/friends"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Expand"
-                android:textColor="#ff333333"
-                android:textSize="12sp"
-                />
-            <com.moment.app.ui.AutoMirroredImageView
-                android:id="@+id/ivArrow"
-                android:layout_width="10dp"
-                android:layout_height="10dp"
-                android:layout_marginStart="6dp"
-                android:layout_gravity="center_vertical|start"
-                android:src="@mipmap/arrow_new"
-                android:rotation="90"
-                app:tint="#333333" />
-        </LinearLayout>
+                android:layout_marginStart="20dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/friends_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="#ff1d1d1d"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/friends_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5.5dp"
+                    android:text="friends"
+                    android:textColor="#ff999999"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/following"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                app:layout_constraintStart_toEndOf="@id/friends"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_goneMarginStart="20dp">
+
+                <TextView
+                    android:id="@+id/following_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="#ff1d1d1d"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/following_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5.5dp"
+                    android:text="@string/following"
+                    android:textColor="@color/moment_text_ff999999"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/followers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                app:layout_constraintStart_toEndOf="@id/following"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/follower_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:text="0"
+                    android:textColor="#ff1d1d1d"
+                    android:textSize="21sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/follower_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginStart="5.5dp"
+                    android:text="followers"
+                    android:textColor="#ff999999"
+                    android:textSize="15sp" />
+            </LinearLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </HorizontalScrollView>
+
+    <com.moment.app.ui.uiLibs.GenderView
+        android:id="@+id/gender"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/count_container" />
+
+    <TextView
+        android:id="@+id/location"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:backgroundTint="#ED9D1D"
+        android:paddingHorizontal="9dp"
+        android:paddingVertical="2dp"
+        android:text="My City"
+        android:textColor="#ffed9d1d"
+        android:textSize="11sp"
+        app:layout_constraintBottom_toBottomOf="@id/gender"
+        app:layout_constraintStart_toEndOf="@id/gender"
+        app:layout_constraintTop_toTopOf="@id/gender" />
+
+    <ImageView
+        android:id="@+id/edit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:src="@mipmap/bianji"
+        app:layout_constraintBottom_toBottomOf="@id/gender"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/gender" />
+
+    <LinearLayout
+        android:id="@+id/expand"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toBottomOf="@id/gender"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/gender">
 
         <TextView
-            android:id="@+id/bio"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="11dp"
-            android:text="Hi this is a cute guy! Hi this is a cute guy! Hi this is a cute guy! Hi this is a cute guy! "
-            android:textColor="#ff333333"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/gender" />
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="0dp"
-            android:layout_height="0.5dp"
-            android:layout_marginHorizontal="20dp"
-            android:layout_marginTop="6dp"
-            android:background="#F1F1F1"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/bio"
-            app:layout_goneMarginTop="11dp" />
-
-        <TextView
-            android:id="@+id/posts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="19dp"
-            android:includeFontPadding="false"
-            android:textStyle="bold"
-            android:text="Posts"
+            android:text="Expand"
             android:textColor="#ff333333"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/divider" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            android:textSize="12sp" />
+
+        <com.moment.app.ui.AutoMirroredImageView
+            android:id="@+id/ivArrow"
+            android:layout_width="10dp"
+            android:layout_height="10dp"
+            android:layout_gravity="center_vertical|start"
+            android:layout_marginStart="6dp"
+            android:rotation="90"
+            android:src="@mipmap/arrow_new"
+            app:tint="#333333" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/bio"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="11dp"
+        android:text="Hi this is a cute guy! Hi this is a cute guy! Hi this is a cute guy! Hi this is a cute guy! "
+        android:textColor="#ff333333"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gender" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="0dp"
+        android:layout_height="0.5dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_marginTop="6dp"
+        android:background="#F1F1F1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bio"
+        app:layout_goneMarginTop="11dp" />
+
+    <TextView
+        android:id="@+id/posts"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="19dp"
+        android:includeFontPadding="false"
+        android:text="Posts"
+        android:textColor="#ff333333"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/divider" />
 </merge>

@@ -11,11 +11,11 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ItemDecoration
-import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -29,13 +29,16 @@ import com.didi.drouter.api.DRouter
 import com.moment.app.R
 import com.moment.app.databinding.ViewMeHeaderBinding
 import com.moment.app.datamodel.UserInfo
+import com.moment.app.utils.Constants
+import com.moment.app.utils.ViewerPhoto
 import com.moment.app.utils.dp
 import com.moment.app.utils.formatScore
 import com.moment.app.utils.isRTL
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
+import com.moment.app.utils.showInImageViewer
 
-class ViewMeHeader : FrameLayout {
+class ViewMeHeader : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -73,6 +76,12 @@ class ViewMeHeader : FrameLayout {
                 }
             }
         })
+
+        binding.photoClick.setOnClickListener {
+            kotlin.runCatching {
+                binding.photoClick.showInImageViewer(mutableListOf(userInfo!!.avatar!!), userInfo!!.avatar!!)
+            }
+        }
     }
 
     fun init(isMe: Boolean) {
@@ -92,10 +101,11 @@ class ViewMeHeader : FrameLayout {
     }
 
     fun bindData(userInfo: UserInfo, isMe: Boolean) {
+        this.userInfo = userInfo
         this.isMe = isMe
         if (isMe) {
             binding.editPhotos.isVisible = true
-            binding.editPhotos.setOnSingleClickListener({
+            binding.editPhotos.setOnAvoidMultipleClicksListener({
                 DRouter.build("/edit/photos")
                     .putExtra("fileIds", ArrayList(userInfo.imagesWallList)).start()
             }, 500)
@@ -108,7 +118,7 @@ class ViewMeHeader : FrameLayout {
         if (isMe) {
             binding.edit.isVisible = true
             binding.expand.isVisible = false
-            binding.edit.setOnSingleClickListener({
+            binding.edit.setOnAvoidMultipleClicksListener({
                 DRouter.build("/edit/userInfo").start()
             }, 500)
         } else {
@@ -116,7 +126,7 @@ class ViewMeHeader : FrameLayout {
             binding.expand.isVisible = true
             binding.bio.maxLines = 2
             binding.bio.ellipsize = TextUtils.TruncateAt.END
-            binding.expand.setOnSingleClickListener({
+            binding.expand.setOnAvoidMultipleClicksListener({
                 if (isOpen) {
                     binding.bio.maxLines = 2
                     isOpen = false
@@ -151,53 +161,62 @@ class ViewMeHeader : FrameLayout {
         binding.followingCount.text = "${formatScore(userInfo.following_count!!.toLong())}"
         binding.followerCount.text = "${formatScore(userInfo.follower_count!!.toLong())}"
     }
-}
 
-class HeaderAdapter : BaseQuickAdapter<String, BaseViewHolder>(null) {
-    override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
-        return BaseViewHolder(ImageFilterView(mContext).apply {
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            setBackgroundColor(0xffEEEEEE.toInt())
-            layoutParams = RecyclerView.LayoutParams(59.dp, 59.dp)
-            round = 8.dp.toFloat()
-        })
-    }
 
-    override fun convert(helper: BaseViewHolder, item: String?) {
-        Glide.with(mContext)
-            .setDefaultRequestOptions(
-                RequestOptions.noAnimation().diskCacheStrategy(
-                    DiskCacheStrategy.RESOURCE
-                )
-            )
-            .load(item ?: "")
-            .dontTransform()
-            .placeholder(R.drawable.moment)
-            .thumbnail(0.3f)
-            .centerInside()
-            .timeout(3000)
-            .error(R.drawable.moment)
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
+    inner class HeaderAdapter : BaseQuickAdapter<String, BaseViewHolder>(null) {
+        override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
+            return BaseViewHolder(ImageFilterView(mContext).apply {
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                setBackgroundColor(0xffEEEEEE.toInt())
+                layoutParams = RecyclerView.LayoutParams(59.dp, 59.dp)
+                round = 8.dp.toFloat()
             })
-            .into((helper.itemView as ImageFilterView))
+        }
+
+        override fun convert(helper: BaseViewHolder, item: String?) {
+            Glide.with(mContext)
+                .setDefaultRequestOptions(
+                    RequestOptions.noAnimation().diskCacheStrategy(
+                        DiskCacheStrategy.RESOURCE
+                    )
+                )
+                .load(item ?: "")
+                .dontTransform()
+                .placeholder(R.drawable.moment)
+                .thumbnail(0.3f)
+                .centerInside()
+                .timeout(3000)
+                .error(R.drawable.moment)
+                .addListener(object : RequestListener<Drawable> {
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        return false
+                    }
+
+                })
+                .into((helper.itemView as ImageFilterView))
+            helper.itemView.setOnClickListener {
+                kotlin.runCatching {
+                    (helper.itemView as ImageFilterView).showInImageViewer(
+                        userInfo!!.imagesWallList,
+                        item ?: ""
+                    )
+                }
+            }
+        }
     }
 }

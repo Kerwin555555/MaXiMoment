@@ -7,7 +7,7 @@ import android.widget.FrameLayout
 import com.moment.app.databinding.BottomNavigationProfileBinding
 import com.moment.app.databinding.PostDetailsChatTabBinding
 
-class PostDetailsChatTab: FrameLayout {
+class PostDetailsChatTab: androidx.constraintlayout.widget.ConstraintLayout {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)

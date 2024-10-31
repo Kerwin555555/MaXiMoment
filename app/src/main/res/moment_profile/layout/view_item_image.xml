@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/avatar"
@@ -154,5 +155,4 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/like">
         </View>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

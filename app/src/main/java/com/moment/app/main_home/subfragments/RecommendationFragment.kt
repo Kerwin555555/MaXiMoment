@@ -21,6 +21,7 @@ import com.moment.app.network.toast
 import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.cancelIfActive
+import com.scwang.smart.refresh.layout.util.SmartUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -68,7 +69,9 @@ class RecommendationFragment: BaseFragment() {
     private fun initUI() {
         binding.refreshView.initWith(
             adapter = adapter,
-            emptyView = RecommendationEmptyView(this.requireContext())) { isLoadMore ->
+            emptyView = RecommendationEmptyView(this.requireContext()).apply {
+                setBackgroundColor(0x00000000)
+            }) { isLoadMore ->
              loadData(isLoadMore as Boolean)
         }
         binding.refreshView.getRecyclerView().addItemDecoration(DataDividerItemDecoration(

@@ -3,22 +3,18 @@ package com.moment.app.login_profile
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
-import android.media.Image
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
-import com.google.android.gms.common.internal.Objects
 import com.moment.app.databinding.ClipImagePopUpWindowBinding
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.MOMENT_APP
@@ -26,7 +22,7 @@ import com.moment.app.utils.copyFragmentArgumentsToMap
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import java.lang.ref.WeakReference
 
 class ClipImageFragment : BaseFragment() {
@@ -111,7 +107,7 @@ class ClipImageFragment : BaseFragment() {
             }
 
 
-            binding.confirm.setOnSingleClickListener({
+            binding.confirm.setOnAvoidMultipleClicksListener({
                 val map = copyFragmentArgumentsToMap()
                 if (file != null) {
                     map["file"] = file

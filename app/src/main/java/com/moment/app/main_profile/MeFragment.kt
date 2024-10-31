@@ -34,7 +34,8 @@ import com.moment.app.utils.loadAvatarBig
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
+import com.scwang.smart.refresh.layout.util.SmartUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -81,17 +82,19 @@ class MeFragment : BaseFragment() {
         binding.toolbar.requestNewSize(width = -1, height = BarUtils.getStatusBarHeight() + 50.dp)
         binding.income.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
         binding.recharge.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
-        binding.setting.setOnSingleClickListener({
+        binding.setting.setOnAvoidMultipleClicksListener({
             DRouter.build("/settings").start()
         }, 500)
-        binding.feedPublish.setOnSingleClickListener({
-
+        binding.feedPublish.setOnAvoidMultipleClicksListener({
+            DRouter.build("/feed/publish").start()
         }, 500)
         adapter = ProfilePostsAdapter(isMe = true)
         adapter.setHeaderAndEmpty(true)
         viewMeHeader = ViewMeHeader(requireContext())
-        loadAvatarBig(binding.avatar)
-        viewMeHeader.bindData(userInfo = LoginModel.getUserInfo()!!, isMe = true)
+        LoginModel.getUserInfo()?.let {
+            loadAvatarBig(binding.avatar, userInfo = it)
+            viewMeHeader.bindData(userInfo = it, isMe = true)
+        }
         adapter.setHeaderView(viewMeHeader)
 
         binding.refreshView.initWith(
@@ -123,6 +126,8 @@ class MeFragment : BaseFragment() {
                 }
             }
         })
+
+        binding.refreshView.setReboundInterpolator(SmartUtil(1))
     }
 
     private fun loadData(isLoadMore: Boolean) {
@@ -157,7 +162,7 @@ class MeFragment : BaseFragment() {
             viewMeHeader.bindData(userInfo = it, isMe = true)
             adapter.userInfo = it
             adapter.notifyItemRangeChanged(0, adapter.data.size)
-            loadAvatarBig(binding.avatar)
+            loadAvatarBig(binding.avatar, userInfo = it)
         }
     }
 

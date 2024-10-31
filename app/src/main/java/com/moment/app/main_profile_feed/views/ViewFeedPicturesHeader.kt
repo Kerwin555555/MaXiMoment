@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ScreenUtils
@@ -25,18 +26,20 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.R
 import com.moment.app.databinding.DetailsToolbarBinding
 import com.moment.app.databinding.ViewFeedPicturesHeaderBinding
-import com.moment.app.main_profile.entities.PicShape
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.models.LoginModel
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.ViewerPhoto
+import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.dp
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
+import com.moment.app.utils.showInImageViewer
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ViewFeedPicturesHeader : FrameLayout, DetailsFeedView {
+class ViewFeedPicturesHeader : ConstraintLayout, DetailsFeedView {
 
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
@@ -50,6 +53,7 @@ class ViewFeedPicturesHeader : FrameLayout, DetailsFeedView {
     }
 
     init {
+        applyPaddingsWithDefaultZero(bottom = 15.dp)
         binding.picturesPager.adapter = adapter
         binding.indicator.setViewPager(binding.picturesPager)
         binding.indicator.configureIndicator(
@@ -117,52 +121,34 @@ class ViewFeedPicturesHeader : FrameLayout, DetailsFeedView {
 
         binding.commentCount.text = "${post.comment_num}"
     }
-}
 
-class Adapter: BaseQuickAdapter<PicShape, BaseViewHolder>(null) {
+    inner class Adapter: BaseQuickAdapter<ViewerPhoto.PicShape, BaseViewHolder>(null) {
 
-    override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
-        return  BaseViewHolder(ImageFilterView(mContext).apply {
-            layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            round = 4.dp.toFloat()
-        })
-    }
-    //https://svgconverter.app/free  如何把大图换svg, image_sizer换成小图片
-    override fun convert(helper: BaseViewHolder, item: PicShape?) {
-        Glide.with(mContext)
-            .setDefaultRequestOptions(
-                RequestOptions.noAnimation().diskCacheStrategy(
-                    DiskCacheStrategy.RESOURCE))
-            .load(R.mipmap.user_post_test_image)
-            .dontTransform()
-            .placeholder(R.drawable.moment)
-            .thumbnail(0.3f)
-            .centerInside()
-            .override(ScreenUtils.getAppScreenWidth() * 2/3, ScreenUtils.getAppScreenHeight() * 2/3)
-            .error(R.drawable.moment)
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
+        override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
+            return  BaseViewHolder(ImageFilterView(mContext).apply {
+                layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                round = 4.dp.toFloat()
             })
-            .into(helper.itemView as ImageFilterView)
+        }
+        //https://svgconverter.app/free  如何把大图换svg, image_sizer换成小图片
+        override fun convert(helper: BaseViewHolder, item: ViewerPhoto.PicShape?) {
+            Glide.with(mContext)
+                .setDefaultRequestOptions(RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                .load(R.mipmap.user_post_test_image)
+                .dontTransform()
+                .placeholder(R.drawable.moment)
+                .thumbnail(0.3f)
+                .centerInside()
+                .override(ScreenUtils.getAppScreenWidth() * 3/5, ScreenUtils.getAppScreenHeight() * 3/5)
+                .error(R.drawable.moment)
+                .into(helper.itemView as ImageFilterView)
+            helper.itemView.setOnClickListener {
+                kotlin.runCatching {
+                    (helper.itemView as ImageFilterView).showInImageViewer(post!!.pics_shape!!, item!!)
+                }
+            }
+        }
     }
 }
 

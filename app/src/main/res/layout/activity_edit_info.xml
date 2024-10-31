@@ -264,7 +264,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
     </com.moment.app.utils.NoFitSystemWindowPaddingLinearLayout>
-    >
+
 
 
     <!--    <TextView-->

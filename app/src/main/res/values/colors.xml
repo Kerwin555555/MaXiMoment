@@ -1,18 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="backgroundColor">#E8E8E0</color>
-    <color name="backgroundColorPress">#DBDBD3</color>
-    <color name="banner_card">@color/bg_second</color>
-    <color name="bg_disable">#B3BAC5</color>
-    <color name="bg_eight">#F7F5FF</color>
-    <color name="bg_five">#ffffff</color>
-    <color name="bg_fourth">#ffffff</color>
-    <color name="bg_main">#FFFFFF</color>
-    <color name="bg_nine">#ffffff</color>
-    <color name="bg_second">#F8F9FA</color>
-    <color name="bg_seven">#F8F9FA</color>
-    <color name="bg_six">#F8F9FA</color>
-    <color name="bg_third">#F8F9FA</color>
     <color name="black">#000000</color>
     <color name="blackpay1">#666666</color>
     <color name="blackpay2">#999999</color>
@@ -42,22 +29,6 @@
     <item name="gray_f3f4f6" type="color">#fff3f4f6</item>
     <item name="green" type="color">#FF99CC00</item>
     <color name="light_yellow">#FFEE58</color>
-    <color name="lit_action_dialog">@android:color/white</color>
-    <color name="lit_blue">#4EA9FF</color>
-    <color name="lit_bottom_sheet_dialog">@color/moment_white</color>
-    <color name="lit_confirm_unable_bg">@color/text_fourth</color>
-    <color name="lit_dialog_top_gray">#FFE1E4EA</color>
-    <color name="lit_green">#25FF70</color>
-    <color name="lit_grey">#EEEEEE</color>
-    <color name="lit_grey1">#4dCCC6CF</color>
-    <color name="lit_pink">#FF68A2</color>
-    <color name="lit_progress_dialog">#ffffff</color>
-    <color name="lit_red">#FF4456</color>
-    <color name="lit_stroke_gray">#FFB3BAC5</color>
-    <color name="lit_stroke_gray2">#FF838995</color>
-    <color name="lit_stroke_grey">#D1D6E0</color>
-    <color name="lit_stroke_purple">#CCC1EB</color>
-    <color name="lit_yellow">#FFD97C</color>
     <color name="notify_badge_main">#E23A5B</color>
     <item name="orange" type="color">#FFFFBB33</item>
     <color name="primary_blue">#4876FF</color>

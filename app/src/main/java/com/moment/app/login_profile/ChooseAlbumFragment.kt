@@ -42,7 +42,7 @@ import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.DialogUtils
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.stackAnimation
 import com.moment.app.utils.toast
 
@@ -323,7 +323,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         if (position == 0) {
             val holder = h as MediaPhotoViewHolder
-            holder.binding.root.setOnSingleClickListener({
+            holder.binding.root.setOnAvoidMultipleClicksListener({
                     try {
                         PermissionHelper.check(
                             context, "Take Photos",
@@ -387,7 +387,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                 })
 
 
-                itemView.setOnSingleClickListener({
+                itemView.setOnAvoidMultipleClicksListener({
                     // clipiamgeview
 //                    Explorer.mediaPreview(context as AppCompatActivity,
 //                        false,

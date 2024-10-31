@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="15dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:paddingBottom="15dp"
+    tools:parentTag="androidx.constraintlayout.widget.ConstraintLayout">
 
         <androidx.emoji2.widget.EmojiTextView
             android:id="@+id/content"
@@ -96,5 +96,4 @@
             app:layout_constraintBottom_toBottomOf="@id/like"
             app:layout_constraintStart_toEndOf="@id/like"
             app:layout_constraintTop_toTopOf="@id/like" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
 </merge>

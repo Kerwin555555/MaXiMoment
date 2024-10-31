@@ -8,10 +8,9 @@ import com.didi.drouter.api.DRouter
 import com.moment.app.R
 import com.moment.app.databinding.FragmentHomeItemViewBinding
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.models.LoginModel
 import com.moment.app.utils.applyDrawable
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 
 class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.FragmentHomeItemHolder>(null) {
 
@@ -23,7 +22,7 @@ class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.Fr
 
     override fun convert(helper: FragmentHomeItemHolder, item: UserInfo) {
         val binding= helper.binding
-        binding.avatar.setOnSingleClickListener({
+        binding.avatar.setOnAvoidMultipleClicksListener({
             DRouter.build("/user")
                 .putExtra("id", item.userId)
                 .start()
@@ -32,6 +31,13 @@ class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.Fr
         binding.name.text = item.name
 
         binding.gender.bindGender(item)
+
+        binding.chat.setOnAvoidMultipleClicksListener({
+            DRouter.build("/chat/thread")
+                .putExtra("id", item.huanxin?.user_id ?: "")
+                .putExtra("userInfo", item)
+                .start()
+        }, 500)
 
         item.followed?.let {
             binding.chat.isSelected = it

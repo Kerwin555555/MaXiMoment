@@ -16,7 +16,7 @@ import com.moment.app.main_profile_settings.subpages.LanguageSettingFragment
 import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.rightInRightOut
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -68,7 +68,7 @@ class SettingActivity : BaseActivity(){
                 horizontalMargin = 26)
         )
 
-        binding.logOut.setOnSingleClickListener({
+        binding.logOut.setOnAvoidMultipleClicksListener({
             LoginModel.logout(true, loginService)
         }, 500)
     }

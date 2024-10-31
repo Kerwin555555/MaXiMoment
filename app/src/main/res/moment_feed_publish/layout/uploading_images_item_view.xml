@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="79dp"
+    android:layout_height="79dp">
+
+    <androidx.constraintlayout.utils.widget.ImageFilterView
+        android:id="@+id/image"
+        android:layout_width="79dp"
+        android:layout_height="79dp"
+        android:background="@drawable/moment"
+        android:scaleType="centerCrop"
+        app:round="15dp"/>
+
+    <FrameLayout
+        android:id="@+id/touche_area"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|top">
+
+        <ImageView
+            android:id="@+id/cancel"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_gravity="end|top"
+            android:layout_margin="5dp"
+            android:src="@drawable/small_cancel"/>
+    </FrameLayout>
+</FrameLayout>

@@ -21,7 +21,7 @@ import com.hyphenate.push.EMPushType
 import com.hyphenate.push.PushListener
 import com.hyphenate.util.NetUtils
 import com.moment.app.BuildConfig
-import com.moment.app.MomentApp
+import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.ConnectState
 import com.moment.app.login_page.LoginCallback
 import com.moment.app.main_chat.GlobalConversationHub
@@ -32,7 +32,6 @@ import com.moment.app.utils.coroutineScope
 import com.moment.app.utils.coroutineScope2
 import com.moment.app.utils.toast
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.greenrobot.eventbus.EventBus
@@ -325,4 +324,8 @@ class IMLoginModel(val globalConversationHub: GlobalConversationHub) {
     }
 
 
+    suspend fun loadUserInfosAccordingToHXids(ids: List<String?>) : MutableList<UserInfo>{
+        delay(500)
+        return mutableListOf()
+    }
 }

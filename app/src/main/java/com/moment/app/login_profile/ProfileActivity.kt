@@ -43,9 +43,8 @@ import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.immersion
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.setTextColorStateSelectList
-import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -132,7 +131,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
             }
             override fun afterTextChanged(s: Editable?) {}
         })
-        binding.confirm.setOnSingleClickListener({
+        binding.confirm.setOnAvoidMultipleClicksListener({
             viewModel.submit()
         }, 500)
     }

@@ -37,7 +37,6 @@ import com.moment.app.permissions.SetupBundle
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.BaseBean
 import com.moment.app.utils.DialogUtils
-import com.moment.app.utils.JsonUtil
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressDialog
 import com.moment.app.utils.applyEnabledColorIntStateList
@@ -48,7 +47,7 @@ import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.saveView
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -263,7 +262,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
 
             val filterView = helper.getView<ImageFilterView>(R.id.image)
             filterView.setImageResource(0)
-            helper.itemView.setOnSingleClickListener({
+            helper.itemView.setOnAvoidMultipleClicksListener({
                 if (item.isEmpty()) {
                     this@EditPhotosWallActivity.bottomInBottomOut()
                         .add(R.id.root_layout, ChooseAlbumFragment().apply {

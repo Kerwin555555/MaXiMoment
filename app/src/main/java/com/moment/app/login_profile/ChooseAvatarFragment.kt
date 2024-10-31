@@ -16,9 +16,6 @@ import com.bumptech.glide.Glide
 import com.moment.app.R
 import com.moment.app.databinding.AvatarPopWindowBinding
 import com.moment.app.images.Explorer
-import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_CHOOSE
-import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_CHOOSE_VIDEO
-import com.moment.app.imageselect.ChoosePhotoDialog.Companion.REQUEST_CODE_TAKE
 import com.moment.app.models.LoginModel
 import com.moment.app.permissions.PermissionHelper
 import com.moment.app.utils.BaseFragment
@@ -77,31 +74,6 @@ class ChooseAvatarFragment : BaseFragment() {
             (e.message + "requestPermissions error").toast()
         }
     }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK) {
-            //Log.d(MOMENT_APP, "" + requestCode)
-            if (requestCode == REQUEST_CODE_CHOOSE) {
-//                if (chooseListener != null) chooseListener!!.onPhotoChoose(
-//                    Explorer.obtainResult(
-//                        data
-//                    )
-//                )
-            } else if (requestCode == REQUEST_CODE_TAKE) {
-                //MediaUploader.compressImage(mCurrentPhotoPath.toString(), null)
-                //if (chooseListener != null) chooseListener!!.onTakePhoto(mCurrentPhotoPath)
-            } else if (requestCode == REQUEST_CODE_CHOOSE_VIDEO) {
-//                if (chooseVideoListener != null) chooseVideoListener!!.onVideoChoose(
-//                    Explorer.obtainResult(
-//                        data
-//                    )
-//                )
-            }
-        }
-        //dismissAllowingStateLoss()
-    }
-
 
     private fun choosePhoto() {
          (activity as? AppCompatActivity?)?.bottomInBottomOut()

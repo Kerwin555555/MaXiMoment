@@ -2,14 +2,15 @@ package com.moment.app.main_profile.views
 
 import android.content.Context
 import android.graphics.drawable.Drawable
+import android.print.PrintAttributes.Margins
 import android.util.AttributeSet
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.ScreenUtils
 import com.bumptech.glide.Glide
@@ -21,22 +22,27 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.github.iielse.imageviewer.ImageViewerBuilder
 import com.moment.app.R
 import com.moment.app.databinding.ViewItemImageBinding
-import com.moment.app.main_profile.entities.PicShape
+import com.moment.app.image_viewer.show
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.MOMENT_APP
+import com.moment.app.utils.ViewerPhoto
 import com.moment.app.utils.dp
+import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.gotoPostDetail
+import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
+import com.moment.app.utils.showInImageViewer
 import java.text.SimpleDateFormat
 import java.util.Date
 
-class ImageItemView: FrameLayout , AdapterItemView{
+class ImageItemView: ConstraintLayout , AdapterItemView{
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
@@ -106,54 +112,37 @@ class ImageItemView: FrameLayout , AdapterItemView{
 
         binding.commentCount.text = "${post.comment_num}"
 
-        binding.root.setOnSingleClickListener( {
+        binding.root.setOnAvoidMultipleClicksListener( {
             gotoPostDetail(post)
         },500)
     }
-}
 
-class Adapter: BaseQuickAdapter<PicShape, BaseViewHolder>(null) {
+    inner class Adapter: BaseQuickAdapter<ViewerPhoto.PicShape, BaseViewHolder>(null) {
 
-    override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
-        return  BaseViewHolder(ImageFilterView(mContext).apply {
-            layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, MATCH_PARENT)
-            scaleType = ImageView.ScaleType.CENTER_CROP
-            round = 4.dp.toFloat()
-        })
-    }
-//https://svgconverter.app/free  如何把大图换svg, image_sizer换成小图片
-    override fun convert(helper: BaseViewHolder, item: PicShape?) {
-        Glide.with(mContext)
-            .setDefaultRequestOptions(RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
-            .load(R.mipmap.user_post_test_image)
-            .dontTransform()
-            .placeholder(R.drawable.moment)
-            .thumbnail(0.3f)
-            .centerInside()
-            .override(ScreenUtils.getAppScreenWidth() * 2/3, ScreenUtils.getAppScreenHeight() * 2/3)
-            .error(R.drawable.moment)
-            .addListener(object : RequestListener<Drawable> {
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
+        override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): BaseViewHolder {
+            return  BaseViewHolder(ImageFilterView(mContext).apply {
+                layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, MATCH_PARENT)
+                scaleType = ImageView.ScaleType.CENTER_CROP
+                round = 4.dp.toFloat()
             })
-            .into(helper.itemView as ImageFilterView)
+        }
+        //https://svgconverter.app/free  如何把大图换svg, image_sizer换成小图片
+        override fun convert(helper: BaseViewHolder, item: ViewerPhoto.PicShape?) {
+            Glide.with(mContext)
+                .setDefaultRequestOptions(RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+                .load(R.mipmap.user_post_test_image)
+                .dontTransform()
+                .placeholder(R.drawable.moment)
+                .thumbnail(0.3f)
+                .centerInside()
+                .override(ScreenUtils.getAppScreenWidth() * 3/5, ScreenUtils.getAppScreenHeight() * 3/5)
+                .error(R.drawable.moment)
+                .into(helper.itemView as ImageFilterView)
+
+            helper.itemView.setOnClickListener {
+                (helper.itemView as ImageFilterView).showInImageViewer(post!!.pics_shape!!, item!!)
+            }
+        }
     }
 }
 

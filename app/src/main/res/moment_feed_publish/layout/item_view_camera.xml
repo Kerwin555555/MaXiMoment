@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="90dp"
+    android:layout_height="90dp"
+    android:padding="1dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/bg_drawable_choose_photos">
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="40dp"
+        android:src="@mipmap/small_cam"
+        android:layout_height="32dp"
+        android:layout_gravity="center"
+        app:tint="#E4E4E4"/>
+</FrameLayout>

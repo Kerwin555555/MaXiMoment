@@ -124,6 +124,10 @@
             android:name=".main_profile_settings.SettingActivity"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".main_chat_private.ChatActivity"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+        <activity
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden"
             android:name=".main_profile_feed.PostDetailActivity">
@@ -153,6 +157,9 @@
             android:screenOrientation="portrait"/>
         <activity android:name=".main_profile_edit.EditInfoActivity"
             android:windowSoftInputMode="adjustResize"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity android:name=".main_feed_publish.FeedPublishActivity"
             android:screenOrientation="portrait">
         </activity>
         <meta-data

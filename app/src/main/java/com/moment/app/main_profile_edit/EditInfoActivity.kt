@@ -2,7 +2,6 @@ package com.moment.app.main_profile_edit
 
 import android.Manifest
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -54,7 +53,7 @@ import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.immersion
 import com.moment.app.utils.saveView
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.setTextColorStateSelectList
 import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
@@ -93,7 +92,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
             finish()
         }
 
-        binding.save.setOnSingleClickListener({
+        binding.save.setOnAvoidMultipleClicksListener({
             viewModel.submitData(initialProfileData!!, this@EditInfoActivity, loginService)
         }, 500)
 
@@ -144,6 +143,10 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
         viewModel.showProgressDialog.observe(this) {
             progressDialog = it.refreshProgressDialog(progressDialog, this)
         }
+
+        binding.root.postDelayed({
+            binding.bioEditText.requestFocus()
+        },50)
     }
 
     private fun initUI(userInfo: UserInfo) {
@@ -261,6 +264,13 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
         } catch (e: Exception) {
             e.printStackTrace()
             (e.message + "requestPermissions error").toast()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        kotlin.runCatching {
+            KeyboardUtils.hideSoftInput(this)
         }
     }
 

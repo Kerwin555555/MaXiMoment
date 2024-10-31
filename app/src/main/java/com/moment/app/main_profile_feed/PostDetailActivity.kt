@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Gravity
 import android.view.View
 import com.blankj.utilcode.util.BarUtils
+import com.blankj.utilcode.util.KeyboardUtils
 import com.didi.drouter.annotation.Router
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityFeedPostBinding
@@ -137,6 +138,13 @@ class PostDetailActivity : BaseActivity(){
             bindPost(postBean)
         }){
             it.toast()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        kotlin.runCatching {
+            KeyboardUtils.hideSoftInput(this)
         }
     }
 }

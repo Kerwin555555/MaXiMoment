@@ -7,10 +7,14 @@ import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.BaseBean
 import retrofit2.http.GET
+import retrofit2.http.Path
 
 interface ThreadService {
     @GET("api/sns/v1/lit/user/conversations")
     suspend fun conversations(): Results<ThreadList>
+
+    @GET("api/sns/v1/moment/user/get_info/{userId}")
+    suspend fun getUserInfo(@Path("userId") userId: String?): Results<UserInfo>
 }
 
 

@@ -32,6 +32,7 @@ import com.moment.app.utils.immersion
 import com.moment.app.utils.loadAvatarBig
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
+import com.scwang.smart.refresh.layout.util.SmartUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -117,6 +118,7 @@ class UserDetailActivity : BaseActivity(){
             }
         })
         firstLoad()
+        binding.refreshView.setReboundInterpolator(SmartUtil(1))
     }
 
     private fun ensureParam() {

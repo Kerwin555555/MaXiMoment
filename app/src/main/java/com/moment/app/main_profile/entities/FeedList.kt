@@ -1,7 +1,10 @@
 package com.moment.app.main_profile.entities
 
+import com.github.iielse.imageviewer.adapter.ItemType.PHOTO
+import com.github.iielse.imageviewer.core.Photo
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.BaseBean
+import com.moment.app.utils.ViewerPhoto
 
 class FeedList : BaseBean() {
     /**
@@ -18,7 +21,7 @@ class FeedList : BaseBean() {
 
 class PostBean: BaseBean() {
     var id: String? = null
-    var pics_shape : MutableList<PicShape>? = null
+    var pics_shape : MutableList<ViewerPhoto.PicShape>? = null
     var user_id: String? = ""
     var user_info: UserInfo? = null
     var content: String? = null
@@ -44,4 +47,3 @@ class CreateTimeBean : BaseBean() {
     var time_desc: String? = null
 }
 
-class PicShape(var fileKey: String, var width: Int? = null, var height: Int? = null) : BaseBean()

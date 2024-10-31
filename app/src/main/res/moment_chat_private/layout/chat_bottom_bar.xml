@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:parentTag="android.widget.LinearLayout">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/chat_tab"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <androidx.emoji2.widget.EmojiEditText
+            android:id="@+id/edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:autoSizeMaxTextSize="15sp"
+            android:autoSizeMinTextSize="12sp"
+            android:autoSizeTextType="uniform"
+            android:background="@drawable/drawable_chat_tab_bg"
+            android:focusableInTouchMode="true"
+            android:gravity="center_vertical"
+            android:hint="please type messages here"
+            android:maxLines="4"
+            android:minHeight="40dp"
+            android:paddingVertical="5dp"
+            android:paddingStart="15dp"
+            android:paddingEnd="8dp"
+            android:textColor="@color/text_main"
+            android:textCursorDrawable="@drawable/cursor_drawable"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/emoji_image_view"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/emoji_image_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:src="@mipmap/emotion"
+            app:layout_constraintBottom_toBottomOf="@id/send_button"
+            app:layout_constraintEnd_toStartOf="@id/send_button"
+            app:layout_constraintTop_toTopOf="@id/send_button" />
+
+        <ImageView
+            android:id="@+id/send_button"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_marginVertical="9dp"
+            android:layout_marginEnd="15dp"
+            android:background="@drawable/bg_send_icon"
+            android:scaleType="centerInside"
+            android:src="@mipmap/send_text"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/emoji_rv"
+        android:visibility="gone"
+        android:layout_marginHorizontal="5dp"
+        android:layout_height="180dp"
+        android:layout_width="match_parent">
+    </androidx.recyclerview.widget.RecyclerView>
+</merge>

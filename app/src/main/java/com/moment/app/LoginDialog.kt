@@ -8,7 +8,7 @@ import com.didi.drouter.api.DRouter
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.DialogLoginBinding
 import com.moment.app.utils.BaseFragment
-import com.moment.app.utils.setOnSingleClickListener
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 
 class LoginDialog: BaseFragment() {
     private lateinit var binding: DialogLoginBinding
@@ -29,10 +29,10 @@ class LoginDialog: BaseFragment() {
             .fitsSystemWindows(false)
             .init()
 
-        binding.facebookLogin.setOnSingleClickListener({
+        binding.facebookLogin.setOnAvoidMultipleClicksListener({
             DRouter.build("/login/facebook").start()
         }, 500)
-        binding.googleLogin.setOnSingleClickListener({
+        binding.googleLogin.setOnAvoidMultipleClicksListener({
             DRouter.build("/login/google").start()
         }, 500)
     }
