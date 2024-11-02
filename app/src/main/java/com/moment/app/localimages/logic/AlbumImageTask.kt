@@ -12,23 +12,27 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.moment.app.R
+import com.moment.app.image_viewer.loadNoAnimResource
 import com.moment.app.localimages.AlbumSearcher
 import com.moment.app.localimages.datamodel.AlbumItemFile
+import com.moment.app.utils.getScreenHeight
+import com.moment.app.utils.getScreenWidth
 import java.text.DecimalFormat
 
 object AlbumImageTask {
 
     fun loadThumb(targetView: ImageView, file: AlbumItemFile, sizeMultiplier: Float, dirtyFileAction: ((file: AlbumItemFile) ->Unit) ?= null, placeHolder: Drawable = ColorDrawable(0xFFEEEEEE.toInt())) {
-        if (Build.VERSION.SDK_INT >= 29) {
-            targetView.setImageDrawable(placeHolder)
-            ThumbImageLoader.fetchImageThumb(targetView.context, file, { bitmap ->
-                targetView.setImageBitmap(bitmap)
-            }, {
-                load(targetView, file, sizeMultiplier, dirtyFileAction, placeHolder)
-            })
-        } else {
+//        if (Build.VERSION.SDK_INT >= 29) {
+//            targetView.setImageDrawable(placeHolder)
+//            ThumbImageLoader.fetchImageThumb(targetView.context, file, { bitmap ->
+//                targetView.setImageBitmap(bitmap)
+//            }, {
+//                load(targetView, file, sizeMultiplier, dirtyFileAction, placeHolder)
+//            })
+//        } else {
             load(targetView, file, sizeMultiplier, dirtyFileAction, placeHolder)
-        }
+        //}
     }
 
     fun load(targetView: ImageView, file: AlbumItemFile, sizeMultiplier: Float = 0.3f, dirtyFileAction: ((file: AlbumItemFile) ->Unit) ?= null, placeHolder: Drawable = ColorDrawable(0xFF000000.toInt())) {
@@ -46,36 +50,13 @@ object AlbumImageTask {
             RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE)
         }
         Glide.with(context)
-            .setDefaultRequestOptions(defaultOptions)
+            .setDefaultRequestOptions(RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
             .load(if (file.isVideo) file.path else file.displayPath())
             .dontTransform()
-            .placeholder(placeHolder)
-            .thumbnail(sizeMultiplier)
+            .placeholder(R.drawable.moment)
             .centerInside()
-            .timeout(3000)
-            .error(placeHolder)
-            .addListener(object : RequestListener<Drawable>{
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    dirtyFileAction?.invoke(file)
-                    return false
-                }
-
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    return false
-                }
-
-            })
+            .override(getScreenWidth() * 3/5, getScreenHeight() * 3/5)
+            .error(R.drawable.moment)
             .into(targetView)
     }
 

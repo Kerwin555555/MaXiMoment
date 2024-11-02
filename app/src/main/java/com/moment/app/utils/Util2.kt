@@ -694,6 +694,7 @@ private fun AppCompatActivity.getAllMediaDirFromLoadCursor(data: Cursor): Album 
                 var width = data.getInt(data.getColumnIndex(MediaStore.MediaColumns.WIDTH))
                 var height = data.getInt(data.getColumnIndex(MediaStore.MediaColumns.HEIGHT))
 
+                if (size == 0L || width == 0||  height == 0) continue
                 val date =
                     data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED))
 

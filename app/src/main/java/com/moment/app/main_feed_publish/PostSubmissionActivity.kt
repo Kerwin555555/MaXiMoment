@@ -19,11 +19,14 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.didi.drouter.annotation.Router
 import com.moment.app.databinding.ActivityFeedPublishBinding
 import com.moment.app.localimages.datamodel.AlbumItemFile
+import com.moment.app.localimages.logic.AlbumImageTask
+import com.moment.app.localimages.logic.ThumbImageLoader
 import com.moment.app.main_feed_publish.adapters.CameraAlbumDataAdapter
 import com.moment.app.main_feed_publish.adapters.CameraAlbumDataAdapter.Companion.REQUEST_CODE_TAKE
 import com.moment.app.main_feed_publish.adapters.UploadImageAdapter
 import com.moment.app.main_feed_publish.extensions.Action
 import com.moment.app.main_feed_publish.extensions.PostStatus
+import com.moment.app.network.startCoroutine
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.checkAndGotoCamera
 import com.moment.app.utils.checkAndSelectPhotos
@@ -32,7 +35,9 @@ import com.moment.app.utils.dp
 import com.moment.app.utils.fetchAllAlbumImages
 import com.moment.app.utils.immersion
 import com.moment.app.utils.isRTL
+import com.tencent.mmkv.MMKV
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Deferred
 
 
 @AndroidEntryPoint
@@ -100,7 +105,7 @@ class PostSubmissionActivity : BaseActivity() {
         albumAdapter.goAndChoosePhotos = {
             checkAndSelectPhotos {
                fetchAllAlbumImages {  album->
-                   albumAdapter.setNewData(album.files)
+                   albumAdapter.addData(album.files)
                }
             }
         }
@@ -140,8 +145,8 @@ class PostSubmissionActivity : BaseActivity() {
             mimeType = "camera_moment"
         })
         if (checkReadWritePermission()) {
-            fetchAllAlbumImages {  mediaDirectory ->
-                albumAdapter.addData(mediaDirectory.files)
+            fetchAllAlbumImages {  album ->
+                albumAdapter.addData(album.files)
             }
         }
     }

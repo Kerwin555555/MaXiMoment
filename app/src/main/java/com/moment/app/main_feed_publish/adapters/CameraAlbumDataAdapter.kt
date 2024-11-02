@@ -130,17 +130,7 @@ class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickA
         BaseViewHolder(binding.root) {
         fun bindData(item: AlbumItemFile) {
             if (mContext != null) {
-                AlbumImageTask.loadThumb(binding.albumImage, (item as AlbumItemFile),
-                    0.3f, {
-                        val itr = data.iterator()
-                        while (itr.hasNext()) {
-                            if (itr.next().path == item.path) {
-                                itr.remove()
-                                break
-                            }
-                        }
-                        notifyDataSetChanged()
-                    })
+                binding.albumImage.loadNoAnimResource(item.path)
             }
             val position = absoluteAdapterPosition
             binding.selector.isSelected = selectedMap.containsKey(position)

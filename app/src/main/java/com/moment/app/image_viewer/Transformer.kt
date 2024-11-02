@@ -181,7 +181,6 @@ fun ImageView.loadNoAnimResource(fileId: String?){
         .load(fileId)
         .dontTransform()
         .placeholder(R.drawable.moment)
-        .thumbnail(0.3f)
         .centerInside()
         .override(getScreenWidth() * 3/5, getScreenHeight() * 3/5)
         .error(R.drawable.moment)
@@ -195,7 +194,6 @@ fun ImageView.loadFeedRemoteResource(fileId: String?) {
             .load(R.mipmap.xog)
             .dontTransform()
             .placeholder(R.drawable.moment)
-            .thumbnail(0.3f)
             .error(R.drawable.moment)
             .into(this)
     }

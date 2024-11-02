@@ -11,7 +11,7 @@ import java.lang.ref.SoftReference
 
 object ThumbImageLoader {
 
-    private val thumbnailsCache = LruCache<String, SoftReference<Bitmap>>(1024)
+    private val thumbnailsCache = LruCache<String, SoftReference<Any>>(1024)
 
     fun fetchImageThumb(
         context: Context,
@@ -19,9 +19,14 @@ object ThumbImageLoader {
         action: (bitmap: Bitmap?) -> Unit,
         error: (file: AlbumItemFile) -> Unit
     ) {
-        if (thumbnailsCache.get(file.path) != null && thumbnailsCache[file.path]?.get() != null) {
+        if (thumbnailsCache.get(file.path) != null && thumbnailsCache[file.path]?.get() != null
+            && thumbnailsCache.get(file.path).get() is Bitmap) {
             Log.d("OKThumbLoader", "load from memory cache...")
-            action.invoke(thumbnailsCache[file.path]?.get())
+            action.invoke(thumbnailsCache[file.path]?.get() as Bitmap)
+            return
+        } else if (thumbnailsCache.get(file.path) != null && thumbnailsCache[file.path]?.get() != null
+            && thumbnailsCache.get(file.path).get() is Int) {
+            error.invoke(file)
             return
         }
 
@@ -47,6 +52,7 @@ object ThumbImageLoader {
                 notify {
                     error.invoke(file)
                 }
+                thumbnailsCache.put(file.path, SoftReference(1))
                 return@push
             }
 
@@ -55,6 +61,18 @@ object ThumbImageLoader {
                 action.invoke(bitmap)
             }
         }
+    }
+
+    fun filter(data: MutableList<AlbumItemFile>):  MutableList<AlbumItemFile> {
+        val itr = data.iterator()
+        while (itr.hasNext()) {
+            thumbnailsCache.get(itr.next().path)?.let {
+                if (it.get() != null && it.get() is Int) {
+                    itr.remove()
+                }
+            }
+        }
+        return data
     }
 
 

@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.database.getStringOrNull
 import com.moment.app.localimages.AlbumSearcher
 import com.moment.app.localimages.datamodel.Album
+import com.moment.app.utils.MOMENT_APP
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
@@ -136,7 +137,7 @@ object CursorParseHelper {
                 val size = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE))
                 val width = data.getInt(data.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH))
                 val height = data.getInt(data.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT))
-
+                if (size == 0L || width == 0||  height == 0) continue
                 videoDir.addVideo(filedId, path, thumbnail, mimeType, size, width, height, date, duration)
 
                 Log.e("FileData", "path: $path , mimeType: $mimeType , thumbnail: $thumbnail , duration: $duration , size: $size")
