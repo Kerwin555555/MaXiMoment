@@ -643,7 +643,7 @@ fun AppCompatActivity.checkAndSelectPhotos(onPermissionOk: (() -> Unit)? = null)
 /**
  * 已经有了权限，读取所有相机图片
  */
-fun AppCompatActivity.fetchAllAlbumImages(func: ((mediaDirectory: Album)-> Unit)?) {
+fun AppCompatActivity.fetchAllAlbumImages(func: ((album: Album)-> Unit)?) {
         LoaderManager.getInstance(this)
             .initLoader(LOAD_ID_IMAGE, bundleOf("extra_mode" to AlbumSearcher.MODE_ONLY_IMAGE), object : LoaderManager.LoaderCallbacks<Cursor> {
                 override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
@@ -652,9 +652,9 @@ fun AppCompatActivity.fetchAllAlbumImages(func: ((mediaDirectory: Album)-> Unit)
 
                 override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
                     data?.let {
-                        val mediaDirectory = getAllMediaDirFromLoadCursor(data)
+                        val album = getAllMediaDirFromLoadCursor(data)
                         coroutineScope.launch (Dispatchers.Main){
-                            func?.invoke(mediaDirectory)
+                            func?.invoke(album)
                         }
                     }
                 }

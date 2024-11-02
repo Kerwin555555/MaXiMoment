@@ -10,7 +10,7 @@ import com.moment.app.databinding.DialogLoginBinding
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
 
-class MomentLoginFragment: BaseFragment() {
+class MomentEntryFragment: BaseFragment() {
     private lateinit var binding: DialogLoginBinding
 
     override fun onCreateView(

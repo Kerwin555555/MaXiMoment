@@ -2,14 +2,18 @@ package com.moment.app.main_feed_publish.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
+import com.moment.app.R
 import com.moment.app.databinding.ItemViewCameraBinding
 import com.moment.app.databinding.ItemViewImagesBinding
 import com.moment.app.image_viewer.loadNoAnimResource
 import com.moment.app.localimages.datamodel.AlbumItemFile
+import com.moment.app.localimages.logic.AlbumImageTask
 import com.moment.app.main_feed_publish.PostSubmissionViewModel
 import com.moment.app.main_feed_publish.dialogs.ChooseAlbumDialog
 import com.moment.app.main_feed_publish.extensions.Action
@@ -126,7 +130,17 @@ class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickA
         BaseViewHolder(binding.root) {
         fun bindData(item: AlbumItemFile) {
             if (mContext != null) {
-                binding.albumImage.loadNoAnimResource(item.path)
+                AlbumImageTask.loadThumb(binding.albumImage, (item as AlbumItemFile),
+                    0.3f, {
+                        val itr = data.iterator()
+                        while (itr.hasNext()) {
+                            if (itr.next().path == item.path) {
+                                itr.remove()
+                                break
+                            }
+                        }
+                        notifyDataSetChanged()
+                    })
             }
             val position = absoluteAdapterPosition
             binding.selector.isSelected = selectedMap.containsKey(position)
@@ -153,7 +167,7 @@ class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickA
                 }
             }, 500)
             binding.albumImage.setOnClickListener {
-                binding.albumImage.showAlbumInImageViewer(mutableListOf(item.path), item.path)
+                binding.albumImage.showAlbumInImageViewer(mutableListOf(item.path), item.path, item)
             }
         }
     }

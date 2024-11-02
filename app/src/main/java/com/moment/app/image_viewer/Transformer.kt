@@ -67,8 +67,8 @@ class SimpleImageLoader : ImageLoader {
         when (data) {
             is ViewerPhoto.FeedAlbumFileIdPhoto -> {
                 kotlin.runCatching {
-                    val fileFilter = FileUtils.getFileExtension(getRealPathFromURI(view.context!!, Uri.parse(data.fileId)))
-                    if (fileFilter == "gif") {
+                    //val fileFilter = FileUtils.getFileExtension(getRealPathFromURI(view.context!!, Uri.parse(data.fileId)))
+                    if (data.isGif) {
                         Glide.with(view)
                             .setDefaultRequestOptions(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
                             .asGif()

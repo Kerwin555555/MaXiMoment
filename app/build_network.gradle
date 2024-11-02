@@ -41,4 +41,7 @@ dependencies {
     implementation 'com.google.firebase:firebase-analytics-ktx'
     implementation 'com.google.firebase:firebase-config-ktx'
     implementation 'com.google.firebase:firebase-config'
+
+    //ali filestorage
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.9.11'
 }

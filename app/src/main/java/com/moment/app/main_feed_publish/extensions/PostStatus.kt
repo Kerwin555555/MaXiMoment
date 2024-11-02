@@ -12,4 +12,18 @@ class PostStatus : BaseBean(){
     var uploadAdapterPos: Int = 0
 
     var editTextText: String? = null
+
+    fun isTextOk() : Boolean{     //计算非空个数
+        var total = 0
+        for (ch in editTextText.toString().trim { it <= ' ' }.toCharArray()) {
+            if (ch != ' ' && ch != '\n' && ch != '\r') {
+                total++
+            }
+        }
+        return total != 0
+    }
+
+    fun  capableOfBeingDispatched(): Boolean {
+        return isTextOk() || linkedHashMap.size != 0
+    }
 }

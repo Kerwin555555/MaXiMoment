@@ -3,11 +3,13 @@ package com.moment.app.main_feed_publish
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.activity.viewModels
+import androidx.loader.content.AsyncTaskLoader
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +55,10 @@ class PostSubmissionActivity : BaseActivity() {
         binding.back.setOnClickListener {
             finish()
         }
+        binding.complete.setOnClickListener {
+
+        }
+
         binding.album.layoutManager = GridLayoutManager(this, 4)
         binding.chosen.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
 
@@ -93,8 +99,8 @@ class PostSubmissionActivity : BaseActivity() {
         }
         albumAdapter.goAndChoosePhotos = {
             checkAndSelectPhotos {
-               fetchAllAlbumImages {  mediaDirectory ->
-                   albumAdapter.addData(mediaDirectory.files)
+               fetchAllAlbumImages {  album->
+                   albumAdapter.setNewData(album.files)
                }
             }
         }
@@ -126,7 +132,7 @@ class PostSubmissionActivity : BaseActivity() {
             }
             uploadImageAdapter.setNewData(it.linkedHashMap.map { it.value })
         }
-        binding.complete.isEnabled = !it.editTextText.isNullOrEmpty()
+        binding.complete.isEnabled = it.capableOfBeingDispatched()
     }
 
     private fun fillCameraAlbumAdapter() {

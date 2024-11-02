@@ -1,11 +1,13 @@
 package com.moment.app.utils
 
 import android.net.Uri
+import android.util.Log
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import com.github.iielse.imageviewer.adapter.ItemType.PHOTO
 import com.github.iielse.imageviewer.core.Photo
 import com.moment.app.image_viewer.show
+import com.moment.app.localimages.datamodel.AlbumItemFile
 
 
 fun ImageFilterView.showInImageViewer(dataList: List<ViewerPhoto>, clickedData: ViewerPhoto) {
@@ -63,11 +65,13 @@ fun ImageFilterView.showInImageViewer(dataList: List<String>, clickedData: Strin
     }
 }
 
-fun ImageView.showAlbumInImageViewer(dataList: List<String>, clickedData: String) {
+fun ImageView.showAlbumInImageViewer(dataList: List<String>, clickedData: String, item: AlbumItemFile? = null) {
     kotlin.runCatching {
         val list = dataList.map { it ->
+            Log.d(MOMENT_APP, item?.mimeType ?: "notype")
             ViewerPhoto.FeedAlbumFileIdPhoto().apply {
                 fileId = it
+                isGif = item?.mimeType == "image/gif"
             }
         }
         var data: ViewerPhoto.FeedAlbumFileIdPhoto? = null

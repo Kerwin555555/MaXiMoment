@@ -25,4 +25,8 @@ class PostSubmissionViewModel: ViewModel() {
         return publishLiveData.value!!.linkedHashMap.size >= 9
     }
 
+    fun submit() {
+
+    }
+
 }

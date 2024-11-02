@@ -25,7 +25,7 @@ import javax.inject.Inject
 class SplashActivity : BaseActivity(){
 
     private lateinit var binding: ActivitySplashBinding
-    private var loginDialog: MomentLoginFragment? = null
+    private var loginDialog: MomentEntryFragment? = null
 
     @Inject
     @MockData
@@ -107,7 +107,7 @@ class SplashActivity : BaseActivity(){
                     UserLoginManager.forbidden_session = forbidSid
                 }
             }
-            loginDialog = MomentLoginFragment().apply {
+            loginDialog = MomentEntryFragment().apply {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.login_root, this)

@@ -1,9 +1,7 @@
 package com.moment.app.main_chat_private
 
-import android.text.TextUtils
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.NotificationCompat.MessagingStyle.Message
 import androidx.lifecycle.ViewModel
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMConversation
@@ -14,7 +12,6 @@ import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.MOMENT_APP
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.withContext
 
 

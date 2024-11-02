@@ -253,7 +253,7 @@ class AlbumSkimActivity : AppCompatActivity(), IAlbumInterface.IAlbumDataView {
 
         fun setData(file: AlbumItemFile) {
             try {
-                AlbumImageTask.load(itemView.findViewById(R.id.explorer_iv_media), file)
+                //AlbumImageTask.load(itemView.findViewById(R.id.explorer_iv_media), file)
                 itemView.findViewById<GestureImageView>(R.id.explorer_iv_media).setOnClickListener {
                     hideToolBar = !hideToolBar
                     binding.toolBar.visibility = if (hideToolBar) View.GONE else View.VISIBLE
