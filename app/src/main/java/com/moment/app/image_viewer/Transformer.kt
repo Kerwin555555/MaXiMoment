@@ -1,11 +1,20 @@
 package com.moment.app.image_viewer
 
+import android.content.ContentUris
+import android.content.Context
+import android.database.Cursor
+import android.net.Uri
+import android.os.Build.VERSION
+import android.os.Environment
+import android.provider.DocumentsContract
+import android.provider.MediaStore
 import android.view.View
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
+import com.blankj.utilcode.util.FileUtils
 import com.blankj.utilcode.util.ScreenUtils
 import com.blankj.utilcode.util.ThreadUtils.isMainThread
 import com.bumptech.glide.Glide
@@ -52,32 +61,36 @@ class SimpleTransformer : Transformer {
 }
 
 class SimpleImageLoader : ImageLoader {
+
     override fun load(view: ImageView, data: Photo, viewHolder: RecyclerView.ViewHolder) {
         super.load(view, data, viewHolder)
         when (data) {
-            is ViewerPhoto.PicShape -> { //来自feed (feed支持GIF)
-                Glide.with(view)
-                    .setDefaultRequestOptions(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
-                    .load(R.mipmap.user_post_test_image)
-                    .dontTransform()
-                    .placeholder(R.drawable.moment)
-                    .thumbnail(0.3f)
-                    .centerInside()
-//                    .override(getScreenWidth() * 3/5, getScreenHeight() * 3/5)
-//                    .error(R.drawable.moment)
-//                    .into(view)
+            is ViewerPhoto.FeedAlbumFileIdPhoto -> {
+                kotlin.runCatching {
+                    val fileFilter = FileUtils.getFileExtension(getRealPathFromURI(view.context!!, Uri.parse(data.fileId)))
+                    if (fileFilter == "gif") {
+                        Glide.with(view)
+                            .setDefaultRequestOptions(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
+                            .asGif()
+                            .load(data.fileId)
+                            .dontTransform()
+                            .placeholder(R.drawable.moment)
+                            .error(R.drawable.moment)
+                            .into(view)
+                    } else {
+                        view.loadNoAnimResource(data.fileId)
+                    }
+                } .onFailure {
+                   view.context?.let {
+                       view.loadNoAnimResource(data.fileId)
+                   }
+                }
             }
-            is ViewerPhoto.FileIdPhoto -> {//头像(用户详情页顶部背景或者照片墙的图，非缩略) 或者 相册的图，不支持GIF
-                Glide.with(view)
-                    .setDefaultRequestOptions(RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
-                    .load(data.fileId)
-                    .dontTransform()
-                    .placeholder(R.drawable.moment)
-                    .thumbnail(0.3f)
-                    .centerInside()
-                    .override(getScreenWidth() * 3/5, getScreenHeight() * 3/5)
-                    .error(R.drawable.moment)
-                    .into(view)
+            is ViewerPhoto.PicShape -> { //来自feed网络图 (feed支持GIF) 不裁剪
+                view.loadFeedRemoteResource(data.fileKey)
+            }
+            is ViewerPhoto.WallOrAvatarPhoto -> {
+                view.loadNoAnimResource(data.fileId)
             }
             is ViewerPhoto.UriPhoto -> { //来自相机的图
                 Glide.with(view).load(data.uri).centerInside()
@@ -85,6 +98,155 @@ class SimpleImageLoader : ImageLoader {
             }
         }
     }
+}
+
+
+fun getRealPathFromURI(context: Context?, uri: Uri): String? {
+    val isKitKat = VERSION.SDK_INT >= 19
+    if (isKitKat && DocumentsContract.isDocumentUri(context, uri)) {
+        val docId: String
+        val split: Array<String>
+        val type: String
+        if (isExternalStorageDocument(uri)) {
+            docId = DocumentsContract.getDocumentId(uri)
+            split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+            type = split[0]
+            if ("primary".equals(type, ignoreCase = true)) {
+                return Environment.getExternalStorageDirectory().toString() + "/" + split[1]
+            }
+        } else {
+            if (isDownloadsDocument(uri)) {
+                docId = DocumentsContract.getDocumentId(uri)
+                val contentUri = ContentUris.withAppendedId(
+                    Uri.parse("content://downloads/public_downloads"),
+                    docId.toLong()
+                )
+                return getDataColumn(
+                    context!!,
+                    contentUri,
+                    null as String?,
+                    null
+                )
+            }
+
+            if (isMediaDocument(uri)) {
+                docId = DocumentsContract.getDocumentId(uri)
+                split = docId.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+                type = split[0]
+                var contentUri: Uri? = null
+                if ("image" == type) {
+                    contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                } else if ("video" == type) {
+                    contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                } else if ("audio" == type) {
+                    contentUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                }
+
+                val selection = "_id=?"
+                val selectionArgs = arrayOf(split[1])
+                return getDataColumn(
+                    context!!,
+                    contentUri,
+                    "_id=?",
+                    selectionArgs
+                )
+            }
+        }
+    } else {
+        if ("content".equals(uri.scheme, ignoreCase = true)) {
+            if (isGooglePhotosUri(uri)) {
+                return uri.lastPathSegment
+            }
+
+            return getDataColumn(
+                context!!,
+                uri,
+                null as String?,
+                null as Array<String>?
+            )
+        }
+
+        if ("file".equals(uri.scheme, ignoreCase = true)) {
+            return uri.path
+        }
+    }
+
+    return null
+}
+
+
+fun ImageView.loadNoAnimResource(fileId: String?){
+    Glide.with(this)
+        .setDefaultRequestOptions(RequestOptions.noAnimation().diskCacheStrategy(DiskCacheStrategy.RESOURCE))
+        .load(fileId)
+        .dontTransform()
+        .placeholder(R.drawable.moment)
+        .thumbnail(0.3f)
+        .centerInside()
+        .override(getScreenWidth() * 3/5, getScreenHeight() * 3/5)
+        .error(R.drawable.moment)
+        .into(this)
+}
+
+fun ImageView.loadFeedRemoteResource(fileId: String?) {
+    kotlin.runCatching {
+        Glide.with(this)
+            .setDefaultRequestOptions(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
+            .load(R.mipmap.xog)
+            .dontTransform()
+            .placeholder(R.drawable.moment)
+            .thumbnail(0.3f)
+            .error(R.drawable.moment)
+            .into(this)
+    }
+}
+
+fun isExternalStorageDocument(uri: Uri): Boolean {
+    return "com.android.externalstorage.documents" == uri.authority
+}
+
+fun isDownloadsDocument(uri: Uri): Boolean {
+    return "com.android.providers.downloads.documents" == uri.authority
+}
+
+fun isMediaDocument(uri: Uri): Boolean {
+    return "com.android.providers.media.documents" == uri.authority
+}
+
+fun isGooglePhotosUri(uri: Uri): Boolean {
+    return "com.google.android.apps.photos.content" == uri.authority
+}
+
+fun getDataColumn(
+    context: Context,
+    uri: Uri?,
+    selection: String?,
+    selectionArgs: Array<String>?
+): String? {
+    var cursor: Cursor? = null
+    val column = "_data"
+    val projection = arrayOf("_data")
+
+    val var8: String
+    try {
+        cursor = context.contentResolver.query(
+            uri!!,
+            projection,
+            selection,
+            selectionArgs,
+            null as String?
+        )
+        if (cursor == null || !cursor.moveToFirst()) {
+            return null
+        }
+
+        val index = cursor.getColumnIndexOrThrow("_data")
+        var8 = cursor.getString(index)
+    } finally {
+        cursor?.close()
+    }
+
+    return var8
 }
 
 fun AppCompatActivity.show(dataList: List<Photo>, clickedData: Photo) { //

@@ -18,11 +18,11 @@ fun ImageFilterView.showInImageViewer(dataList: List<ViewerPhoto>, clickedData: 
 fun ImageView.showInImageViewer(dataList: List<String>, clickedData: String) {
     kotlin.runCatching {
         val list = dataList.map { it ->
-            ViewerPhoto.FileIdPhoto().apply {
+            ViewerPhoto.WallOrAvatarPhoto().apply {
                 fileId = it
             }
         }
-        var data: ViewerPhoto.FileIdPhoto? = null
+        var data: ViewerPhoto.WallOrAvatarPhoto? = null
         for (i in 0 until dataList.size) {
             list[i].pos = i.toLong()
             if (list[i].fileId == clickedData) data = list[i]
@@ -50,11 +50,27 @@ fun ImageView.showInImageViewer(dataList: List<Uri>, clickedData: Uri) {
 fun ImageFilterView.showInImageViewer(dataList: List<String>, clickedData: String) {
     kotlin.runCatching {
         val list = dataList.map { it ->
-            ViewerPhoto.FileIdPhoto().apply {
+            ViewerPhoto.WallOrAvatarPhoto().apply {
                 fileId = it
             }
         }
-        var data: ViewerPhoto.FileIdPhoto? = null
+        var data: ViewerPhoto.WallOrAvatarPhoto? = null
+        for (i in 0 until dataList.size) {
+            list[i].pos = i.toLong()
+            if (list[i].fileId == clickedData) data = list[i]
+        }
+        show(list, data!!)
+    }
+}
+
+fun ImageView.showAlbumInImageViewer(dataList: List<String>, clickedData: String) {
+    kotlin.runCatching {
+        val list = dataList.map { it ->
+            ViewerPhoto.FeedAlbumFileIdPhoto().apply {
+                fileId = it
+            }
+        }
+        var data: ViewerPhoto.FeedAlbumFileIdPhoto? = null
         for (i in 0 until dataList.size) {
             list[i].pos = i.toLong()
             if (list[i].fileId == clickedData) data = list[i]
@@ -77,17 +93,17 @@ sealed class ViewerPhoto : BaseBean(), Photo {
         return PHOTO
     }
 
-    //头像或者 feed发布时候来自相册的大图
-    class FileIdPhoto : ViewerPhoto() {
+    //头像，头像墙(非小图) (网络图)
+    class WallOrAvatarPhoto : ViewerPhoto() {
         var fileId: String? = null
     }
 
-    //相机
+    //相机 (本地图)
     class UriPhoto : ViewerPhoto() {
         var uri: Uri? = null
     }
 
-    //feed流
+    //feed流 (网络图)
     class PicShape(var fileKey: String, var width: Int? = null, var height: Int? = null): ViewerPhoto() {
 
         override fun id(): Long {
@@ -97,5 +113,11 @@ sealed class ViewerPhoto : BaseBean(), Photo {
         override fun itemType(): Int {
             return PHOTO
         }
+    }
+
+    //发布feed页 (本地图)
+    class FeedAlbumFileIdPhoto : ViewerPhoto() {
+        var fileId: String? = null
+        var isGif = false
     }
 }

@@ -107,7 +107,6 @@ class FeedPublishActivity : BaseActivity() {
 
         binding.root.postDelayed({
             binding.editText.requestFocus()
-            KeyboardUtils.showSoftInput(binding.editText)
         }, 50)
     }
 

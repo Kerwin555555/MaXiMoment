@@ -4,28 +4,20 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
-import com.blankj.utilcode.util.ScreenUtils
-import com.blankj.utilcode.util.ScreenUtils.getAppScreenWidth
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import com.moment.app.R
 import com.moment.app.databinding.ItemViewCameraBinding
 import com.moment.app.databinding.ItemViewImagesBinding
+import com.moment.app.image_viewer.loadNoAnimResource
 import com.moment.app.images.bean.MediaFile
-import com.moment.app.images.engine.OkDisplayCompat
 import com.moment.app.main_feed_publish.PublishViewModel
 import com.moment.app.main_feed_publish.dialogs.ChooseMediaDialog
 import com.moment.app.main_feed_publish.extensions.Action
 import com.moment.app.utils.DialogUtils
 import com.moment.app.utils.checkCameraPermission
 import com.moment.app.utils.checkReadWritePermission
-import com.moment.app.utils.getScreenHeight
-import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
-import com.moment.app.utils.showInImageViewer
+import com.moment.app.utils.showAlbumInImageViewer
 import com.moment.app.utils.toast
 
 
@@ -134,16 +126,7 @@ class CameraAlbumDataAdapter(var viewModel: PublishViewModel): BaseQuickAdapter<
         BaseViewHolder(binding.root) {
         fun bindData(item: MediaFile) {
             if (mContext != null) {
-                Glide.with(binding.albumImage)
-                    .setDefaultRequestOptions(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
-                    .load(item.displayPath())
-                    .dontTransform()
-                    .placeholder(R.drawable.moment)
-                    .thumbnail(0.3f)
-                    .centerInside()
-                    .override(getScreenWidth() * 3 / 5, getScreenHeight() * 3 / 5)
-                    .error(R.drawable.moment)
-                    .into(binding.albumImage)
+                binding.albumImage.loadNoAnimResource(item.path)
             }
             val position = absoluteAdapterPosition
             binding.selector.isSelected = selectedMap.containsKey(position)
@@ -170,7 +153,7 @@ class CameraAlbumDataAdapter(var viewModel: PublishViewModel): BaseQuickAdapter<
                 }
             }, 500)
             binding.albumImage.setOnClickListener {
-                binding.albumImage.showInImageViewer(mutableListOf(item.displayPath()), item.displayPath())
+                binding.albumImage.showAlbumInImageViewer(mutableListOf(item.path), item.path)
             }
         }
     }

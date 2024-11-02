@@ -394,7 +394,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
 //                        adapterPosition,
 //                        latestDirId,
 //                        extras)
-                    val bundle = bundleOf("file" to file.displayPath())
+                    val bundle = bundleOf("file" to file.path)
 
                     //来自 EditPhotosWallActivity
                       f.arguments?.getSerializable("item")?.let {

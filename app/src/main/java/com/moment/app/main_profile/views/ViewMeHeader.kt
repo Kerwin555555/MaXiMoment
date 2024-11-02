@@ -29,6 +29,7 @@ import com.didi.drouter.api.DRouter
 import com.moment.app.R
 import com.moment.app.databinding.ViewMeHeaderBinding
 import com.moment.app.datamodel.UserInfo
+import com.moment.app.image_viewer.loadNoAnimResource
 import com.moment.app.utils.Constants
 import com.moment.app.utils.ViewerPhoto
 import com.moment.app.utils.dp
@@ -174,41 +175,7 @@ class ViewMeHeader : ConstraintLayout {
         }
 
         override fun convert(helper: BaseViewHolder, item: String?) {
-            Glide.with(mContext)
-                .setDefaultRequestOptions(
-                    RequestOptions.noAnimation().diskCacheStrategy(
-                        DiskCacheStrategy.RESOURCE
-                    )
-                )
-                .load(item ?: "")
-                .dontTransform()
-                .placeholder(R.drawable.moment)
-                .thumbnail(0.3f)
-                .centerInside()
-                .timeout(3000)
-                .error(R.drawable.moment)
-                .addListener(object : RequestListener<Drawable> {
-                    override fun onLoadFailed(
-                        e: GlideException?,
-                        model: Any?,
-                        target: Target<Drawable>,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                    override fun onResourceReady(
-                        resource: Drawable,
-                        model: Any,
-                        target: Target<Drawable>?,
-                        dataSource: DataSource,
-                        isFirstResource: Boolean
-                    ): Boolean {
-                        return false
-                    }
-
-                })
-                .into((helper.itemView as ImageFilterView))
+            (helper.itemView as ImageView).loadNoAnimResource(item ?: "")
             helper.itemView.setOnClickListener {
                 kotlin.runCatching {
                     (helper.itemView as ImageFilterView).showInImageViewer(
