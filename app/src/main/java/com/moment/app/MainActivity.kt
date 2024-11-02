@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.didi.drouter.annotation.Router
+import com.google.android.material.imageview.ShapeableImageView
 import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityMainBinding
 import com.moment.app.eventbus.LogCancelEvent

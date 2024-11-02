@@ -47,19 +47,37 @@ android {
         buildConfigField "String", "BASE_URL", "\"${baseUrl}\""
     }
 
-    buildTypes {
-        release {
-            proguardFiles(
-                    getDefaultProguardFile("proguard-android-optimize.txt"),
-                    "proguard-rules.pro"
-            )
-           // manifestPlaceholders = [im_app_id: "xx02190223222824#moment"]
+    signingConfigs {
+        releaseConfig {
+            storeFile file("keystore/circus_moment")
+            storePassword "circus_moment"
+            keyAlias "circus_moment"
+            keyPassword "circus_moment"
+        }
+
+        devConfig {
+            storeFile file("keystore/test.keystore")
+            storePassword "123456"
+            keyAlias "test_keystore"
+            keyPassword "123456"
         }
     }
+
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // manifestPlaceholders = [im_app_id: "xx02190223222824#moment"]
+        }
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
+
     sourceSets{
         main {
             jniLibs.srcDirs = ['libs', 'src/main/jniLibs']
@@ -90,54 +108,39 @@ android {
     }
 }
 
-apply from: './build_base.gradle'
+apply from: './build_third_party_ui.gradle'
+apply from: './build_tools.gradle'
+apply from: './build_network.gradle'
 
 dependencies {
     implementation fileTree(include: ['*.aar'], dir: 'libs')
 
-    implementation 'com.github.Liberuman:ShadowDrawable:0.1'
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt "com.google.dagger:hilt-android-compiler:2.51.1"
-    implementation 'io.github.scwang90:refresh-layout-kernel:2.1.0'
-    implementation  'io.github.scwang90:refresh-header-classics:2.1.0'    //经典刷新头
-    implementation  'io.github.scwang90:refresh-header-radar:2.1.0'       //雷达刷新头
-    implementation  'io.github.scwang90:refresh-header-falsify:2.1.0'     //虚拟刷新头
-    implementation  'io.github.scwang90:refresh-header-material:2.1.0'    //谷歌刷新头
-    implementation  'io.github.scwang90:refresh-header-two-level:2.1.0'   //二级刷新头
-    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
-    implementation 'com.blankj:utilcodex:1.31.1'
-    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
-    implementation 'com.facebook.android:facebook-core:15.2.0'
-    implementation 'com.facebook.android:facebook-login:15.2.0'
-    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    //含有多种 AppCompatActivity之类的兼容性的组件
+    implementation 'androidx.appcompat:appcompat:1.3.1'
+    //该库包含了圆角ImageView ShapeableImageView等。
+    implementation 'com.google.android.material:material:1.4.0'
+    //lifecycle相关
+    def lifecycle_version = "2.7.0"
+    implementation "androidx.lifecycle:lifecycle-runtime:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-common:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:${lifecycle_version}"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${lifecycle_version}"
+    //fragment的kotlin版本
+    implementation "androidx.fragment:fragment-ktx:1.5.2"
+    //供Activity的Kotlin版本
+    implementation 'androidx.activity:activity-ktx:1.2.2'
+    //GridLayout组件，用于在Android应用中创建网格布局。
+    implementation 'androidx.gridlayout:gridlayout:1.0.0'
+    //implementation "androidx.core:core-ktx:1.12.0"
     implementation 'androidx.paging:paging-common:3.3.2'
     implementation 'androidx.paging:paging-runtime:3.3.2'
-    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
-    def GLIDE_VERSION = "4.16.0"
-    implementation 'com.tencent:mmkv:1.2.13'
-    implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
-
-    implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
-    kapt "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
-    implementation "com.github.bumptech.glide:okhttp3-integration:${GLIDE_VERSION}"
-    implementation "com.github.zjupure:webpdecoder:2.6.${GLIDE_VERSION}"
-
-    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
-    implementation ("com.squareup.okhttp3:okhttp-brotli:4.9.1")
-    implementation 'com.google.android.gms:play-services-auth:19.2.0'
-    implementation 'org.greenrobot:eventbus:3.3.1'
-    implementation "io.github.didi:drouter-api:2.4.6"           // Router、Service
-    implementation "io.github.didi:drouter-api-page:1.0.0"      // Page
-    implementation "io.github.didi:drouter-api-process:1.0.0"   // Process
-    implementation 'com.github.iielse:imageviewer:2.1.23'
+    //Emoji 库
     def emoji2_version = "1.0.0"
     implementation "androidx.emoji2:emoji2:$emoji2_version"
-    implementation 'com.alexvasilkov:gesture-views:2.8.3'
     implementation "androidx.emoji2:emoji2-views:$emoji2_version"
     implementation "androidx.emoji2:emoji2-views-helper:$emoji2_version"
-    implementation 'io.hyphenate:hyphenate-chat:3.9.1.2'
-    implementation "com.google.guava:guava:33.3.1-android"
-    androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+    //组件和drawable
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
 }

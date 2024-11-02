@@ -1,0 +1,24 @@
+dependencies {
+    //模糊半径设置背景阴影
+    implementation 'com.github.Liberuman:ShadowDrawable:0.1'
+    //smart refresh layout 刷新相关
+    implementation 'io.github.scwang90:refresh-layout-kernel:2.1.0'
+    implementation  'io.github.scwang90:refresh-header-classics:2.1.0'    //经典刷新头
+    implementation  'io.github.scwang90:refresh-header-radar:2.1.0'       //雷达刷新头
+    implementation  'io.github.scwang90:refresh-header-falsify:2.1.0'     //虚拟刷新头
+    implementation  'io.github.scwang90:refresh-header-material:2.1.0'    //谷歌刷新头
+    implementation  'io.github.scwang90:refresh-header-two-level:2.1.0'   //二级刷新头
+    //status bar 设置沉浸式
+    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    //RecyclerView 核心 Adapter
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
+    //支持手势的ImageView,多个库的依赖含有DoubleTouch等功能
+    implementation 'com.github.chrisbanes:PhotoView:2.0.0'
+    //图片浏览大图使用
+    implementation 'com.github.iielse:imageviewer:2.1.23'
+    implementation 'com.alexvasilkov:gesture-views:2.8.3'
+    //加载闪烁动画库
+    implementation 'com.facebook.shimmer:shimmer:0.5.0'
+    //双indicatorSeekbar 多个地方使用
+    implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+}

@@ -1,0 +1,46 @@
+dependencies {
+    //okhttp 网络获取主要框架
+    implementation 'com.squareup.okhttp3:okhttp:4.9.1'
+    implementation 'com.squareup.okhttp3:okhttp-brotli:4.9.1'
+
+    //retrofit
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.9.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.9.0'
+
+    //环信client sdk
+    implementation 'io.hyphenate:hyphenate-chat:3.9.1.2'
+
+    //rx java
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.12'
+    implementation 'com.trello.rxlifecycle3:rxlifecycle:3.1.0'
+    implementation 'com.trello.rxlifecycle3:rxlifecycle-android:3.1.0'
+    implementation 'com.trello.rxlifecycle3:rxlifecycle-android-lifecycle:3.1.0'
+    //gson
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    //Glide 图库加载框架
+    def GLIDE_VERSION = "4.16.0"
+    implementation 'com.tencent:mmkv:1.2.13'
+    implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
+    implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
+    kapt "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"
+    implementation "com.github.bumptech.glide:okhttp3-integration:${GLIDE_VERSION}"
+    implementation "com.github.zjupure:webpdecoder:2.6.${GLIDE_VERSION}"
+
+    //Meta 登录用依赖
+    implementation 'com.facebook.android:facebook-core:15.2.0'
+    implementation 'com.facebook.android:facebook-login:15.2.0'
+
+    //Google 登录GMS push等
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
+    implementation platform('com.google.firebase:firebase-bom:31.2.0')
+    implementation 'com.google.firebase:firebase-messaging-ktx'
+    implementation 'com.google.firebase:firebase-analytics-ktx'
+    implementation 'com.google.firebase:firebase-config-ktx'
+    implementation 'com.google.firebase:firebase-config'
+
+
+}

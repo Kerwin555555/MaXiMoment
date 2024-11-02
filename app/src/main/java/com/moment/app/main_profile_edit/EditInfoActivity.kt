@@ -125,11 +125,11 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
         LoginModel.getUserInfo()?.let {
             initUI(userInfo = it)
             initialProfileData = ProfileViewModel.ProfileData(
-                avatar = it.avatar!!,
+                avatar = it.avatar ?: "",
                 nickName = it.name,
                 bio = it.bio,
                 gender = it.gender,
-                timeSelect = DateUtil.birthdayToDate(it.birthday!!)
+                timeSelect = if (it.birthday.isNullOrEmpty()) Date() else DateUtil.birthdayToDate(it.birthday!!)
             )
             Log.d("zhouzheng copy", initialProfileData.toString())
             val copy = CloneUtils.deepClone(initialProfileData!!, ProfileViewModel.ProfileData::class.java)

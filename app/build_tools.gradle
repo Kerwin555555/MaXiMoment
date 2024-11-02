@@ -1,0 +1,26 @@
+dependencies {
+    // 路由框架
+    implementation "io.github.didi:drouter-api:2.4.6"           // Router、Service
+    implementation "io.github.didi:drouter-api-page:1.0.0"      // Page
+    implementation "io.github.didi:drouter-api-process:1.0.0"   // Process
+    //Google guava
+    implementation "com.google.guava:guava:33.3.1-android"
+    //EVENTBUS 消息发布框架
+    implementation 'org.greenrobot:eventbus:3.3.1'
+    //mmkv 小型信息存储
+    implementation 'com.tencent:mmkv:1.2.13'
+    implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
+    //Dependency Injection 核心库
+    implementation("com.google.dagger:hilt-android:2.51.1")
+    kapt "com.google.dagger:hilt-android-compiler:2.51.1"
+    //android 核心util库，多地方依赖
+    implementation 'com.blankj:utilcodex:1.31.1'
+    //数据库核心依赖库
+    implementation "androidx.room:room-ktx:2.4.3"
+    implementation "androidx.room:room-runtime:2.4.3"
+    implementation "androidx.room:room-rxjava2:2.4.3"
+    implementation 'androidx.room:room-paging:2.4.3'
+    kapt "androidx.room:room-compiler:2.4.3"
+    //kotlin 协程
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.9'
+}
