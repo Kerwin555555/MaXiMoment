@@ -42,15 +42,6 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
--keep class com.chad.library.adapter.** {
-*;
-}
--keep public class * extends com.chad.library.adapter.base.BaseQuickAdapter
--keep public class * extends com.chad.library.adapter.base.BaseViewHolder
--keepclassmembers  class **$** extends com.chad.library.adapter.base.BaseViewHolder {
-     <init>(...);
-}
-
 -keep public class * implements com.bumptech.glide.module.GlideModule
 -keep class * extends com.bumptech.glide.module.AppGlideModule {
  <init>(...);
@@ -70,14 +61,14 @@
 -dontwarn  com.hyphenate.**
 
 # 环信 push
--dontwarn com.hyphenate.push.***
--keep class com.hyphenate.push.*** {*;}
+-dontwarn com.hyphenate.push.**
+-keep class com.hyphenate.push.** {*;}
 -keep class com.hyphenate.push.EMPushHelper { *; }
 
 -dontwarn com.tencent.bugly.**
 -keep public class com.tencent.bugly.**{*;}
 
--keep class * extends com.lit.app.bean.BaseBean {*;}
+-keep class * extends com.moment.app.utils.BaseBean {*;}
 
 #-keep class * implements com.lit.core.BaseBean {*;}
 
@@ -142,16 +133,6 @@
 -keep class * implements com.google.gson.JsonSerializer
 -keep class * implements com.google.gson.JsonDeserializer
 
-##---------------End: proguard configuration for Gson  ----------
-
-# Retain generated class which implement Unbinder.
--keep public class * implements butterknife.Unbinder { public <init>(**, android.view.View); }
-
-# Prevent obfuscation of types which use ButterKnife annotations since the simple name
-# is used to reflectively look up the generated ViewBinding.
--keep class butterknife.*
--keepclasseswithmembernames class * { @butterknife.* <methods>; }
--keepclasseswithmembernames class * { @butterknife.* <fields>; }
 
 -keepattributes Signature
 -keep class com.google.gson.reflect.TypeToken { *; }
@@ -166,27 +147,6 @@
 
 -keep class kotlin.coroutines.Continuation
 
-# To enable ProGuard in your project, edit project.properties
-# to define the proguard.config property as described in that file.
-#
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in ${sdk.dir}/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the ProGuard
-# include property in project.properties.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
-
-# Add any project specific keep options here:
-
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
-
 -keepclassmembers class * implements java.io.Serializable {
     private static final java.io.ObjectStreamField[] serialPersistentFields;
     private void writeObject(java.io.ObjectOutputStream);
@@ -198,13 +158,6 @@
 -keepnames class com.facebook.FacebookActivity
 -keepnames class com.facebook.CustomTabActivity
 
--keep class com.facebook.all.All
-
--keep public class com.android.vending.billing.IInAppBillingService {
-    public static com.android.vending.billing.IInAppBillingService asInterface(android.os.IBinder);
-    public android.os.Bundle getSkuDetails(int, java.lang.String, java.lang.String, android.os.Bundle);
-}
-
 -keepattributes EnclosingMethod
 -keepattributes InnerClasses
 -ignorewarnings
@@ -215,10 +168,6 @@ public static final int *;
 
 -keep class io.agora.**{*;}
 
-#google api start
--keepclassmembers class * {
-  @com.google.api.client.util.Key <fields>;
-}
 # Needed by google-http-client-android when linking against an older platform version
 -dontwarn com.google.api.client.extensions.android.**
 # Needed by google-api-client-android when linking against an older platform version
@@ -240,8 +189,7 @@ public static final int *;
   public protected private *;
 }
 -keep class com.litatom.im.** { *; }
-#腾讯语音SDK
--keep class com.tencent.** { *; }
+
 
 -keep class com.android.vending.billing.**
 
@@ -262,21 +210,6 @@ public static final int *;
     public <init>(android.content.Context, android.util.AttributeSet, int);
 }
 
-
-
-# Keep public classes and methods.
--keepclassmembers class com.mopub.** { public *; }
--keep public class com.mopub.**
--keep public class android.webkit.JavascriptInterface {}
-
-# Explicitly keep any custom event classes in any package.
--keep class * extends com.mopub.mobileads.CustomEventBanner {}
--keep class * extends com.mopub.mobileads.CustomEventInterstitial {}
--keep class * extends com.mopub.mobileads.CustomEventRewardedAd {}
--keep class * extends com.mopub.nativeads.CustomEventNative {}
-
-# Keep methods that are accessed via reflection
--keepclassmembers class ** { @com.mopub.common.util.ReflectionTarget *; }
 
 # Viewability support
 -keepclassmembers class com.integralads.avid.library.mopub.** { public *; }
@@ -319,10 +252,6 @@ public static final int *;
 -dontwarn org.apache.commons.codec.binary.**
 -keep class com.ishumei.** {*;}
 
--keep public class com.bytedance.sdk.openadsdk.*{ public *; }
-
--keep class com.appsflyer.** { *; }
--dontwarn com.appsflyer.**
 -keep public class com.google.firebase.messaging.FirebaseMessagingService {
   public *;
 }
@@ -336,16 +265,6 @@ public static final int *;
 -dontwarn  com.googlecode.protobuf.format.**
 -keep class  com.googlecode.protobuf.format.**{*;}
 
-#liteye
--dontwarn com.lit.liteye.**
--keep class com.lit.liteye.**{*;}
-
-
--keep class org.libpag.** {*;}
--keep class androidx.exifinterface.** {*;}
-
--keep public class * extends android.app.Service
--keep class com.heytap.msp.** { *;}
 
 #去除log输出
 -assumenosideeffects class android.util.Log{
@@ -355,26 +274,3 @@ public static final int *;
     public static *** w(...);
     public static *** e(...);
 }
-
-#华为 推送
--ignorewarnings
--keepattributes *Annotation*
--keepattributes Exceptions
--keepattributes InnerClasses
--keepattributes Signature
--keepattributes SourceFile,LineNumberTable
--keep class com.huawei.hianalytics.**{*;}
--keep class com.huawei.updatesdk.**{*;}
--keep class com.huawei.hms.**{*;}
-
--keep class com.kwai.koom.javaoom.monitor.OOMMonitor {*;}
--keep class com.lit.koom.model.** {*;}
-
--keep public class com.smaato.sdk.** { *; }
--keep public interface com.smaato.sdk.** { *; }
-
--keep class com.iab.omid.library.pubmatic.** { *; }
-
--dontwarn com.lit.app.multiple.flutter.**
--keep class com.lit.app.multiple.flutter.**{*;}
--keep class io.flutter.embedding.android.FlutterTextureView { *; }
