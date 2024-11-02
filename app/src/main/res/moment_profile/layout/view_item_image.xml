@@ -34,7 +34,7 @@
             app:layout_constraintTop_toTopOf="@id/avatar"
             app:layout_constraintBottom_toTopOf="@id/gender"
             app:layout_constraintStart_toEndOf="@id/avatar"/>
-        <com.moment.app.ui.uiLibs.GenderView
+        <com.moment.app.ui.uiLibs.GenderAgeLayout
             android:id="@+id/gender"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -80,7 +80,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.moment.app.ui.CircleIndicator2
+        <com.moment.app.ui.ViewPager2Indicator
             android:id="@+id/indicator"
             android:layout_width="0dp"
             android:layout_height="18dp"

@@ -1,6 +1,6 @@
 package com.moment.app.main_chat.fragments.adapters
 
-import TimeUtils
+import MomentTimeHelper
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.hyphenate.chat.EMConversation
-import com.hyphenate.chat.EMCustomMessageBody
 import com.moment.app.databinding.ConversationItemViewBinding
 import com.moment.app.main_chat.fragments.entities.MomentConversation
 import com.moment.app.utils.dp
@@ -40,7 +39,7 @@ class ConversationPartnerAdapter: BaseQuickAdapter<MomentConversation, Conversat
         if (lastMessage != null && TextUtils.isEmpty(conversation.draft)) {
             conversation.updateTime = lastMessage.msgTime
         }
-        helper.binding.time.text = if (conversation.updateTime > 0) TimeUtils.parseChatListTime(conversation.updateTime) else ""
+        helper.binding.time.text = if (conversation.updateTime > 0) MomentTimeHelper.parseChatListTime(conversation.updateTime) else ""
 
 //        helper.binding.lastMessage.text =
 //            (lastMessage!!.body as EMCustomMessageBody).params["content"] ?: ""

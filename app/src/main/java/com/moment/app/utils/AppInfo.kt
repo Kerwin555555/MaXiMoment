@@ -25,7 +25,7 @@ object AppInfo {
             e.printStackTrace()
         }
         try {
-            uuid = DeviceUuidFactory(context).deviceUuid
+            uuid = MachineUuidManager(context).deviceUuid
         } catch (e: Exception) {
             e.printStackTrace()
         }

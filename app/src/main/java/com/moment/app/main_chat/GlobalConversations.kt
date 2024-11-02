@@ -3,12 +3,11 @@ package com.moment.app.main_chat
 import android.text.TextUtils
 import android.util.Log
 import com.blankj.utilcode.util.LogUtils
-import com.facebook.login.Login
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMConversation.EMConversationType
 import com.hyphenate.chat.EMMessage
 import com.moment.app.main_chat.fragments.entities.MomentConversation
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.coroutineScope
 import kotlinx.coroutines.Deferred
@@ -17,10 +16,9 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.internal.userAgent
 import java.lang.ref.WeakReference
 
-class GlobalConversationHub(val conversationDao: ConversationDao, val threadService: ThreadService) {
+class GlobalConversationHub(val conversationDao: MessagingListDao, val threadService: ThreadService) {
     val conversations = mutableListOf<MomentConversation>()
         get() = field
 
@@ -38,7 +36,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
 
 
     fun loadMetaDataFromBackend() {
-        if (ChatSPUtil.getBoolean(ChatSPUtil.HAS_LOAD_CLOUD_CONVERSATION, false)) return
+        if (MessagingContactListHelper.getBoolean(MessagingContactListHelper.HAS_LOAD_CLOUD_CONVERSATION, false)) return
         coroutineScope.launch(Dispatchers.IO){
             val ids = ArrayList<String>()
             val result = threadService.conversations().data
@@ -67,7 +65,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
             val list = getAllFromDb()
             Log.d(MOMENT_APP, "list size"+(list.size))
             withContext(Dispatchers.Main) {
-                ChatSPUtil.save(ChatSPUtil.HAS_LOAD_CLOUD_CONVERSATION, true)
+                MessagingContactListHelper.save(MessagingContactListHelper.HAS_LOAD_CLOUD_CONVERSATION, true)
                 conversations.clear()
                 conversations.addAll(list)
                 conversationChangeListeners.forEach { it.get()?.onConversationsChange() }
@@ -77,7 +75,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
 
     fun loadMetaDataFromLocalDb() {
         coroutineScope.launch(Dispatchers.IO) {
-            if (ChatSPUtil.getBoolean(ChatSPUtil.HAS_LOAD_LOCAL_CONVERSATION, false) || isLocalLoading) return@launch
+            if (MessagingContactListHelper.getBoolean(MessagingContactListHelper.HAS_LOAD_LOCAL_CONVERSATION, false) || isLocalLoading) return@launch
             isLocalLoading = true
             val chatConversations = EMClient.getInstance().chatManager().getConversationsByType(
                 EMConversationType.Chat)
@@ -98,7 +96,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
 //            }
             val list = getAllFromDb()
             withContext(Dispatchers.Main) {
-                ChatSPUtil.save(ChatSPUtil.HAS_LOAD_LOCAL_CONVERSATION, true)
+                MessagingContactListHelper.save(MessagingContactListHelper.HAS_LOAD_LOCAL_CONVERSATION, true)
                 conversations.clear()
                 conversations.addAll(list)
                 conversationChangeListeners.forEach { it.get()?.onConversationsChange() }
@@ -108,7 +106,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
     }
 
     private suspend fun insertNewConversation(id: String, backend: BackendThread): Long {
-        val bean = MomentConversation(id = id, userId = LoginModel.getUserId()).apply {
+        val bean = MomentConversation(id = id, userId = UserLoginManager.getUserId()).apply {
             this.userInfo = backend.userInfo
         }
         bean.conversationType = 0
@@ -138,7 +136,7 @@ class GlobalConversationHub(val conversationDao: ConversationDao, val threadServ
 
     private fun getAllFromDb(): List<MomentConversation> {
         kotlin.runCatching {
-            return conversationDao.getAll(LoginModel.getUserId())
+            return conversationDao.getAll(UserLoginManager.getUserId())
         }
         return ArrayList()
     }

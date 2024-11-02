@@ -34,7 +34,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toStartOf="@id/chat"
         />
-    <com.moment.app.ui.uiLibs.GenderView
+    <com.moment.app.ui.uiLibs.GenderAgeLayout
         android:id="@+id/gender"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

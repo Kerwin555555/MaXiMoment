@@ -10,8 +10,8 @@ import com.moment.app.eventbus.LoginEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.login_profile.ProfileActivity
-import com.moment.app.models.ConfigModel
-import com.moment.app.models.LoginModel
+import com.moment.app.models.AppConfigManager
+import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.sntp.SntpClock
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,7 +25,7 @@ import javax.inject.Inject
 class SplashActivity : BaseActivity(){
 
     private lateinit var binding: ActivitySplashBinding
-    private var loginDialog: LoginDialog? = null
+    private var loginDialog: MomentLoginFragment? = null
 
     @Inject
     @MockData
@@ -65,9 +65,9 @@ class SplashActivity : BaseActivity(){
     }
 
     private fun jump() {
-        if (LoginModel.isLogin() && LoginModel.getUserInfo()?.finished_info == true) {
+        if (UserLoginManager.isLogin() && UserLoginManager.getUserInfo()?.finished_info == true) {
             var intent: Intent? = null
-            if (LoginModel.getUserInfo()?.finished_info == true) {
+            if (UserLoginManager.getUserInfo()?.finished_info == true) {
                 /*跳转主页*/
                 intent = Intent(this@SplashActivity, MainActivity::class.java)
                 if (getIntent().extras != null) {
@@ -89,9 +89,9 @@ class SplashActivity : BaseActivity(){
             }
 
             var loc = "EN"
-            if (LoginModel.getUserInfo() != null
-                && !LoginModel.getUserInfo()?.country.isNullOrEmpty()) {
-                loc = LoginModel.getUserInfo()?.country!!
+            if (UserLoginManager.getUserInfo() != null
+                && !UserLoginManager.getUserInfo()?.country.isNullOrEmpty()) {
+                loc = UserLoginManager.getUserInfo()?.country!!
             }
 
             //LitString.getInstance().checkResources(loc, Arrays.asList(RR.allStrings().clone()))
@@ -99,21 +99,21 @@ class SplashActivity : BaseActivity(){
             this@SplashActivity.finish()
             overridePendingTransition(0, 0)
         } else {
-            if (LoginModel.isLogin()) {
-                val forbidSid: String? = LoginModel.forbidden_session
+            if (UserLoginManager.isLogin()) {
+                val forbidSid: String? = UserLoginManager.forbidden_session
                 //登录但是有完善信息
-                LoginModel.logout(true, loginService = loginService)
+                UserLoginManager.logout(true, loginService = loginService)
                 if (!TextUtils.isEmpty(forbidSid)) {
-                    LoginModel.forbidden_session = forbidSid
+                    UserLoginManager.forbidden_session = forbidSid
                 }
             }
-            loginDialog = LoginDialog().apply {
+            loginDialog = MomentLoginFragment().apply {
                 supportFragmentManager
                     .beginTransaction()
                     .replace(R.id.login_root, this)
                     .commitAllowingStateLoss()
             }
-            ConfigModel.updateConfig()
+            AppConfigManager.updateConfig()
         }
     }
 

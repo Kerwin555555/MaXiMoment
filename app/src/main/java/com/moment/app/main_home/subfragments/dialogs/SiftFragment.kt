@@ -7,13 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.moment.app.databinding.SiftDialogFragmentBinding
 import com.moment.app.utils.BaseBottomSheetDialogFragment
-import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.DialogFragmentManager
 import com.moment.app.utils.setTextColorStateSelectList
 
 class SiftDialogFragment : BaseBottomSheetDialogFragment(){
     companion object {
          fun showSiftDialog(context: Context) {
-             DialogUtils.show(context, SiftDialogFragment())
+             DialogFragmentManager.show(context, SiftDialogFragment())
          }
     }
 

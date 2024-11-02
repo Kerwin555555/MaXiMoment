@@ -31,7 +31,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
 
-        <com.moment.app.ui.CircleIndicator2
+        <com.moment.app.ui.ViewPager2Indicator
             android:id="@+id/indicator"
             android:layout_width="0dp"
             android:layout_height="18dp"

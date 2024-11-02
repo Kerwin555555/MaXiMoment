@@ -26,7 +26,7 @@ import com.github.iielse.imageviewer.core.Photo
 import com.github.iielse.imageviewer.core.SimpleDataProvider
 import com.github.iielse.imageviewer.core.Transformer
 import com.moment.app.R
-import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.DialogFragmentManager
 import com.moment.app.utils.ViewerPhoto
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
@@ -271,7 +271,7 @@ fun Fragment.show(dataList: List<Photo>, clickedData: Photo){ //
 
 fun ImageView.show(dataList: List<Photo>, clickedData: Photo){ //
     val builder = ImageViewerBuilder(
-        context =  DialogUtils.getActivity(context),
+        context =  DialogFragmentManager.getActivity(context),
         dataProvider = SimpleDataProvider(clickedData, dataList), // 一次性全量加载 // 实现DataProvider接口支持分页加载
         imageLoader = SimpleImageLoader(), // 可使用demo固定写法 // 实现对数据源的加载.支持自定义加载数据类型，加载方案
         transformer = SimpleTransformer(), // 可使用demo固定写法 // 以photoId为标示，设置过渡动画的'配对'.
@@ -281,7 +281,7 @@ fun ImageView.show(dataList: List<Photo>, clickedData: Photo){ //
 
 fun ImageFilterView.show(dataList: List<Photo>, clickedData: Photo){ //
     val builder = ImageViewerBuilder(
-        context = DialogUtils.getActivity(context),
+        context = DialogFragmentManager.getActivity(context),
         dataProvider = SimpleDataProvider(clickedData, dataList), // 一次性全量加载 // 实现DataProvider接口支持分页加载
         imageLoader = SimpleImageLoader(), // 可使用demo固定写法 // 实现对数据源的加载.支持自定义加载数据类型，加载方案
         transformer = SimpleTransformer(), // 可使用demo固定写法 // 以photoId为标示，设置过渡动画的'配对'.
@@ -290,13 +290,12 @@ fun ImageFilterView.show(dataList: List<Photo>, clickedData: Photo){ //
 }
 
 /**
- * ‌View的Context为FragmentContextWrapper的原因‌
-
- * ‌Context的包装‌：在Android中，Context是一个抽象类，它代表了全局的应用环境或应用组件的状态。
+ * View的Context为FragmentContextWrapper的原因‌
+ * Context的包装‌：在Android中，Context是一个抽象类，它代表了全局的应用环境或应用组件的状态。
  * Fragment为了在其内部View中提供合适的上下文，会对Activity的Context进行包装，形成FragmentContextWrapper。
- * ‌Fragment的特性‌：Fragment作为Activity中的一部分，具有自己的生命周期和视图层级。FragmentContextWrapper
+ * Fragment的特性‌：Fragment作为Activity中的一部分，具有自己的生命周期和视图层级。FragmentContextWrapper
  * 允许Fragment对其内部的View进行更精细的控制，同时保持与Activity的Context的关联。
- * ‌View的Context来源‌：当View在Fragment中创建时，它的Context自然来源于Fragment，因此是FragmentContextWrapper
+ * View的Context来源‌：当View在Fragment中创建时，它的Context自然来源于Fragment，因此是FragmentContextWrapper
  * ，而非直接是Activity。
  * 综上所述，View在Fragment中的Context为FragmentContextWrapper，是由于Fragment对Activity的Context进行了包装，以适应其内部View的需求
  */

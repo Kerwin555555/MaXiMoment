@@ -14,7 +14,7 @@
         android:src="@mipmap/register_top_bg"
         app:layout_constraintTop_toTopOf="parent"/>
 
-    <com.moment.app.utils.NoFitSystemWindowPaddingLinearLayout
+    <com.moment.app.utils.OverrideLinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipToPadding="false"
@@ -275,5 +275,5 @@
                     app:layout_constraintTop_toBottomOf="@id/confirm" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
-    </com.moment.app.utils.NoFitSystemWindowPaddingLinearLayout>
+    </com.moment.app.utils.OverrideLinearLayout>
 </FrameLayout>

@@ -1,10 +1,8 @@
 package com.moment.app.network
 
-import com.moment.app.utils.Constants
+import com.moment.app.utils.MomentCoreParams
 import okhttp3.Interceptor
 import retrofit2.Retrofit
-import java.net.Proxy
-import java.util.concurrent.TimeUnit
 
 object ApiService {
     var userAgent: String? = null
@@ -13,7 +11,7 @@ object ApiService {
 
     fun initRetrofit(vararg interceptors: Interceptor?) {
         retrofit = Retrofit.Builder()
-            .baseUrl(Constants.BASE_URL)
+            .baseUrl(MomentCoreParams.BASE_URL)
             .build()
     }
 

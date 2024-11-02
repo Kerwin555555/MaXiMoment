@@ -3,12 +3,10 @@ package com.moment.app
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
-import android.view.KeyboardShortcutInfo
-import com.blankj.utilcode.util.KeyboardUtils
 import com.didi.drouter.api.DRouter
 import com.moment.app.hilt.app_level.MockData
-import com.moment.app.models.IMLoginModel
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserImManager
+import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.AppInfo
 import com.moment.app.utils.emoji
 import dagger.hilt.android.HiltAndroidApp
@@ -24,7 +22,7 @@ class MomentApp : Application() {
 
     @Inject
     @MockData
-    lateinit var imLoginModel: IMLoginModel
+    lateinit var imLoginModel: UserImManager
 
     override fun onCreate() {
         super.onCreate()
@@ -34,7 +32,7 @@ class MomentApp : Application() {
         AppInfo.init(this)
         imLoginModel.initIM(this)
 
-        LoginModel.getUserInfo()
+        UserLoginManager.getUserInfo()
         emoji()
     }
 

@@ -23,7 +23,7 @@ import kotlin.math.abs
  * Created by lq on 16/10/14.
  */
 @Keep
-class CircleIndicator2 : LinearLayout {
+class ViewPager2Indicator : LinearLayout {
     private var mViewpager: ViewPager2? = null
     private var mIndicatorMargin = -1
     private var mIndicatorWidth = -1

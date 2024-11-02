@@ -13,7 +13,7 @@ import com.moment.app.main_home.subfragments.db.UserInfoEntity
 import com.moment.app.main_home.subfragments.models.UserInfoList
 import com.moment.app.main_home.subfragments.service.HomeService
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.network.MomentNetwork
 import com.moment.app.network.UserCancelException
 import com.moment.app.network.startCoroutine
@@ -21,7 +21,6 @@ import com.moment.app.network.toast
 import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.cancelIfActive
-import com.scwang.smart.refresh.layout.util.SmartUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -87,7 +86,7 @@ class RecommendationFragment: BaseFragment() {
         currentJob = startCoroutine({
             if (!isLoadMore) {
                 startPos = 0
-                val key = "${LoginModel.getUserInfo()?.userId?:""}_recommendation"
+                val key = "${UserLoginManager.getUserInfo()?.userId?:""}_recommendation"
                 if (!MomentNetwork.coldStartMap.containsKey(key)) {
                     kotlin.runCatching {
                         withContext(Dispatchers.IO) {

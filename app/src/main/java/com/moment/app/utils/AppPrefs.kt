@@ -4,7 +4,7 @@ import android.text.TextUtils
 import com.google.gson.Gson
 import com.google.gson.annotations.SerializedName
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.models.MomentConfig
 
 
@@ -29,22 +29,22 @@ object AppPrefs {
     private const val SP_OSS_UPLOAD_PREFIX = "sp_oss_upload_prefix"
 
     val timeOffset: Long
-        get() = SPUtil.getLong(SP_TIME_OFFSET, 0)
+        get() = MMKVHelper.getLong(SP_TIME_OFFSET, 0)
 
     fun saveTimeOffset(offset: Long) {
-        SPUtil.save(SP_TIME_OFFSET, offset)
+        MMKVHelper.save(SP_TIME_OFFSET, offset)
     }
 
     fun saveUserInfo(info: UserInfo?) {
-        SPUtil.save(SP_USER, if (info == null) "" else JsonUtil.toJson(info))
+        MMKVHelper.save(SP_USER, if (info == null) "" else SerializeManager.toJson(info))
     }
 
     fun getUserInfo(): UserInfo? {
-        val json: String = SPUtil.getString(SP_USER, "") ?: ""
+        val json: String = MMKVHelper.getString(SP_USER, "") ?: ""
         if (android.text.TextUtils.isEmpty(json)) {
             return null
         }
-        return JsonUtil.parse(json, UserInfo::class.java)
+        return SerializeManager.parse(json, UserInfo::class.java)
     }
 
     fun isNeedLogin(): Boolean {
@@ -52,49 +52,49 @@ object AppPrefs {
     }
 
     fun setSift(sift: UserSift?) {
-        if (!LoginModel.isLogin()) return
-        val siftKey = java.lang.String.format(SP_USER_SIFT, LoginModel.getUserId())
-        SPUtil.save(siftKey, Gson().toJson(sift))
+        if (!UserLoginManager.isLogin()) return
+        val siftKey = java.lang.String.format(SP_USER_SIFT, UserLoginManager.getUserId())
+        MMKVHelper.save(siftKey, Gson().toJson(sift))
     }
 
     fun getSift(): UserSift? {
-        if (!LoginModel.isLogin()) return null
+        if (!UserLoginManager.isLogin()) return null
 
-        val siftKey = java.lang.String.format(SP_USER_SIFT, LoginModel.getUserId())
+        val siftKey = java.lang.String.format(SP_USER_SIFT, UserLoginManager.getUserId())
 
-        val json = SPUtil.getString(siftKey, "")
+        val json = MMKVHelper.getString(siftKey, "")
         if (TextUtils.isEmpty(json)) {
             return null
         }
-        return JsonUtil.parse(json, UserSift::class.java)
+        return SerializeManager.parse(json, UserSift::class.java)
     }
 
     fun saveRateState(state: Int) {
-        SPUtil.save(SP_RATE_KEY, state)
+        MMKVHelper.save(SP_RATE_KEY, state)
     }
 
     val rateState: Int
-        get() = SPUtil.getInt(SP_RATE_KEY, 0)
+        get() = MMKVHelper.getInt(SP_RATE_KEY, 0)
 
     fun saveConfig(config: MomentConfig?) {
-        SPUtil.save(SP_MOMENT_CONFIG, JsonUtil.toJson(config))
+        MMKVHelper.save(SP_MOMENT_CONFIG, SerializeManager.toJson(config))
     }
 
     fun getConfig(): MomentConfig? {
-        val json = SPUtil.getString(SP_MOMENT_CONFIG, "")
+        val json = MMKVHelper.getString(SP_MOMENT_CONFIG, "")
         if (TextUtils.isEmpty(json)) {
             return MomentConfig()
         }
-        return JsonUtil.parse(json, MomentConfig::class.java)
+        return SerializeManager.parse(json, MomentConfig::class.java)
     }
 
     fun saveReportConfig(config: ReportSettings?) {
-        SPUtil.save(SP_MOMENT_REPORT_CONFIG, Gson().toJson(config))
+        MMKVHelper.save(SP_MOMENT_REPORT_CONFIG, Gson().toJson(config))
     }
 
     val reportConfig: ReportSettings
         get() {
-            val json: String = SPUtil.getString(SP_MOMENT_REPORT_CONFIG, "") ?: ""
+            val json: String = MMKVHelper.getString(SP_MOMENT_REPORT_CONFIG, "") ?: ""
             if (android.text.TextUtils.isEmpty(json)) {
                 return ReportSettings()
             }
@@ -102,12 +102,12 @@ object AppPrefs {
         }
 
     fun savePrivacySettings(setting: PrivacySetting?) {
-        SPUtil.save(SP_PRIVACY_SETTINGS, Gson().toJson(setting))
+        MMKVHelper.save(SP_PRIVACY_SETTINGS, Gson().toJson(setting))
     }
 
     val privacySetting: PrivacySetting
         get() {
-            val json: String = SPUtil.getString(SP_PRIVACY_SETTINGS, "")?: ""
+            val json: String = MMKVHelper.getString(SP_PRIVACY_SETTINGS, "")?: ""
             if (android.text.TextUtils.isEmpty(json)) {
                 return PrivacySetting()
             }
@@ -115,12 +115,12 @@ object AppPrefs {
         }
 
     fun saveVoiceMatchConfig(config: ReportSettings?) {
-        SPUtil.save(SP_MOMENT_VOICE_MATCH_REPORT_CONFIG, Gson().toJson(config))
+        MMKVHelper.save(SP_MOMENT_VOICE_MATCH_REPORT_CONFIG, Gson().toJson(config))
     }
 
     val voiceMatchConfig: ReportSettings
         get() {
-            val json: String = SPUtil.getString(SP_MOMENT_VOICE_MATCH_REPORT_CONFIG, "") ?: ""
+            val json: String = MMKVHelper.getString(SP_MOMENT_VOICE_MATCH_REPORT_CONFIG, "") ?: ""
 
             if (android.text.TextUtils.isEmpty(json)) {
                 return ReportSettings()
@@ -129,11 +129,11 @@ object AppPrefs {
         }
 
     fun saveImWarnConfig(config: ImWarnSetting?) {
-        SPUtil.save(SP_MOMENT_IM_WARN_CONFIG, Gson().toJson(config))
+        MMKVHelper.save(SP_MOMENT_IM_WARN_CONFIG, Gson().toJson(config))
     }
 
     fun getimWarnConfig(): ImWarnSetting {
-            val json: String = SPUtil.getString(SP_MOMENT_IM_WARN_CONFIG, "") ?: ""
+            val json: String = MMKVHelper.getString(SP_MOMENT_IM_WARN_CONFIG, "") ?: ""
             if (android.text.TextUtils.isEmpty(json)) {
                 return ImWarnSetting()
             }
@@ -141,27 +141,27 @@ object AppPrefs {
         }
 
     fun saveLastedFollowingFeed(create_time: Long) {
-        SPUtil.save(SP_LASTED_FOLLOWING_FEED, create_time)
+        MMKVHelper.save(SP_LASTED_FOLLOWING_FEED, create_time)
     }
 
     val lastedFollowingFeed: Long
-        get() = SPUtil.getLong(SP_LASTED_FOLLOWING_FEED, 0)
+        get() = MMKVHelper.getLong(SP_LASTED_FOLLOWING_FEED, 0)
 
     var showPushViewDate: Long
-        get() = SPUtil.getLong(SP_SHOW_PUSH_VIEW_DATE, 0)
+        get() = MMKVHelper.getLong(SP_SHOW_PUSH_VIEW_DATE, 0)
         set(date) {
-            SPUtil.save(SP_SHOW_PUSH_VIEW_DATE, date)
+            MMKVHelper.save(SP_SHOW_PUSH_VIEW_DATE, date)
         }
 
     fun saveCopyLinkDialog(lastTime: Long) {
-        SPUtil.save(SP_COPY_DIALOG_SHOW, lastTime)
+        MMKVHelper.save(SP_COPY_DIALOG_SHOW, lastTime)
     }
 
     val copyLinkDialogShowTime: Long
-        get() = SPUtil.getLong(SP_COPY_DIALOG_SHOW, 0)
+        get() = MMKVHelper.getLong(SP_COPY_DIALOG_SHOW, 0)
 
     fun getAccountInfo(): AccountInfo {
-        val json: String = SPUtil.getString(SP_ACCOUNT_INFO, "") ?: ""
+        val json: String = MMKVHelper.getString(SP_ACCOUNT_INFO, "") ?: ""
         if (!android.text.TextUtils.isEmpty(json)) {
             try {
                 return Gson().fromJson(json, AccountInfo::class.java)
@@ -174,36 +174,36 @@ object AppPrefs {
 
     fun setAccountInfo(info: AccountInfo?) {
         if (info == null) {
-            SPUtil.remove(SP_ACCOUNT_INFO)
+            MMKVHelper.remove(SP_ACCOUNT_INFO)
         } else {
-            SPUtil.save(SP_ACCOUNT_INFO, Gson().toJson(info))
+            MMKVHelper.save(SP_ACCOUNT_INFO, Gson().toJson(info))
         }
     }
 
     fun setSpCommitHint(hint: Boolean) {
-        SPUtil.save(SP_COMMIT_HINT, hint)
+        MMKVHelper.save(SP_COMMIT_HINT, hint)
     }
 
     val commitHint: Boolean
-        get() = SPUtil.getBoolean(SP_COMMIT_HINT, false)
+        get() = MMKVHelper.getBoolean(SP_COMMIT_HINT, false)
 
     fun setSpFeedRuleHint(time: Long) {
-        SPUtil.save(SP_FEED_RULE_HINT, time)
+        MMKVHelper.save(SP_FEED_RULE_HINT, time)
     }
 
     val feedRuleHint: Long
-        get() = SPUtil.getLong(SP_FEED_RULE_HINT, 0)
+        get() = MMKVHelper.getLong(SP_FEED_RULE_HINT, 0)
 
     fun saveLoginType(type: String?) {
-        SPUtil.save(SP_LOGIN_TYPE, type)
+        MMKVHelper.save(SP_LOGIN_TYPE, type)
     }
 
     fun getLoginType(): String {
-        return SPUtil.getString(SP_LOGIN_TYPE, "") ?: ""
+        return MMKVHelper.getString(SP_LOGIN_TYPE, "") ?: ""
     }
 
     fun saveOssUploadPrefix(prefix: String?) {
-        SPUtil.save(SP_OSS_UPLOAD_PREFIX, prefix)
+        MMKVHelper.save(SP_OSS_UPLOAD_PREFIX, prefix)
     }
 
 }

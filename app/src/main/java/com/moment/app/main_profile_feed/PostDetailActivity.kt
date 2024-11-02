@@ -3,10 +3,8 @@ package com.moment.app.main_profile_feed
 import android.os.Bundle
 import android.view.Gravity
 import android.view.View
-import com.blankj.utilcode.util.BarUtils
 import com.blankj.utilcode.util.KeyboardUtils
 import com.didi.drouter.annotation.Router
-import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityFeedPostBinding
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.FeedService
@@ -15,21 +13,17 @@ import com.moment.app.main_profile_feed.views.ViewFeedContentHeader
 import com.moment.app.main_profile_feed.views.ViewFeedPicturesHeader
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
 import com.moment.app.main_profile.entities.PostBean
-import com.moment.app.main_profile.views.AdapterItemView
 import com.moment.app.main_profile_feed.views.DetailsFeedView
-import com.moment.app.main_profile_feed.views.DetailsToolbar
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.network.UserCancelException
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.ui.uiLibs.RefreshView
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.applyMargin
-import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.dp
 import com.moment.app.utils.immersion
-import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -107,7 +101,7 @@ class PostDetailActivity : BaseActivity(){
 //                if (!NetworkUtils.isConnected()) {
 //                    throw RuntimeException("Net work Error")
 //                }
-                feedService.getComments(LoginModel.getUserId(), startPos)
+                feedService.getComments(UserLoginManager.getUserId(), startPos)
             }
             startPos = result.data!!.cursor
             binding.refreshView.onSuccess(result.data!!.comments!!.toMutableList(), isLoadMore, result.data!!.cursor > 0)

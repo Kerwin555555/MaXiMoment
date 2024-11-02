@@ -27,23 +27,23 @@ import com.moment.app.R
 import com.moment.app.databinding.ActivityEditInfoBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.hilt.app_level.MockData
-import com.moment.app.images.Explorer
+import com.moment.app.localimages.AlbumSearcher
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.login_profile.ChooseAlbumFragment
-import com.moment.app.login_profile.ClipImageView
+import com.moment.app.login_profile.PictureCroppingView
 import com.moment.app.login_profile.OnImageConfirmListener
 import com.moment.app.login_profile.ProfileViewModel
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.network.ProgressDialogStatus
 import com.moment.app.network.refreshProgressDialog
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
-import com.moment.app.permissions.PermissionHelper
+import com.moment.app.user_rights.UserPermissionManager
 import com.moment.app.utils.BaseActivity
-import com.moment.app.utils.DateUtil
-import com.moment.app.utils.JsonUtil
+import com.moment.app.utils.DateManagingHub
+import com.moment.app.utils.SerializeManager
 import com.moment.app.utils.MOMENT_APP
-import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
@@ -72,7 +72,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
     private lateinit var binding: ActivityEditInfoBinding
     private val viewModel by viewModels<EditProfileViewModel>()
     private var initialProfileData: ProfileViewModel.ProfileData? = null
-    private var progressDialog: ProgressDialog? = null
+    private var progressDialog: ProgressIndicatorFragment? = null
 
     @Inject
     @MockData
@@ -122,14 +122,14 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
             binding.save.isEnabled = it.dataOk
         }
 
-        LoginModel.getUserInfo()?.let {
+        UserLoginManager.getUserInfo()?.let {
             initUI(userInfo = it)
             initialProfileData = ProfileViewModel.ProfileData(
                 avatar = it.avatar ?: "",
                 nickName = it.name,
                 bio = it.bio,
                 gender = it.gender,
-                timeSelect = if (it.birthday.isNullOrEmpty()) Date() else DateUtil.birthdayToDate(it.birthday!!)
+                timeSelect = if (it.birthday.isNullOrEmpty()) Date() else DateManagingHub.birthdayToDate(it.birthday!!)
             )
             Log.d("zhouzheng copy", initialProfileData.toString())
             val copy = CloneUtils.deepClone(initialProfileData!!, ProfileViewModel.ProfileData::class.java)
@@ -235,7 +235,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
         }
         viewModel.liveData.value?.timeSelect = defaultDate.time
         viewModel.refresh()
-        return DateUtil.chooseDate(
+        return DateManagingHub.chooseDate(
             context,
             defaultDate,
             listener,
@@ -246,17 +246,17 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
 
     fun onChooseFromLibrary() {
         try {
-            PermissionHelper.check(
+            UserPermissionManager.check(
                 this, "Choose from library",
                 arrayOf<String>(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE
-                ), object : PermissionHelper.Callback {
+                ), object : UserPermissionManager.Callback {
                     override fun result(res: Int) {
                         if (res == 0) {
                             Log.d(MOMENT_APP, Thread.currentThread().name)
                             this@EditInfoActivity.bottomInBottomOut().add(R.id.root_layout, ChooseAlbumFragment().apply {
-                                    arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
+                                    arguments = bundleOf("extra_mode" to AlbumSearcher.MODE_ONLY_IMAGE)
                                 }, "ChooseAlbumFragment").addToBackStack(null).commitAllowingStateLoss()
                         }
                     }
@@ -274,9 +274,9 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
         }
     }
 
-    override fun onConfirm(clipImageView: ClipImageView, map: Map<String, Any?>?) {
+    override fun onConfirm(clipImageView: PictureCroppingView, map: Map<String, Any?>?) {
         supportFragmentManager.let {
-            val f = it.findFragmentByTag("ClipImageFragment")
+            val f = it.findFragmentByTag("CroppingPictureFragment")
             val f2 = it.findFragmentByTag("ChooseAlbumFragment")
             it.beginTransaction()
                 .setCustomAnimations(0,R.anim.slide_down,0,0)
@@ -337,7 +337,7 @@ class EditProfileViewModel : ViewModel() {
             }
             val result = loginService.updateInfo(map)
             "upload to backend".toast()
-            LoginModel.getUserInfo()?.apply {
+            UserLoginManager.getUserInfo()?.apply {
                 map["name"]?.let{
                     this.name = it
                 }
@@ -354,8 +354,8 @@ class EditProfileViewModel : ViewModel() {
                 map["birthday"]?.let{
                     this.birthday = it
                 }
-                Log.d("zhouzheng save", JsonUtil.toJson(this))
-                LoginModel.setUserInfo(this)
+                Log.d("zhouzheng save", SerializeManager.toJson(this))
+                UserLoginManager.setUserInfo(this)
                 _showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
                 (context as? AppCompatActivity)?.finish()
             }

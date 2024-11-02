@@ -27,18 +27,18 @@ import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LoginEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
-import com.moment.app.models.ConfigModel
-import com.moment.app.models.LoginModel
+import com.moment.app.models.AppConfigManager
+import com.moment.app.models.UserLoginManager
 import com.moment.app.network.LoadingStatus
 import com.moment.app.network.ProgressDialogStatus
 import com.moment.app.network.refreshProgressDialog
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
-import com.moment.app.utils.DateUtil
-import com.moment.app.utils.JsonUtil
+import com.moment.app.utils.DateManagingHub
+import com.moment.app.utils.SerializeManager
 import com.moment.app.utils.MOMENT_APP
-import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.immersion
 import com.moment.app.utils.requestNewSize
@@ -60,7 +60,7 @@ import javax.inject.Inject
 @Router(scheme = ".*", host = ".*", path = "/user/init")
 class ProfileActivity: BaseActivity(), OnImageConfirmListener{
     private val viewModel by viewModels<ProfileViewModel>()
-    private var progressDialog: ProgressDialog? = null
+    private var progressDialog: ProgressIndicatorFragment? = null
 
     private lateinit var binding: ActivityProfileBinding
 
@@ -161,7 +161,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
         }
         viewModel.liveData.value?.timeSelect = defaultDate.time
         refresh()
-        return DateUtil.chooseDate(
+        return DateManagingHub.chooseDate(
             context,
             defaultDate,
             listener,
@@ -231,7 +231,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
         binding.nicknameEditText.clearFocus()
     }
 
-    override fun onConfirm(imageView: ClipImageView, map: Map<String, Any?>?) {
+    override fun onConfirm(imageView: PictureCroppingView, map: Map<String, Any?>?) {
         viewModel.saveAvatar(imageView)
     }
 }
@@ -261,18 +261,18 @@ class ProfileViewModel @Inject constructor(
                 "gender" to data.gender,
                 "bio" to data.bio
             ))
-            val info: UserInfo? = LoginModel.getUserInfo()
+            val info: UserInfo? = UserLoginManager.getUserInfo()
             if (info == null) {
                 return@startCoroutine
             }
             info.name = data.nickName
             info.birthday = data.birthDateToString()
-            info.age = DateUtil.getAge(info.birthday)
+            info.age = DateManagingHub.getAge(info.birthday)
             info.gender = data.gender
             info.bio = data.bio
-            LoginModel.setUserInfo(info)
+            UserLoginManager.setUserInfo(info)
             EventBus.getDefault().post(LoginEvent())
-            ConfigModel.updateConfig()
+            AppConfigManager.updateConfig()
             _netLiveData.value = LoadingStatus.SuccessLoadingStatus(info)
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
         }){
@@ -282,14 +282,14 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun saveAvatar(imageView: ClipImageView) {
+    fun saveAvatar(imageView: PictureCroppingView) {
         Log.d(MOMENT_APP, "wro")
         Log.d(MOMENT_APP, "dxx xxxxdasdfas")
         startCoroutine({
             showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(cancellable = false)
             kotlin.runCatching {
                 (imageView.context as AppCompatActivity).supportFragmentManager.let {
-                    val f = it.findFragmentByTag("ClipImageFragment")
+                    val f = it.findFragmentByTag("CroppingPictureFragment")
                     val f2 = it.findFragmentByTag("ChooseAlbumFragment")
                     it.beginTransaction()
                         .setCustomAnimations(0,R.anim.slide_down,0,0)
@@ -301,12 +301,12 @@ class ProfileViewModel @Inject constructor(
             val file = withContext(Dispatchers.IO) {
                 saveView(imageView.context, imageView.clipOriginalBitmap()!!)?.absolutePath
             }
-            LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
+            UserLoginManager.setUserInfo(UserLoginManager.getUserInfo()?.apply {
                 avatar = file // for test
                 imagesWallList = mutableListOf(file!!)
                 finished_info = true
             })
-            Log.d("zhouzheng save", JsonUtil.toJson(LoginModel.getUserInfo()))
+            Log.d("zhouzheng save", SerializeManager.toJson(UserLoginManager.getUserInfo()))
             hasAvatarLiveData.value = true
             delay(2000) // mock upload to backend and cloud storage
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog

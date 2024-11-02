@@ -1,14 +1,12 @@
 package com.moment.app.main_chat
 
 import androidx.room.Database
-import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.moment.app.MomentApp
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.main_chat.fragments.entities.MomentConversation
-import com.moment.app.utils.JsonUtil
+import com.moment.app.utils.SerializeManager
 
 @Database(
     entities = [MomentConversation::class],
@@ -17,7 +15,7 @@ import com.moment.app.utils.JsonUtil
 )
 @TypeConverters(Converters::class)
 abstract class ConversationDatabase() : RoomDatabase() {
-    abstract fun conversationDao(): ConversationDao
+    abstract fun conversationDao(): MessagingListDao
 }
 
 object Converters {
@@ -25,13 +23,13 @@ object Converters {
     fun fromString(value: String?): UserInfo? {
         if (value == null) return null
 
-        return JsonUtil.parse(value, UserInfo::class.java)
+        return SerializeManager.parse(value, UserInfo::class.java)
     }
 
     @TypeConverter
     fun toString(value: UserInfo?): String? {
         if (value == null) return null
-        return JsonUtil.toJson(value)
+        return SerializeManager.toJson(value)
     }
 }
 

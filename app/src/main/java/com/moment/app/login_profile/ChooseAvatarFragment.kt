@@ -1,8 +1,6 @@
 package com.moment.app.login_profile
 
 import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,9 +13,9 @@ import androidx.fragment.app.activityViewModels
 import com.bumptech.glide.Glide
 import com.moment.app.R
 import com.moment.app.databinding.AvatarPopWindowBinding
-import com.moment.app.images.Explorer
-import com.moment.app.models.LoginModel
-import com.moment.app.permissions.PermissionHelper
+import com.moment.app.localimages.AlbumSearcher
+import com.moment.app.models.UserLoginManager
+import com.moment.app.user_rights.UserPermissionManager
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.bottomInBottomOut
@@ -45,7 +43,7 @@ class ChooseAvatarFragment : BaseFragment() {
 
         viewModel.hasAvatarLiveData.observe(this.viewLifecycleOwner) {
             if (it == true) {
-                Glide.with(this).load(LoginModel.getUserInfo()!!.avatar).dontTransform().into(binding.pic)
+                Glide.with(this).load(UserLoginManager.getUserInfo()!!.avatar).dontTransform().into(binding.pic)
                 binding.upload.isVisible = false
             } else {
                 binding.upload.isVisible = true
@@ -56,12 +54,12 @@ class ChooseAvatarFragment : BaseFragment() {
 
     fun onChooseFromLibrary() {
         try {
-            PermissionHelper.check(
+            UserPermissionManager.check(
                 requireContext(), "Choose from library",
                 arrayOf<String>(
                     Manifest.permission.WRITE_EXTERNAL_STORAGE,
                     Manifest.permission.READ_EXTERNAL_STORAGE
-                ), object : PermissionHelper.Callback {
+                ), object :UserPermissionManager.Callback {
                     override fun result(res: Int) {
                         if (res == 0) {
                             Log.d(MOMENT_APP, Thread.currentThread().name)
@@ -78,7 +76,7 @@ class ChooseAvatarFragment : BaseFragment() {
     private fun choosePhoto() {
          (activity as? AppCompatActivity?)?.bottomInBottomOut()
            ?.add(R.id.root_layout, ChooseAlbumFragment().apply {
-                   arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE)
+                   arguments = bundleOf("extra_mode" to AlbumSearcher.MODE_ONLY_IMAGE)
            }, "ChooseAlbumFragment")?.addToBackStack(null)
             ?.commitAllowingStateLoss()
     }

@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
-import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -128,12 +128,12 @@ sealed class ProgressDialogStatus {
 
     object CancelProgressDialog: ProgressDialogStatus()
 }
-fun ProgressDialogStatus.refreshProgressDialog(oldProgressDialog: ProgressDialog?, context: Context?) : ProgressDialog?{
+fun ProgressDialogStatus.refreshProgressDialog(oldProgressDialog: ProgressIndicatorFragment?, context: Context?) : ProgressIndicatorFragment?{
     context?.let {
         when (this) {
             is ProgressDialogStatus.ShowProgressDialog -> {
                 oldProgressDialog?.dismissAllowingStateLoss()
-                return ProgressDialog.show(it).apply {
+                return ProgressIndicatorFragment.show(it).apply {
                     isCancelable = cancellable
                 }
             }

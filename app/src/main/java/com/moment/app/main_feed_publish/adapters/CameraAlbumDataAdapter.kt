@@ -9,11 +9,11 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.databinding.ItemViewCameraBinding
 import com.moment.app.databinding.ItemViewImagesBinding
 import com.moment.app.image_viewer.loadNoAnimResource
-import com.moment.app.images.bean.MediaFile
-import com.moment.app.main_feed_publish.PublishViewModel
-import com.moment.app.main_feed_publish.dialogs.ChooseMediaDialog
+import com.moment.app.localimages.datamodel.AlbumItemFile
+import com.moment.app.main_feed_publish.PostSubmissionViewModel
+import com.moment.app.main_feed_publish.dialogs.ChooseAlbumDialog
 import com.moment.app.main_feed_publish.extensions.Action
-import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.DialogFragmentManager
 import com.moment.app.utils.checkCameraPermission
 import com.moment.app.utils.checkReadWritePermission
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
@@ -21,7 +21,7 @@ import com.moment.app.utils.showAlbumInImageViewer
 import com.moment.app.utils.toast
 
 
-class CameraAlbumDataAdapter(var viewModel: PublishViewModel): BaseQuickAdapter<MediaFile, BaseViewHolder>(null) {
+class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickAdapter<AlbumItemFile, BaseViewHolder>(null) {
     companion object {
         val REQUEST_CODE_TAKE = 4576673
     }
@@ -76,7 +76,7 @@ class CameraAlbumDataAdapter(var viewModel: PublishViewModel): BaseQuickAdapter<
         return if (position == 0) CAMERA else IMAGE
     }
 
-    override fun convert(helper: BaseViewHolder, item: MediaFile) {
+    override fun convert(helper: BaseViewHolder, item: AlbumItemFile) {
         when (helper.itemViewType) {
             CAMERA -> {
                 (helper as PermissionItemViewHolder).bindData()
@@ -106,13 +106,13 @@ class CameraAlbumDataAdapter(var viewModel: PublishViewModel): BaseQuickAdapter<
                       goAndTakeAPhoto?.invoke()
                  } else if (hasPhotoPermission) {
                      // 没有相机权限
-                     DialogUtils.show(mContext, ChooseMediaDialog().apply {
+                     DialogFragmentManager.show(mContext, ChooseAlbumDialog().apply {
                          arguments = bundleOf("hasPhotoPermission" to true)
                          this.goAndTakeAPhoto = this@CameraAlbumDataAdapter.goAndTakeAPhoto
                      })
                  } else {
                      // 权限都都没有
-                     DialogUtils.show(mContext, ChooseMediaDialog().apply {
+                     DialogFragmentManager.show(mContext, ChooseAlbumDialog().apply {
                          arguments = bundleOf("hasPhotoPermission" to false)
                          this.goAndTakeAPhoto = this@CameraAlbumDataAdapter.goAndTakeAPhoto
                          this.goAndGetPhotos = this@CameraAlbumDataAdapter.goAndChoosePhotos
@@ -124,7 +124,7 @@ class CameraAlbumDataAdapter(var viewModel: PublishViewModel): BaseQuickAdapter<
 
     inner class MediaTypeViewHolder(val binding: ItemViewImagesBinding) :
         BaseViewHolder(binding.root) {
-        fun bindData(item: MediaFile) {
+        fun bindData(item: AlbumItemFile) {
             if (mContext != null) {
                 binding.albumImage.loadNoAnimResource(item.path)
             }

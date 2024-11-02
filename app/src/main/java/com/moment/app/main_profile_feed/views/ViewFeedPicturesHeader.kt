@@ -12,8 +12,6 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.R
@@ -21,7 +19,7 @@ import com.moment.app.databinding.DetailsToolbarBinding
 import com.moment.app.databinding.ViewFeedPicturesHeaderBinding
 import com.moment.app.image_viewer.loadFeedRemoteResource
 import com.moment.app.main_profile.entities.PostBean
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
@@ -96,7 +94,7 @@ class ViewFeedPicturesHeader : ConstraintLayout, DetailsFeedView {
                 .into(toolbarBinding.avatar)
             toolbarBinding.gender.bindGender(it)
             toolbarBinding.name.text = it.name
-            LoginModel.getUserInfo()?.let { userInfo ->
+            UserLoginManager.getUserInfo()?.let { userInfo ->
                   if (userInfo.userId == it.userId) {
                       toolbarBinding.more.isVisible = false
                   } else {

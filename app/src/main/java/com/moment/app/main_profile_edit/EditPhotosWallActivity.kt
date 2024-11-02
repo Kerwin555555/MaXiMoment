@@ -24,21 +24,21 @@ import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.R
 import com.moment.app.databinding.ActivityEditWallPhotosBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
-import com.moment.app.images.Explorer
+import com.moment.app.localimages.AlbumSearcher
 import com.moment.app.login_profile.ChooseAlbumFragment
-import com.moment.app.login_profile.ClipImageView
+import com.moment.app.login_profile.PictureCroppingView
 import com.moment.app.login_profile.OnImageConfirmListener
 import com.moment.app.main_profile_edit.dialogs.ReplaceDeleteDialog
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
-import com.moment.app.permissions.MomentActionDialog
-import com.moment.app.permissions.SetupBundle
+import com.moment.app.user_rights.MomentActionDialog
+import com.moment.app.user_rights.SetupBundle
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.BaseBean
-import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.DialogFragmentManager
 import com.moment.app.utils.MOMENT_APP
-import com.moment.app.utils.ProgressDialog
+import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
@@ -99,7 +99,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         }
         adapter.setNewData(wrapperList)
         binding.save.setOnClickListener {
-            val progresDialog = ProgressDialog.show(this@EditPhotosWallActivity)
+            val progresDialog = ProgressIndicatorFragment.show(this@EditPhotosWallActivity)
             progresDialog.isCancelable = false
             startCoroutine({
                 val list = mutableListOf<Deferred<String?>>()
@@ -119,7 +119,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                 }
                 val result = list.awaitAll()
                 delay(400) //mock upload to cloud and backend
-                LoginModel.setUserInfo(LoginModel.getUserInfo()?.apply {
+                UserLoginManager.setUserInfo(UserLoginManager.getUserInfo()?.apply {
                     val mutableList = mutableListOf<String>()
                     result.forEach { fileid->
                         mutableList.add(fileid!!)
@@ -190,10 +190,10 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         })
     }
 
-    override fun onConfirm(clipImageView: ClipImageView, map: Map<String, Any?>?) {
+    override fun onConfirm(clipImageView: PictureCroppingView, map: Map<String, Any?>?) {
         kotlin.runCatching {
             supportFragmentManager.let {
-                val f = it.findFragmentByTag("ClipImageFragment")
+                val f = it.findFragmentByTag("CroppingPictureFragment")
                 val f2 = it.findFragmentByTag("ChooseAlbumFragment")
                 it.beginTransaction()
                     .setCustomAnimations(0,R.anim.slide_down,0,0)
@@ -266,19 +266,19 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                 if (item.isEmpty()) {
                     this@EditPhotosWallActivity.bottomInBottomOut()
                         .add(R.id.root_layout, ChooseAlbumFragment().apply {
-                            arguments = bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE,
+                            arguments = bundleOf("extra_mode" to AlbumSearcher.MODE_ONLY_IMAGE,
                                 "item" to item)
                         }, "ChooseAlbumFragment").addToBackStack(null)
                         .commitAllowingStateLoss()
                 } else {
-                    DialogUtils.show(this@EditPhotosWallActivity, ReplaceDeleteDialog().apply {
+                    DialogFragmentManager.show(this@EditPhotosWallActivity, ReplaceDeleteDialog().apply {
                         arguments = bundleOf("hideDelete" to (getNonEmptyCount() == 1))
                         onReplaceListener = object : ReplaceDeleteDialog.OnReplaceListener{
                             override fun onReplace() {
                                 this@EditPhotosWallActivity.bottomInBottomOut()
                                     .add(R.id.root_layout, ChooseAlbumFragment().apply {
                                         arguments = bundleOf(
-                                            "extra_mode" to Explorer.MODE_ONLY_IMAGE,
+                                            "extra_mode" to AlbumSearcher.MODE_ONLY_IMAGE,
                                             "item" to item)
                                     }, "ChooseAlbumFragment").addToBackStack(null)
                                     .commitAllowingStateLoss()

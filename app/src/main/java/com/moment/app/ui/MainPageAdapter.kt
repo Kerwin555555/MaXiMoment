@@ -2,9 +2,9 @@ package com.moment.app.ui
 
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import com.moment.app.main_chat.ChatFragment
+import com.moment.app.main_chat.MessagingContactListFragment
 import com.moment.app.main_home.HomeFragment
-import com.moment.app.main_profile.MeFragment
+import com.moment.app.main_profile.MyProfileFragment
 
 class MainNaviConfig {
 
@@ -15,8 +15,8 @@ class MainNaviConfig {
 
         val MAIN_PAGE: Array<Class<*>> = arrayOf<Class<*>>(
             HomeFragment::class.java,
-            ChatFragment::class.java,
-            MeFragment::class.java
+            MessagingContactListFragment::class.java,
+            MyProfileFragment::class.java
         )
     }
 

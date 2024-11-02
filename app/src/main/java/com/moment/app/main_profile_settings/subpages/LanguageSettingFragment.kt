@@ -26,7 +26,7 @@ class LanguageSettingFragment : BaseFragment(){
 
     private lateinit var binding: FragmentLanguageSettingBinding
     private val adapter by lazy {
-        LanguageAdapter()
+        LinguisticsAdapter()
     }
     val initial: Locale? = getSelectedLoc()
 

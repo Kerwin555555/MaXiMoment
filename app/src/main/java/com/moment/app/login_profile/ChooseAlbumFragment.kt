@@ -31,31 +31,31 @@ import com.moment.app.MomentApp
 import com.moment.app.R
 import com.moment.app.databinding.FragmentChooseAlbumBinding
 import com.moment.app.databinding.LayoutUploadImageBinding
-import com.moment.app.images.Explorer
-import com.moment.app.images.bean.MediaFile
-import com.moment.app.images.engine.MediaStoreHelper
-import com.moment.app.images.engine.OkDisplayCompat
-import com.moment.app.images.media.IMediaContract
-import com.moment.app.images.media.MediaDirectoryWindow
-import com.moment.app.images.utils.ExpUtil
-import com.moment.app.permissions.PermissionHelper
+import com.moment.app.localimages.AlbumSearcher
+import com.moment.app.localimages.datamodel.AlbumItemFile
+import com.moment.app.localimages.logic.MediaStoreHelper
+import com.moment.app.localimages.logic.AlbumImageTask
+import com.moment.app.localimages.album.IAlbumInterface
+import com.moment.app.localimages.album.AlbumSelectionPopup
+import com.moment.app.localimages.utils.Util
+import com.moment.app.user_rights.UserPermissionManager
 import com.moment.app.utils.BaseFragment
-import com.moment.app.utils.DialogUtils
+import com.moment.app.utils.DialogFragmentManager
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.stackAnimation
 import com.moment.app.utils.toast
 
 
-class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
+class ChooseAlbumFragment:  BaseFragment() , IAlbumInterface.IAlbumDataView{
 
     private val permissionRequestCode = 1001
 
     private lateinit var adapter: MediaAdapter
 
-    private lateinit var window: MediaDirectoryWindow
+    private lateinit var window: AlbumSelectionPopup
 
-    private lateinit var loader : IMediaContract.MediaLoader
+    private lateinit var loader : IAlbumInterface.MediaLoader
 
     private lateinit var binding: FragmentChooseAlbumBinding
 
@@ -73,8 +73,8 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
         view.isClickable = true
 
         adapter = MediaAdapter(this, requireContext())
-        window = MediaDirectoryWindow((requireContext()))
-        loader = IMediaContract.MediaLoader(DialogUtils.getActivity(requireContext()) as AppCompatActivity, requireArguments(),this)
+        window = AlbumSelectionPopup((requireContext()))
+        loader = IAlbumInterface.MediaLoader(DialogFragmentManager.getActivity(requireContext()) as AppCompatActivity, requireArguments(),this)
         binding.explorerRecycler.layoutManager = androidx.recyclerview.widget.GridLayoutManager(requireContext(), 4)
         binding.explorerRecycler.adapter = adapter
         window.anchorView = binding.explorerMenuDirectory
@@ -91,7 +91,7 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
             window.show()
         }
         binding.explorerRecycler.setHasFixedSize(true)
-        ExpUtil.setTopPadding(binding.explorerToolbar, MomentApp.appContext)
+        Util.setTopPadding(binding.explorerToolbar, MomentApp.appContext)
         binding.cancel.setOnClickListener {
             (activity as? AppCompatActivity?)?.supportFragmentManager?.popBackStackNowAllowingStateLoss()
         }
@@ -150,7 +150,7 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode != Activity.RESULT_OK) return
-        if (requestCode == Explorer.EXPLORER_MEDIA_PREVIEW) {
+        if (requestCode == AlbumSearcher.EXPLORER_MEDIA_PREVIEW) {
             Log.d("@@@==>", "requestCode == EXPLORER_MEDIA_PREVIEW")
             //这里接收通知，处理数据给最上层
             setResultToPrevious()
@@ -172,10 +172,10 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
                         0, // 退出动画（这里没有设置，所以为0）, // 退出动画（这里没有设置，所以为0）
                        0,
                         R.anim.f_slide_out_right)
-                    ?.add(R.id.root_layout, ClipImageFragment().apply {
+                    ?.add(R.id.root_layout, CroppingPictureFragment().apply {
                         arguments = bundle
                         onConfirmListener = itt as OnImageConfirmListener
-                    }, "ClipImageFragment")?.addToBackStack(null)
+                    }, "CroppingPictureFragment")?.addToBackStack(null)
                     ?.commitAllowingStateLoss()
             }
         }
@@ -208,14 +208,14 @@ class ChooseAlbumFragment:  BaseFragment() , IMediaContract.IMediaDataView{
         MediaStoreHelper.selectedFiles.forEach { path ->
             selectedUris.add(Uri.parse(path))
         }
-        intent.putParcelableArrayListExtra(Explorer.EXTRA_RESULT_SELECTION, selectedUris)
+        intent.putParcelableArrayListExtra(AlbumSearcher.EXTRA_RESULT_SELECTION, selectedUris)
         intent.putStringArrayListExtra(
-            Explorer.EXTRA_RESULT_SELECTION_PATH,
+            AlbumSearcher.EXTRA_RESULT_SELECTION_PATH,
             MediaStoreHelper.selectedFiles as java.util.ArrayList<String>?
         )
         intent.putExtras(Bundle().also {
             val data = MediaStoreHelper.fetchSelectedFileList()
-            it.putParcelableArrayList(Explorer.EXTRA_RESULT_SELECTION_DATA, data as ArrayList<MediaFile>)
+            it.putParcelableArrayList(AlbumSearcher.EXTRA_RESULT_SELECTION_DATA, data as ArrayList<AlbumItemFile>)
         })
 //        setResult(RESULT_OK, intent)
 //        finish()
@@ -245,7 +245,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
     val REQUEST_CODE_TAKE = 56386
     private var size = context.resources.displayMetrics.widthPixels / 4
 
-    private val imageList: MutableList<MediaFile> = mutableListOf()
+    private val imageList: MutableList<AlbumItemFile> = mutableListOf()
 
     var latestDirId = "ALL"
 
@@ -262,19 +262,19 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
         }
     }
 
-    private fun setData(data: MutableList<MediaFile>, forceClear: Boolean = false) {
+    private fun setData(data: MutableList<AlbumItemFile>, forceClear: Boolean = false) {
         if (forceClear) {
             imageList.clear()
         }
         //添加选图逻辑
-        imageList.add(MediaFile().apply {
+        imageList.add(AlbumItemFile().apply {
             mimeType = "photo_upload"
         })
         imageList.addAll(data)
         notifyDataSetChanged()
     }
 
-    private fun removeDirtyFile(file: MediaFile) {
+    private fun removeDirtyFile(file: AlbumItemFile) {
         MediaStoreHelper.removeDirtyFile(latestDirId, file) { files ->
             setData(files, true)
         }
@@ -325,14 +325,14 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
             val holder = h as MediaPhotoViewHolder
             holder.binding.root.setOnAvoidMultipleClicksListener({
                     try {
-                        PermissionHelper.check(
+                        UserPermissionManager.check(
                             context, "Take Photos",
                             arrayOf<String>(
                                 Manifest.permission.CAMERA,
                                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                                 Manifest.permission.READ_EXTERNAL_STORAGE
                             )
-                                    ,object : PermissionHelper.Callback {
+                                    ,object : UserPermissionManager.Callback {
                                 override fun result(res: Int) {
                                     if (res == 0) {
                                         mCurrentPhotoPath = createImageUri()
@@ -380,9 +380,9 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
 
     inner class MediaViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         @SuppressLint("SuspiciousIndentation")
-        fun setData(file: MediaFile) {
+        fun setData(file: AlbumItemFile) {
             try {
-                OkDisplayCompat.loadThumb(itemView.findViewById<ImageView>(R.id.explorer_media_thumb_view), file, 0.3f, {
+                AlbumImageTask.loadThumb(itemView.findViewById<ImageView>(R.id.explorer_media_thumb_view), file, 0.3f, {
                     removeDirtyFile(it)
                 })
 
@@ -403,10 +403,10 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                     //来自 EditInfoActifity
                     (context as? AppCompatActivity?)?.stackAnimation()
                         ?.hide(f)
-                        ?.add(R.id.root_layout, ClipImageFragment().apply {
+                        ?.add(R.id.root_layout, CroppingPictureFragment().apply {
                             arguments = bundle
                             onConfirmListener = f.context as? OnImageConfirmListener?
-                        }, "ClipImageFragment")?.addToBackStack(null)
+                        }, "CroppingPictureFragment")?.addToBackStack(null)
                         ?.commitAllowingStateLoss()
                 },500)
 
@@ -414,7 +414,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                 itemView.isEnabled = true
 
             } catch (e: Exception) {
-                Explorer.getDataTrack()?.onError("MediaAdapter#setData", e)
+                AlbumSearcher.getDataTrack()?.onError("MediaAdapter#setData", e)
             }
         }
     }

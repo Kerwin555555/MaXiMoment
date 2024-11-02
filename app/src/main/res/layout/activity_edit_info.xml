@@ -54,7 +54,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/back" />
 
-    <com.moment.app.utils.NoFitSystemWindowPaddingLinearLayout
+    <com.moment.app.utils.OverrideLinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:clipToPadding="false"
@@ -263,7 +263,7 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
-    </com.moment.app.utils.NoFitSystemWindowPaddingLinearLayout>
+    </com.moment.app.utils.OverrideLinearLayout>
 
 
 

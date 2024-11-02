@@ -96,7 +96,7 @@
             android:theme="@style/AppTheme.NoTranslucent" />
 
         <activity
-            android:name=".images.media.MediaExplorerActivity"
+            android:name=".localimages.album.AlbumSearchActivity"
             android:screenOrientation="portrait" />
 
         <activity
@@ -121,10 +121,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".main_profile_settings.SettingActivity"
+            android:name=".main_profile_settings.MomentSettingsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main_chat_private.ChatActivity"
+            android:name=".main_chat_private.MessagingThreadInterfaceActivity"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
@@ -145,13 +145,13 @@
             android:name="EASEMOB_APPKEY"
             android:value="@string/im_app_id" />
         <activity
-            android:name=".login_page.FacebookLoginActivity"
+            android:name=".login_page.EnterMetaActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".main_user_profile.UserDetailActivity"
+            android:name=".main_user_profile.UserInfoPostsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".login_page.GoogleLoginActivity"
+            android:name=".login_page.EnterAlphabetActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".main_profile_edit.EditPhotosWallActivity"
             android:screenOrientation="portrait"/>
@@ -159,7 +159,7 @@
             android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".main_feed_publish.FeedPublishActivity"
+        <activity android:name=".main_feed_publish.PostSubmissionActivity"
             android:screenOrientation="portrait">
         </activity>
         <meta-data

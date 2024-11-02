@@ -6,12 +6,11 @@ import com.moment.app.datamodel.CommentItem.TimeInfoBean
 import com.moment.app.datamodel.CommentsList
 import com.moment.app.datamodel.HuanxinBean
 import com.moment.app.datamodel.Results
-import com.moment.app.datamodel.UpdateInfoResult
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_chat.BackendThread
-import com.moment.app.main_chat.ConversationDao
+import com.moment.app.main_chat.MessagingListDao
 import com.moment.app.main_chat.GlobalConversationHub
 import com.moment.app.main_chat.ThreadList
 import com.moment.app.main_chat.ThreadService
@@ -20,8 +19,8 @@ import com.moment.app.main_home.subfragments.service.HomeService
 import com.moment.app.main_profile.entities.CreateTimeBean
 import com.moment.app.main_profile.entities.FeedList
 import com.moment.app.main_profile.entities.PostBean
-import com.moment.app.models.IMLoginModel
-import com.moment.app.utils.Constants.BASE_URL
+import com.moment.app.models.UserImManager
+import com.moment.app.utils.MomentCoreParams.BASE_URL
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ViewerPhoto
 import dagger.Module
@@ -91,15 +90,15 @@ class MockNetWorkModule {
     @Provides
     @Singleton
     @MockData
-    fun provideConversationHub(conversationDao: ConversationDao, @MockData service: ThreadService): GlobalConversationHub {
+    fun provideConversationHub(conversationDao: MessagingListDao, @MockData service: ThreadService): GlobalConversationHub {
         return GlobalConversationHub(conversationDao, service)
     }
 
     @Singleton
     @Provides
     @MockData
-    fun provideIMLoginModel(@MockData hub: GlobalConversationHub): IMLoginModel {
-        return IMLoginModel(hub)
+    fun provideIMLoginModel(@MockData hub: GlobalConversationHub): UserImManager {
+        return UserImManager(hub)
     }
 }
 

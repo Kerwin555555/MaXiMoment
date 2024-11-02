@@ -55,13 +55,13 @@ import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.MomentApp
 import com.moment.app.R
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.images.Explorer
-import com.moment.app.images.bean.MediaDirectory
-import com.moment.app.images.engine.data.ImageCursorLoader
-import com.moment.app.images.media.IMediaContract.Companion.LOAD_ID_IMAGE
+import com.moment.app.localimages.AlbumSearcher
+import com.moment.app.localimages.datamodel.Album
+import com.moment.app.localimages.logic.loaders.PhotoGalleryLoader
+import com.moment.app.localimages.album.IAlbumInterface.Companion.LOAD_ID_IMAGE
 import com.moment.app.main_profile.entities.PostBean
-import com.moment.app.models.LoginModel
-import com.moment.app.permissions.PermissionHelper
+import com.moment.app.models.UserLoginManager
+import com.moment.app.user_rights.UserPermissionManager
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -401,10 +401,10 @@ internal fun Fragment.loadAvatarBig(view: ImageView, userInfo: UserInfo) {
     view.loadUserBackgroundOrAlbum(fileId = userInfo.avatar)
     view.setOnClickListener {
         kotlin.runCatching {
-            LoginModel.getUserInfo()!!.avatar?.let {
+            UserLoginManager.getUserInfo()!!.avatar?.let {
                 view.showInImageViewer(
-                    mutableListOf(LoginModel.getUserInfo()!!.avatar!!),
-                    LoginModel.getUserInfo()!!.avatar!!
+                    mutableListOf(UserLoginManager.getUserInfo()!!.avatar!!),
+                    UserLoginManager.getUserInfo()!!.avatar!!
                 )
             }
         }
@@ -415,10 +415,10 @@ internal fun AppCompatActivity.loadAvatarBig(view: ImageView, userInfo: UserInfo
     view.loadUserBackgroundOrAlbum(fileId = userInfo.avatar)
     view.setOnClickListener {
         kotlin.runCatching {
-            LoginModel.getUserInfo()!!.avatar?.let {
+            UserLoginManager.getUserInfo()!!.avatar?.let {
                 view.showInImageViewer(
-                    mutableListOf(LoginModel.getUserInfo()!!.avatar!!),
-                    LoginModel.getUserInfo()!!.avatar!!
+                    mutableListOf(UserLoginManager.getUserInfo()!!.avatar!!),
+                    UserLoginManager.getUserInfo()!!.avatar!!
                 )
             }
         }
@@ -462,7 +462,7 @@ fun View.gotoPostDetail(post: PostBean) {
         if (post.isMe) {
             DRouter.build("/feed/detail")
                 .putExtra("post", post.apply {
-                    user_info = LoginModel.getUserInfo()
+                    user_info = UserLoginManager.getUserInfo()
                 })
                 .start()
         } else {
@@ -576,14 +576,14 @@ fun Context.checkCameraPermission(): Boolean {
 
 fun AppCompatActivity.checkAndGotoCamera(request_code_take_photo: Int, photoPath: ((uri: Uri?) -> Unit)) {
     try {
-        PermissionHelper.check(
+        UserPermissionManager.check(
             this, "Take Photos",
             arrayOf<String>(
                 Manifest.permission.CAMERA,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
-            ,object : PermissionHelper.Callback {
+            ,object : UserPermissionManager.Callback {
                 override fun result(res: Int) {
                     if (res == 0) {
                         val mCurrentPhotoPath = createImageUri()
@@ -622,13 +622,13 @@ fun Context.createImageUri(): Uri? {
 
 fun AppCompatActivity.checkAndSelectPhotos(onPermissionOk: (() -> Unit)? = null) {
     try {
-        PermissionHelper.check(
+        UserPermissionManager.check(
             this, "Choose from library",
             arrayOf<String>(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
                 Manifest.permission.READ_EXTERNAL_STORAGE
             )
-            , object : PermissionHelper.Callback {
+            , object : UserPermissionManager.Callback {
                 override fun result(res: Int) {
                     if (res == 0) {
                        onPermissionOk?.invoke()
@@ -643,11 +643,11 @@ fun AppCompatActivity.checkAndSelectPhotos(onPermissionOk: (() -> Unit)? = null)
 /**
  * 已经有了权限，读取所有相机图片
  */
-fun AppCompatActivity.fetchAllAlbumImages(func: ((mediaDirectory: MediaDirectory)-> Unit)?) {
+fun AppCompatActivity.fetchAllAlbumImages(func: ((mediaDirectory: Album)-> Unit)?) {
         LoaderManager.getInstance(this)
-            .initLoader(LOAD_ID_IMAGE, bundleOf("extra_mode" to Explorer.MODE_ONLY_IMAGE), object : LoaderManager.LoaderCallbacks<Cursor> {
+            .initLoader(LOAD_ID_IMAGE, bundleOf("extra_mode" to AlbumSearcher.MODE_ONLY_IMAGE), object : LoaderManager.LoaderCallbacks<Cursor> {
                 override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-                    return ImageCursorLoader(this@fetchAllAlbumImages) //加载图片的cursor
+                    return PhotoGalleryLoader(this@fetchAllAlbumImages) //加载图片的cursor
                 }
 
                 override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {
@@ -668,9 +668,9 @@ fun AppCompatActivity.fetchAllAlbumImages(func: ((mediaDirectory: MediaDirectory
 }
 
 @SuppressLint("Range")
-private fun AppCompatActivity.getAllMediaDirFromLoadCursor(data: Cursor): MediaDirectory  {
+private fun AppCompatActivity.getAllMediaDirFromLoadCursor(data: Cursor): Album {
 
-        val all = MediaDirectory()
+        val all = Album()
         all.name = "All Media"
         all.id = "ALL"
         try{
@@ -708,7 +708,7 @@ private fun AppCompatActivity.getAllMediaDirFromLoadCursor(data: Cursor): MediaD
                 }
 
                 //mimeType在手机被系统或第三方清理软件清理后，media store会丢失字段
-                val mimeType =  data.getStringOrNull(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE))?:Explorer.IMAGE_JPG
+                val mimeType =  data.getStringOrNull(data.getColumnIndexOrThrow(MediaStore.MediaColumns.MIME_TYPE))?:AlbumSearcher.IMAGE_JPG
 
                 if (!isExits || shouldPrevent10MbBigGif(mimeType, size)){
                     Log.d("@@@Cursor","filter ==> path: $path , mimeType: $mimeType , size: $size , width: $width , height: $height")
@@ -725,8 +725,8 @@ private fun AppCompatActivity.getAllMediaDirFromLoadCursor(data: Cursor): MediaD
             return all
         }catch (e:Exception){
             e.printStackTrace()
-            Explorer.getDataTrack()?.onError("parseImagesFromCursor",e)
-            return MediaDirectory()
+            AlbumSearcher.getDataTrack()?.onError("parseImagesFromCursor",e)
+            return Album()
         }
 }
 

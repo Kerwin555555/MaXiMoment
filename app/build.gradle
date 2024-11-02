@@ -49,10 +49,10 @@ android {
 
     signingConfigs {
         releaseConfig {
-            storeFile file("keystore/circus_moment")
-            storePassword "circus_moment"
-            keyAlias "circus_moment"
-            keyPassword "circus_moment"
+            storeFile file("keystore/happy_moment")
+            storePassword "happy_moment"
+            keyAlias "happy_moment"
+            keyPassword "happy_moment"
         }
 
         devConfig {

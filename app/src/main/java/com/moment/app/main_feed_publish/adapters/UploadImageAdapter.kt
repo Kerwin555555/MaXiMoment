@@ -8,15 +8,15 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.R
 import com.moment.app.image_viewer.loadNoAnimResource
-import com.moment.app.images.bean.MediaFile
-import com.moment.app.main_feed_publish.PublishViewModel
+import com.moment.app.localimages.datamodel.AlbumItemFile
+import com.moment.app.main_feed_publish.PostSubmissionViewModel
 import com.moment.app.main_feed_publish.extensions.Action
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.showAlbumInImageViewer
 import com.moment.app.utils.showInImageViewer
 
 
-class UploadImageAdapter(val viewModel: PublishViewModel): BaseQuickAdapter<Any, BaseViewHolder>(R.layout.uploading_images_item_view) {
+class UploadImageAdapter(val viewModel: PostSubmissionViewModel): BaseQuickAdapter<Any, BaseViewHolder>(R.layout.uploading_images_item_view) {
 
 
     override fun convert(helper: BaseViewHolder, item: Any) {
@@ -37,7 +37,7 @@ class UploadImageAdapter(val viewModel: PublishViewModel): BaseQuickAdapter<Any,
             }, 500)
         } else {
             mContext?.let {
-                helper.getView<ImageView>(R.id.image).loadNoAnimResource((item as MediaFile).path)
+                helper.getView<ImageView>(R.id.image).loadNoAnimResource((item as AlbumItemFile).path)
             }
             helper.getView<FrameLayout>(R.id.touche_area).setOnAvoidMultipleClicksListener({
                 val map = viewModel.getImages()
@@ -51,11 +51,11 @@ class UploadImageAdapter(val viewModel: PublishViewModel): BaseQuickAdapter<Any,
                 if (position == -1) return@setOnAvoidMultipleClicksListener
                 viewModel.dispatchAction(Action.RemoveImageAction.apply {
                     pos = position
-                    file = item as MediaFile
+                    file = item as AlbumItemFile
                 })
             }, 500)
             helper.itemView.setOnAvoidMultipleClicksListener({
-                helper.getView<ImageView>(R.id.image).showAlbumInImageViewer(mutableListOf((item as MediaFile).path), item.path)
+                helper.getView<ImageView>(R.id.image).showAlbumInImageViewer(mutableListOf((item as AlbumItemFile).path), item.path)
             }, 500)
         }
     }

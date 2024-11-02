@@ -2,17 +2,17 @@ package com.moment.app.main_feed_publish.extensions
 
 import android.net.Uri
 import androidx.lifecycle.MutableLiveData
-import com.moment.app.images.bean.MediaFile
+import com.moment.app.localimages.datamodel.AlbumItemFile
 
 sealed class Action {
     sealed class ImageAction() : Action()
     object AddImageAction: ImageAction() {
         var pos =  0
-        var file: MediaFile? = null
+        var file: AlbumItemFile? = null
     }
     object RemoveImageAction: ImageAction() {
         var pos =  0   // 在album adapter pos
-        var file: MediaFile? = null
+        var file: AlbumItemFile? = null
     }
     object AddNewPhotoAction: ImageAction() {
         var uri: Uri? = null
@@ -28,7 +28,7 @@ sealed class Action {
     }
 }
 
-fun MutableLiveData<State>.reduce(action: Action) {
+fun MutableLiveData<PostStatus>.reduce(action: Action) {
     val state = this.value!!
 
     state.updatingImages = action is Action.ImageAction

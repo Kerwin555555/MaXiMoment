@@ -10,7 +10,7 @@ import com.hyphenate.chat.EMTextMessageBody
 import com.moment.app.R
 import com.moment.app.databinding.ChatItemViewHubBinding
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.models.LoginModel
+import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.displayImage
 import com.moment.app.utils.formatChatTime
 import com.moment.app.utils.getScreenWidth
@@ -68,7 +68,7 @@ class ThreadAdapter(val huanxinId: String, var conversation_partner_user_info: U
             handleTime(helper, item)
             when (helper.itemViewType) {
                 CHAT_CONTENT_FROM_ME -> {
-                    val info = LoginModel.getUserInfo()
+                    val info = UserLoginManager.getUserInfo()
                     helper.binding.avatar.displayImage(info?.avatar ?: "")
                     //文本
                     val txtBody = item.body as EMTextMessageBody
