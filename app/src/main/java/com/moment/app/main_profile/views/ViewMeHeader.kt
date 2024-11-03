@@ -58,11 +58,8 @@ class ViewMeHeader : ConstraintLayout {
                 state: RecyclerView.State
             ) {
                 super.getItemOffsets(outRect, view, parent, state)
-                val pos = parent.getChildAdapterPosition(view)
-                if (pos != adapter.data.size - 1) {
-                    if (!parent.isRTL()) outRect.right = 8.dp
-                    else outRect.left = 8.dp
-                }
+                if (!parent.isRTL()) outRect.right = 8.dp
+                else outRect.left = 8.dp
             }
         })
 

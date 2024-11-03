@@ -388,12 +388,6 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
 
 
                 itemView.setOnAvoidMultipleClicksListener({
-                    // clipiamgeview
-//                    Explorer.mediaPreview(context as AppCompatActivity,
-//                        false,
-//                        adapterPosition,
-//                        latestDirId,
-//                        extras)
                     val bundle = bundleOf("file" to file.path)
 
                     //来自 EditPhotosWallActivity

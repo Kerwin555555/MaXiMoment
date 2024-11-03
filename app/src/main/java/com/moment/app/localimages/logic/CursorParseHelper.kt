@@ -49,7 +49,9 @@ object CursorParseHelper {
                 var size = data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns.SIZE))
                 var width = data.getInt(data.getColumnIndex(MediaStore.MediaColumns.WIDTH))
                 var height = data.getInt(data.getColumnIndex(MediaStore.MediaColumns.HEIGHT))
-
+                // 过滤下面数据 MediaFile{fileId=117423, path='content://media/external/images/media/117423', lowPath='/storage/emulated/0/Pictures/1729914142293.jpg',
+                // width=0, height=0, thumbnail='null', duration=0, size=0, mimeType='image/jpeg', date=1729914142}
+                if (size == 0L || width == 0||  height == 0 || path.isEmpty()) continue
                 val date =
                     data.getLong(data.getColumnIndex(MediaStore.Files.FileColumns.DATE_ADDED))
 
@@ -137,7 +139,7 @@ object CursorParseHelper {
                 val size = data.getLong(data.getColumnIndexOrThrow(MediaStore.Files.FileColumns.SIZE))
                 val width = data.getInt(data.getColumnIndexOrThrow(MediaStore.MediaColumns.WIDTH))
                 val height = data.getInt(data.getColumnIndexOrThrow(MediaStore.MediaColumns.HEIGHT))
-                if (size == 0L || width == 0||  height == 0) continue
+                if (size == 0L || width == 0||  height == 0 || path.isEmpty()) continue
                 videoDir.addVideo(filedId, path, thumbnail, mimeType, size, width, height, date, duration)
 
                 Log.e("FileData", "path: $path , mimeType: $mimeType , thumbnail: $thumbnail , duration: $duration , size: $size")
