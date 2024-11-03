@@ -1,0 +1,4 @@
+dependencies {
+    //android billing client
+    implementation 'com.github.akshaaatt:Google-IAP:1.7.0'
+}

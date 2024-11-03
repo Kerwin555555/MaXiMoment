@@ -7,6 +7,7 @@ import com.didi.drouter.annotation.Router
 import com.hyphenate.EMMessageListener
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMMessage
+import com.moment.app.R
 import com.moment.app.databinding.ActivityChatBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.hilt.app_level.MockData
@@ -18,6 +19,7 @@ import com.moment.app.models.UserImManager
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.getChatBg
 import com.moment.app.utils.immersion
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.async
@@ -56,6 +58,8 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
         binding = ActivityChatBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        initUi()
+
         ensureParams()
 
         if (conversation_partner_huanxin_id.isNullOrEmpty()) {
@@ -85,7 +89,9 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
     private fun resolvePage() {
         binding.refreshView.initWith(
             adapter = adapter,
-            emptyView = RecommendationEmptyView(this)
+            emptyView = RecommendationEmptyView(this).apply {
+                setBackgroundColor(0x00000000)
+            }
         ) { isLoadMore ->
             getChatContent()
         }
@@ -169,5 +175,9 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
     override fun onDestroy() {
         super.onDestroy()
         KeyboardUtils.hideSoftInput(this)
+    }
+
+    private fun initUi() {
+        binding.root.setBackgroundResource(R.drawable.theme_chat_background)
     }
 }

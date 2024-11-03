@@ -283,3 +283,6 @@ public static final int *;
     public static *** w(...);
     public static *** e(...);
 }
+
+-keep class * extends android.webkit.WebChromeClient { *; }
+-dontwarn im.delight.android.webview.**

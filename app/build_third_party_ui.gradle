@@ -21,4 +21,6 @@ dependencies {
     implementation 'com.facebook.shimmer:shimmer:0.5.0'
     //双indicatorSeekbar 多个地方使用
     implementation 'com.github.Jay-Goo:RangeSeekBar:v3.0.0'
+    //webview 开源库
+    implementation 'com.github.delight-im:Android-AdvancedWebView:v3.2.1'
 }

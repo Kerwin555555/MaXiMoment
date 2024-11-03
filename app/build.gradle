@@ -95,6 +95,7 @@ android {
                 'src/main/res/moment_profile',
                 'src/main/res/moment_album',
                 'src/main/res/moment_dialogs',
+                'src/main/res/third_party',
             ]
         }
     }
@@ -108,6 +109,7 @@ android {
     }
 }
 
+apply from: './build_billing_ads.gradle'
 apply from: './build_third_party_ui.gradle'
 apply from: './build_tools.gradle'
 apply from: './build_network.gradle'

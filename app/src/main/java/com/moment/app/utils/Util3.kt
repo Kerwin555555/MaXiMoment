@@ -1,9 +1,16 @@
 package com.moment.app.utils
 
+import android.R
+import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.util.Log
+import android.util.TypedValue
+import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import com.blankj.utilcode.util.BarUtils
 import com.github.iielse.imageviewer.adapter.ItemType.PHOTO
 import com.github.iielse.imageviewer.core.Photo
 import com.moment.app.image_viewer.show
@@ -124,4 +131,25 @@ sealed class ViewerPhoto : BaseBean(), Photo {
         var fileId: String? = null
         var isGif = false
     }
+}
+
+fun View.getChatBg() {
+    val gradientDrawable = GradientDrawable()
+    gradientDrawable.gradientType = GradientDrawable.RADIAL_GRADIENT
+    val colors = intArrayOf(
+        Color.parseColor("#23ff2ec4"),  // 起始颜色
+        Color.parseColor("#00f2a1ff"),  // 中间颜色
+        Color.parseColor("#00ffffff") // 结束颜色
+    )
+    gradientDrawable.colors = colors
+    val centerX = 0.8f
+    val centerY = 0.4f
+    gradientDrawable.setGradientCenter(centerX , centerY )
+
+    val gradientRadius = (getScreenHeight() * 0.75).toFloat()
+    gradientDrawable.gradientRadius = gradientRadius
+    gradientDrawable.shape = GradientDrawable.RECTANGLE
+
+    gradientDrawable.useLevel = false
+    setBackground(gradientDrawable)
 }

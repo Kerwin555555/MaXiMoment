@@ -1,51 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="match_parent">
+
     <ImageView
         android:id="@+id/avatar"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:scaleType="centerCrop"
         android:src="@drawable/bg_avatar_big"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintDimensionRatio="1:1"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintDimensionRatio="1:1"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.moment.app.ui.uiLibs.MomentRefreshView
         android:id="@+id/refresh_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    </com.moment.app.ui.uiLibs.MomentRefreshView>
+        android:layout_height="match_parent"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        app:layout_constraintTop_toTopOf="parent" >
+        app:layout_constraintTop_toTopOf="parent">
+
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:id="@+id/back"
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_marginStart="15dp"
-            android:padding="7dp"
-            android:src="@mipmap/back_icon"
-            android:scaleType="centerInside"
             android:background="#33000000"
+            android:padding="7dp"
+            android:scaleType="centerInside"
+            android:src="@mipmap/back_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:tint="#ffffffff"
-            app:roundPercent="1"/>
+            app:roundPercent="1"
+            app:tint="#ffffffff" />
+
         <ImageView
             android:id="@+id/setting"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginEnd="13dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/three_dot_with_bg"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:src="@drawable/three_dot_with_bg"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <com.moment.app.main_user_profile.views.UserAccostChatFollowActionBar
+        android:id="@+id/bottom_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

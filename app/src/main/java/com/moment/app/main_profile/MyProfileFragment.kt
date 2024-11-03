@@ -14,6 +14,7 @@ import com.didi.drouter.api.DRouter
 import com.moment.app.databinding.FragmentProfileBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
 import com.moment.app.hilt.app_level.MockData
+import com.moment.app.html.JsActivity.Companion.TYPE_GET
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
@@ -23,6 +24,8 @@ import com.moment.app.models.UserLoginManager
 import com.moment.app.network.UserCancelException
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
+import com.moment.app.third_party.billing.RechargeIncomeActivity.Companion.TYPE_INCOME
+import com.moment.app.third_party.billing.RechargeIncomeActivity.Companion.TYPE_RECHARGE
 import com.moment.app.ui.uiLibs.RefreshView
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyMargin
@@ -82,6 +85,12 @@ class MyProfileFragment : BaseFragment() {
         binding.toolbar.requestNewSize(width = -1, height = BarUtils.getStatusBarHeight() + 50.dp)
         binding.income.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
         binding.recharge.setBgWithCornerRadiusAndColor(50.dp.toFloat(), 0x80000000.toInt())
+        binding.recharge.setOnClickListener {
+            DRouter.build("/recharge_income").putExtra("type",  TYPE_RECHARGE).start()
+        }
+        binding.income.setOnClickListener {
+            DRouter.build("/recharge_income").putExtra("type",  TYPE_INCOME).start()
+        }
         binding.setting.setOnAvoidMultipleClicksListener({
             DRouter.build("/settings").start()
         }, 500)
