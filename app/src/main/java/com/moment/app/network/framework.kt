@@ -23,7 +23,21 @@ import kotlin.coroutines.cancellation.CancellationException
 @Keep
 data class MomentNetError(val code: Int, val message: String?, val throwable: Throwable)
 class UserCancelException: CancellationException()
-
+inline fun CoroutineScope.startCoroutine(
+    crossinline block: suspend CoroutineScope.() -> Unit,
+    crossinline errorAction: (error: MomentNetError) -> Unit,
+): Job {
+    //map 配置 参数读取从主线程开始
+    val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
+        launch(Dispatchers.Main) {
+            val pair = throwable.format()
+            errorAction.invoke(MomentNetError(pair.first, pair.second, throwable))
+        }
+    }
+    return this.launch(coroutineHandler) {
+        this.block()
+    }
+}
 inline fun ViewModel.startCoroutine(
     crossinline block: suspend CoroutineScope.() -> Unit,
     crossinline errorAction: (it: MomentNetError) -> Unit,

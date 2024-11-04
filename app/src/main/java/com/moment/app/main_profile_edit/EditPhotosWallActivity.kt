@@ -46,6 +46,7 @@ import com.moment.app.utils.cleanSaveFragments
 import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
+import com.moment.app.utils.immersion
 import com.moment.app.utils.saveView
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,7 +82,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         binding.save.applyEnabledColorIntStateList(enableId =
            0xff1d1d1d.toInt() , disableId = 0xffE5E5E5.toInt())
         binding.save.isEnabled = false
-        ImmersionBar.with(this).statusBarDarkFont(false).fitsSystemWindows(false).init()
+        immersion()
         setSwipeBackEnable(false)
         binding.cancel.applyMargin(top = 15.dp + BarUtils.getStatusBarHeight())
         binding.cancel.setOnClickListener {

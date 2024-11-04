@@ -7,18 +7,19 @@ import com.moment.app.localimages.datamodel.AlbumItemFile
 sealed class Action {
     sealed class ImageAction() : Action()
     object AddImageAction: ImageAction() {
-        var pos =  0
+        var imageAlbumPosition =  0
         var file: AlbumItemFile? = null
     }
     object RemoveImageAction: ImageAction() {
-        var pos =  0   // 在album adapter pos
+        var imageAlbumPosition =  0   // 在album adapter pos
+        var imageUploadPosition = 0 //在备选提交区域的adapter pos
         var file: AlbumItemFile? = null
     }
     object AddNewPhotoAction: ImageAction() {
         var uri: Uri? = null
     }
     object RemoveNewPhotoAction: ImageAction() {
-        var photoPos =  0    //如果从linkedhashmap中抽出照片的话，在照片中的 中的pos ,序列号 -1 -2 -3 -4 为了避开image
+        var photoAdapterPosition =  0    // 在备选提交区域的adapter pos如果从linkedhashmap中抽出照片的话，在照片中的 中的pos ,序列号 -1 -2 -3 -4 为了避开image
         var uri: Uri? = null
     }
 
@@ -31,17 +32,13 @@ sealed class Action {
 fun MutableLiveData<PostStatus>.reduce(action: Action) {
     val state = this.value!!
 
-    state.updatingImages = action is Action.ImageAction
-    state.albumAdapterPos = if ((action is Action.AddImageAction) or (action is Action.RemoveImageAction)) -1 else 0
+    state.latestImageAction = if (action is Action.ImageAction) action else null
     when (action) {
         is Action.AddImageAction -> {
-            state.linkedHashMap[action.pos] = action.file!!
-            state.albumAdapterPos = action.pos
-            state.uploadAdapterPos = state.linkedHashMap.size - 1
+            state.linkedHashMap[action.imageAlbumPosition] = action.file!!
         }
         is Action.RemoveImageAction -> {
-            state.linkedHashMap.remove(action.pos)
-            state.albumAdapterPos = -action.pos
+            state.linkedHashMap.remove(action.imageAlbumPosition)
         } is Action.AddNewPhotoAction -> {
             state.newPhotos ++
             state.linkedHashMap[-state.newPhotos] = action.uri
@@ -49,12 +46,14 @@ fun MutableLiveData<PostStatus>.reduce(action: Action) {
             state.newPhotos--
             val itr = state.linkedHashMap.iterator()
             val pairs = mutableListOf<Pair<Int, Any?>>()
+            var idx = 0
             while (itr.hasNext()) {
                 val pair = itr.next()
-                if (pair.key == action.photoPos) {
+                if (idx == action.photoAdapterPosition) {
                     itr.remove()
                     break
                 }
+                idx++
             }
             while (itr.hasNext()) {
                 val p = itr.next()

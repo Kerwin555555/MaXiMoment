@@ -29,6 +29,7 @@ import com.moment.app.utils.getKeyboardHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveKeyboardHeight
+import com.moment.app.utils.setImageResourceSelectedStateListDrawable
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.scwang.smart.refresh.layout.SmartRefreshLayout
 
@@ -51,15 +52,31 @@ class ChatTab: LinearLayout {
 
     init {
         orientation = VERTICAL
+        binding.emojiImageView.setImageResourceSelectedStateListDrawable(
+            selectedId = R.mipmap.keyboard,
+            unSelectedId = R.mipmap.emotion
+        )
         binding.emojiImageView.setOnAvoidMultipleClicksListener({
             if (KeyboardUtils.isSoftInputVisible(context as AppCompatActivity)) {
                 lockContentHeight()
                 KeyboardUtils.hideSoftInput(binding.editText)
                 binding.emojiRv.isVisible = true
+                binding.emojiImageView.isSelected = true
                 unlockContentHeightDelayed()
             } else {
-                KeyboardUtils.hideSoftInput(binding.editText)
-                binding.emojiRv.isVisible = true
+                if (!binding.emojiRv.isVisible) {
+                    KeyboardUtils.hideSoftInput(binding.editText)
+                    binding.emojiRv.isVisible = true
+                    binding.emojiImageView.isSelected = true
+                } else {
+                    lockContentHeight()
+                    postDelayed({
+                        binding.emojiRv.isVisible = false
+                        binding.emojiImageView.isSelected = false
+                    }, 200)
+                    showSoftInput()
+                    unlockContentHeightDelayed()
+                }
             }
         }, 500)
         binding.editText.setOnKeyListener { v, keyCode, event ->
@@ -82,7 +99,10 @@ class ChatTab: LinearLayout {
         binding.editText.setOnTouchListener(OnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP && binding.emojiRv.isVisible) {
                 lockContentHeight()
-                postDelayed({ binding.emojiRv.isVisible = false }, 200)
+                postDelayed({
+                    binding.emojiRv.isVisible = false
+                    binding.emojiImageView.isSelected = false
+                            }, 200)
                 showSoftInput()
                 unlockContentHeightDelayed()
             }
@@ -120,13 +140,14 @@ class ChatTab: LinearLayout {
                  val len = binding.editText.text.length
                  binding.editText.getText().insert(len, item)
                  //binding.emojiRv.isVisible = false
-
-                lockContentHeight()
-                showSoftInput()
-                postDelayed({
-                    binding.emojiRv.isVisible = false
-                }, 200)
-                unlockContentHeightDelayed()
+//
+//                lockContentHeight()
+//                showSoftInput()
+//                postDelayed({
+//                    binding.emojiRv.isVisible = false
+//                    binding.emojiImageView.isSelected = false
+//                }, 200)
+//                unlockContentHeightDelayed()
             }, 500)
         }
     }
@@ -138,6 +159,7 @@ class ChatTab: LinearLayout {
                     KeyboardUtils.hideSoftInput(binding.editText)
                 }
                 binding.emojiRv.isVisible = false
+                binding.emojiImageView.isSelected = false
             }
         }
     }

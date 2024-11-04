@@ -2,18 +2,14 @@ package com.moment.app.main_feed_publish.adapters
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.recyclerview.widget.RecyclerView
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
-import com.moment.app.R
 import com.moment.app.databinding.ItemViewCameraBinding
 import com.moment.app.databinding.ItemViewImagesBinding
 import com.moment.app.image_viewer.loadNoAnimResource
 import com.moment.app.localimages.datamodel.AlbumItemFile
-import com.moment.app.localimages.logic.AlbumImageTask
 import com.moment.app.main_feed_publish.PostSubmissionViewModel
 import com.moment.app.main_feed_publish.dialogs.ChooseAlbumDialog
 import com.moment.app.main_feed_publish.extensions.Action
@@ -145,13 +141,22 @@ class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickA
                     return@setOnAvoidMultipleClicksListener
                 }
                 if (selectedMap.containsKey(position)) {
+                    val map = viewModel.getImages()
+                    var idx = 0
+                    for ((k, v) in map) {
+                        if (v == item) {
+                            break
+                        }
+                        idx++
+                    }
                     viewModel.dispatchAction(Action.RemoveImageAction.apply {
-                        this.pos = position
+                        this.imageAlbumPosition = position
+                        this.imageUploadPosition = idx
                         this.file = item
                     })
                 } else {
                     viewModel.dispatchAction(Action.AddImageAction.apply {
-                        this.pos = position
+                        this.imageAlbumPosition = position
                         this.file = item
                     })
                 }

@@ -10,11 +10,17 @@ import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.blankj.utilcode.util.BarUtils
 import com.github.iielse.imageviewer.adapter.ItemType.PHOTO
 import com.github.iielse.imageviewer.core.Photo
 import com.moment.app.image_viewer.show
 import com.moment.app.localimages.datamodel.AlbumItemFile
+import com.moment.app.network.startCoroutine
+import kotlinx.coroutines.CoroutineScope
 
 
 fun ImageFilterView.showInImageViewer(dataList: List<ViewerPhoto>, clickedData: ViewerPhoto) {
@@ -152,4 +158,12 @@ fun View.getChatBg() {
 
     gradientDrawable.useLevel = false
     setBackground(gradientDrawable)
+}
+
+fun View.repeatOnLifeCycle(block : suspend CoroutineScope.() -> Unit) {
+    this.findViewTreeLifecycleOwner()?.let {
+        it.lifecycleScope.startCoroutine({
+            it.repeatOnLifecycle(Lifecycle.State.STARTED, block)
+        }){}
+    }
 }

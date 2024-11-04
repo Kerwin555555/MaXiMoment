@@ -3,13 +3,11 @@ package com.moment.app.main_feed_publish
 import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
-import android.os.AsyncTask
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import androidx.activity.viewModels
-import androidx.loader.content.AsyncTaskLoader
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,14 +17,11 @@ import com.blankj.utilcode.util.KeyboardUtils
 import com.didi.drouter.annotation.Router
 import com.moment.app.databinding.ActivityFeedPublishBinding
 import com.moment.app.localimages.datamodel.AlbumItemFile
-import com.moment.app.localimages.logic.AlbumImageTask
-import com.moment.app.localimages.logic.ThumbImageLoader
 import com.moment.app.main_feed_publish.adapters.CameraAlbumDataAdapter
 import com.moment.app.main_feed_publish.adapters.CameraAlbumDataAdapter.Companion.REQUEST_CODE_TAKE
 import com.moment.app.main_feed_publish.adapters.UploadImageAdapter
 import com.moment.app.main_feed_publish.extensions.Action
 import com.moment.app.main_feed_publish.extensions.PostStatus
-import com.moment.app.network.startCoroutine
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.checkAndGotoCamera
 import com.moment.app.utils.checkAndSelectPhotos
@@ -35,9 +30,7 @@ import com.moment.app.utils.dp
 import com.moment.app.utils.fetchAllAlbumImages
 import com.moment.app.utils.immersion
 import com.moment.app.utils.isRTL
-import com.tencent.mmkv.MMKV
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.Deferred
 
 
 @AndroidEntryPoint
@@ -115,6 +108,7 @@ class PostSubmissionActivity : BaseActivity() {
             notifyStateChanged(it)
         }
         (binding.album.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false //remove shimmer
+        (binding.chosen.itemAnimator as SimpleItemAnimator).supportsChangeAnimations = false //remove shimmer
 
         binding.root.postDelayed({
             binding.editText.requestFocus()
@@ -122,20 +116,31 @@ class PostSubmissionActivity : BaseActivity() {
     }
 
     private fun notifyStateChanged(it: PostStatus) {
-        if (it.updatingImages) {
-            if (it.albumAdapterPos > 0) {
-                albumAdapter.notifyItemChanged(it.albumAdapterPos)
-            } else if (it.albumAdapterPos < 0) {
-                albumAdapter.notifyItemChanged(-it.albumAdapterPos)
-                for ((k,v) in it.linkedHashMap) {
-                    if (k > 0) albumAdapter.notifyItemChanged(k)
+        it.latestImageAction?.let { action ->
+            when (action) {
+                is Action.AddImageAction  -> {
+                    albumAdapter.notifyItemChanged(action.imageAlbumPosition)
+                    uploadImageAdapter.addData(it.linkedHashMap[action.imageAlbumPosition] as AlbumItemFile)
                 }
-            } else {
-                for ((k,v) in it.linkedHashMap) {
-                    if (k > 0) albumAdapter.notifyItemChanged(k)
+                is Action.RemoveImageAction -> {
+                    albumAdapter.notifyItemChanged(action.imageAlbumPosition)
+                    for ((k,v) in it.linkedHashMap) {
+                         //剩下的照片也刷新 （照片adapter pos k>0）
+                         if (k > 0) albumAdapter.notifyItemChanged(k)
+                    }
+                    uploadImageAdapter.remove(action.imageUploadPosition)
+                  }
+                is Action.AddNewPhotoAction -> {
+                    uploadImageAdapter.addData(action.uri!!)
                 }
+                is Action.RemoveNewPhotoAction -> {
+                    for ((k,v) in it.linkedHashMap) {
+                        if (k > 0) albumAdapter.notifyItemChanged(k)
+                    }
+                    uploadImageAdapter.remove(action.photoAdapterPosition)
+                }
+                else -> {}
             }
-            uploadImageAdapter.setNewData(it.linkedHashMap.map { it.value })
         }
         binding.complete.isEnabled = it.capableOfBeingDispatched()
     }

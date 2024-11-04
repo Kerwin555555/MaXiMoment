@@ -89,10 +89,10 @@ class UserImManager(val globalConversationHub: GlobalConversationHub) {
             }
         })
         //初始化
-        try {
+        kotlin.runCatching {
             EMClient.getInstance().init(context, options)
-        } catch (e: Throwable) {
-            e.printStackTrace()
+        }.onFailure {
+            it.printStackTrace()
         }
         val config: MomentConfig = AppConfigManager.momentConfig!!
             //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
@@ -214,7 +214,7 @@ class UserImManager(val globalConversationHub: GlobalConversationHub) {
     }
 
     fun initChat() {
-       // EMClient.getInstance().chatManager().loadAllConversations()
+        EMClient.getInstance().chatManager().loadAllConversations()
     }
 
     private fun isUS(): Boolean {

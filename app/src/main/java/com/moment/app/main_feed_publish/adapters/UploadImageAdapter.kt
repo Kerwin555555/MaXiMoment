@@ -25,11 +25,11 @@ class UploadImageAdapter(val viewModel: PostSubmissionViewModel): BaseQuickAdapt
             mContext?.let {
                 Glide.with(it).load(item as Uri).into(image)
             }
-            val photoPos = viewModel.getImages().entries.find { it.value == item }?.key ?: null
+            val photoAdapterPosition = helper.bindingAdapterPosition
             helper.getView<FrameLayout>(R.id.touche_area).setOnAvoidMultipleClicksListener({
-                if (photoPos == null) return@setOnAvoidMultipleClicksListener
+                if (photoAdapterPosition == null) return@setOnAvoidMultipleClicksListener
                 viewModel.dispatchAction(Action.RemoveNewPhotoAction.apply {
-                    this.photoPos = photoPos //一个负数
+                    this.photoAdapterPosition = photoAdapterPosition
                 })
             }, 500)
             helper.itemView.setOnAvoidMultipleClicksListener({
@@ -40,18 +40,20 @@ class UploadImageAdapter(val viewModel: PostSubmissionViewModel): BaseQuickAdapt
             mContext?.let {
                 image.loadNoAnimResource((item as AlbumItemFile).path)
             }
+            val imageUploadAdapterPostion = helper.bindingAdapterPosition
             helper.getView<FrameLayout>(R.id.touche_area).setOnAvoidMultipleClicksListener({
                 val map = viewModel.getImages()
-                var position = -1
+                var imageAlbumePos = -1
                 for ((k, v) in map) {
                     if (v == item) {
-                        position = k
+                        imageAlbumePos = k
                         break
                     }
                 }
-                if (position == -1) return@setOnAvoidMultipleClicksListener
+                if (imageAlbumePos == -1) return@setOnAvoidMultipleClicksListener
                 viewModel.dispatchAction(Action.RemoveImageAction.apply {
-                    pos = position
+                    imageAlbumPosition = imageAlbumePos
+                    imageUploadPosition = imageUploadAdapterPostion
                     file = item as AlbumItemFile
                 })
             }, 500)
