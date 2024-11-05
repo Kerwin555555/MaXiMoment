@@ -4,10 +4,9 @@ import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,14 +48,13 @@ class PostSubmissionActivity : BaseActivity() {
         immersion()
         binding = ActivityFeedPublishBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         binding.back.setOnClickListener {
             finish()
         }
         binding.complete.setOnClickListener {
 
         }
-
+        setSwipeBackEnable(false)
         binding.album.layoutManager = GridLayoutManager(this, 4)
         binding.chosen.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
 
@@ -77,18 +75,13 @@ class PostSubmissionActivity : BaseActivity() {
         binding.album.adapter = albumAdapter
         binding.chosen.adapter = uploadImageAdapter
 
-        binding.editText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        binding.editText.addTextChangedListener(
+            onTextChanged = {s,_,_,_ ->
                 viewModel.dispatchAction(Action.UpdateTextAction.apply {
                     this.text = s?.toString()?.trim()?.replace("\n", "") ?: ""
                 })
             }
-            override fun afterTextChanged(s: Editable?) {
-            }
-        })
+        )
 
         albumAdapter.goAndTakeAPhoto = {
             checkAndGotoCamera(REQUEST_CODE_TAKE) { it ->

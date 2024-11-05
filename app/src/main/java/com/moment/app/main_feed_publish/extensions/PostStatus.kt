@@ -11,12 +11,15 @@ class PostStatus : BaseBean(){
     @Transient
     var latestImageAction: Action.ImageAction? = null
 
-    var editTextText: String? = null
+    var editTextText: String? = ""
 
 
     fun isTextOk() : Boolean{     //计算非空个数
+        if (editTextText.isNullOrEmpty()) {
+            return false
+        }
         var total = 0
-        for (ch in editTextText.toString().trim { it <= ' ' }.toCharArray()) {
+        for (ch in editTextText!!.trim { it <= ' ' }.toCharArray()) {
             if (ch != ' ' && ch != '\n' && ch != '\r') {
                 total++
             }

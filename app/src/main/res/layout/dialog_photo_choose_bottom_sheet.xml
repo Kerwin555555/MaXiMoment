@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_moment_bottom_sheet_dialog"
-    android:paddingBottom="10dp">
+    android:paddingBottom="50dp">
 
     <TextView
         android:id="@+id/take_photo"

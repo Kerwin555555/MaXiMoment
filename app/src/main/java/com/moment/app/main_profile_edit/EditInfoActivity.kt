@@ -47,7 +47,7 @@ import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
-import com.moment.app.utils.cleanSaveFragments
+import com.moment.app.utils.cleanSavedFragments
 import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
@@ -80,7 +80,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        cleanSaveFragments()
+        cleanSavedFragments()
         binding = ActivityEditInfoBinding.inflate(layoutInflater)
         setContentView(binding.root)
         binding.back.applyMargin(top = 15.dp + BarUtils.getStatusBarHeight())

@@ -2,6 +2,8 @@ package com.moment.app.main_chat_private.views
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.util.AttributeSet
 import android.util.TypedValue
 import android.view.Gravity
@@ -14,6 +16,7 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.core.widget.addTextChangedListener
 import androidx.emoji2.widget.EmojiTextView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -29,9 +32,9 @@ import com.moment.app.utils.getKeyboardHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveKeyboardHeight
+import com.moment.app.utils.setBgEnableStateListDrawable
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
-import com.scwang.smart.refresh.layout.SmartRefreshLayout
 
 
 //https://gitee.com/jiao-shichun/ChatInput
@@ -56,6 +59,11 @@ class ChatTab: LinearLayout {
             selectedId = R.mipmap.keyboard,
             unSelectedId = R.mipmap.emotion
         )
+        binding.sendButton.setBgEnableStateListDrawable(
+            enableId = R.drawable.bg_send_icon,
+            disableId = R.drawable.bg_gray
+        )
+        binding.sendButton.isEnabled = false
         binding.emojiImageView.setOnAvoidMultipleClicksListener({
             if (KeyboardUtils.isSoftInputVisible(context as AppCompatActivity)) {
                 lockContentHeight()
@@ -87,6 +95,10 @@ class ChatTab: LinearLayout {
             }
             return@setOnKeyListener false
         }
+        binding.editText.addTextChangedListener(
+            onTextChanged = {txt,_,_,_ ->
+                binding.sendButton.isEnabled = !txt?.toString()?.trim().isNullOrEmpty()
+        })
 
         binding.emojiRv.layoutManager = GridLayoutManager(context, 6)
         binding.emojiRv.adapter = adapter
@@ -179,6 +191,22 @@ class ChatTab: LinearLayout {
     private fun showSoftInput() {
         binding.editText.requestFocus()
         binding.editText.post { KeyboardUtils.showSoftInput(binding.editText) }
+    }
+
+    override fun dispatchKeyEvent(ev: KeyEvent): Boolean {
+        if (ev.action == KeyEvent.ACTION_UP && ev.keyCode == KeyEvent.KEYCODE_BACK) {
+            if (KeyboardUtils.isSoftInputVisible(context as AppCompatActivity)) {
+                KeyboardUtils.hideSoftInput(binding.editText)
+            }
+            binding.emojiRv.isVisible = false
+            binding.emojiImageView.isSelected = false
+            return true
+        }
+        return super.dispatchKeyEvent(ev)
+    }
+
+    fun getBinding(): ChatBottomBarBinding {
+        return binding
     }
 }
 

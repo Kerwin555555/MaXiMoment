@@ -551,6 +551,38 @@ internal fun ImageView.setImageResourceSelectedStateListDrawable(
     setImageDrawable(drawable)
 }
 
+internal fun View.setBgEnableStateListDrawable(
+    @DrawableRes enableId:  Int,
+    @DrawableRes disableId: Int
+) {
+    val drawable = StateListDrawable()
+    drawable.addState(
+        intArrayOf(R.attr.state_enabled),
+        ContextCompat.getDrawable(context, enableId)
+    )
+    drawable.addState(
+        intArrayOf(),
+        ContextCompat.getDrawable(context, disableId)
+    )
+    background = drawable
+}
+
+internal fun View.setBgSelectedStateListDrawable(
+    @DrawableRes selectedId:  Int,
+    @DrawableRes unSelectedId: Int
+) {
+    val drawable = StateListDrawable()
+    drawable.addState(
+        intArrayOf(R.attr.state_selected),
+        ContextCompat.getDrawable(context, selectedId)
+    )
+    drawable.addState(
+        intArrayOf(),
+        ContextCompat.getDrawable(context, unSelectedId)
+    )
+    background = drawable
+}
+
 internal fun TextView.setTextColorResStateSelectList(
     @ColorRes selectedId: Int,
     @ColorRes unSelectedId: Int

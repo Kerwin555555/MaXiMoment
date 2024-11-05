@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import com.didi.drouter.api.DRouter
 import com.moment.app.hilt.app_level.MockData
+import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserImManager
 import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.AppInfo
@@ -22,7 +23,7 @@ class MomentApp : Application() {
 
     @Inject
     @MockData
-    lateinit var imLoginModel: UserImManager
+    lateinit var imLoginModel: UserIMManagerBus
 
     override fun onCreate() {
         super.onCreate()
@@ -30,7 +31,7 @@ class MomentApp : Application() {
         appContext = this
 
         AppInfo.init(this)
-        imLoginModel.initIM(this)
+        imLoginModel.init(this)
 
         UserLoginManager.getUserInfo()
         emoji()

@@ -1,17 +1,25 @@
 package com.moment.app.hilt.app_level
 
+import android.content.Context
 import android.util.Log
+import com.hyphenate.EMCallBack
+import com.hyphenate.EMMessageListener
+import com.hyphenate.chat.EMConversation
+import com.hyphenate.chat.EMCursorResult
+import com.hyphenate.chat.EMMessage
+import com.hyphenate.chat.adapter.EMAConversation
 import com.moment.app.datamodel.CommentItem
 import com.moment.app.datamodel.CommentItem.TimeInfoBean
 import com.moment.app.datamodel.CommentsList
 import com.moment.app.datamodel.HuanxinBean
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
+import com.moment.app.login_page.LoginCallback
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_chat.BackendThread
-import com.moment.app.main_chat.MessagingListDao
 import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.MessagingListDao
 import com.moment.app.main_chat.ThreadList
 import com.moment.app.main_chat.ThreadService
 import com.moment.app.main_home.subfragments.models.UserInfoList
@@ -19,10 +27,12 @@ import com.moment.app.main_home.subfragments.service.HomeService
 import com.moment.app.main_profile.entities.CreateTimeBean
 import com.moment.app.main_profile.entities.FeedList
 import com.moment.app.main_profile.entities.PostBean
+import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserImManager
-import com.moment.app.utils.MomentCoreParams.BASE_URL
 import com.moment.app.utils.MOMENT_APP
+import com.moment.app.utils.MomentCoreParams.BASE_URL
 import com.moment.app.utils.ViewerPhoto
+import com.moment.app.utils.toast
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -33,9 +43,11 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.lang.reflect.Constructor
 import java.util.UUID
 import javax.inject.Qualifier
 import javax.inject.Singleton
+
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -97,7 +109,7 @@ class MockNetWorkModule {
     @Singleton
     @Provides
     @MockData
-    fun provideIMLoginModel(@MockData hub: GlobalConversationHub): UserImManager {
+    fun provideIMLoginModel(@MockData hub: GlobalConversationHub): UserIMManagerBus{
         return UserImManager(hub)
     }
 }
@@ -433,7 +445,31 @@ class MockThreadService: ThreadService {
             this.data = res
         }
     }
+
+    override suspend fun getUserInfoByImId(map: Map<String, List<String>>): Results<Map<String, UserInfo>> {
+        return Results<Map<String, UserInfo>>().apply {
+            data = mutableMapOf("other" to UserInfo(
+                userId = UUID.randomUUID().toString(),
+                name = "Momentfanxxx",
+                session = "mysession",
+                finished_info = false,
+                huanxin = HuanxinBean().apply{
+                    password  = "045xxxx"
+                    user_id = "loveabscdessss"
+                },
+                gender = "boy",
+                imagesWallList = mutableListOf(),
+                follower_count = 10000,
+                following_count= 0,
+                friends_count = 0,
+                bio = ""
+            ))
+        }
+    }
 }
+
+data class MockMessage(val content: String, val user: String)
+class MockConversation
 
 
 @Qualifier

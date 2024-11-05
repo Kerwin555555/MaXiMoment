@@ -8,7 +8,7 @@
 
 
         <androidx.emoji2.widget.EmojiEditText
-            android:id="@+id/et_input_container"
+            android:id="@+id/edit_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"

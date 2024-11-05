@@ -14,7 +14,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.BarUtils
+import com.chad.library.adapter.base.BaseQuickAdapter
 import com.github.iielse.imageviewer.adapter.ItemType.PHOTO
 import com.github.iielse.imageviewer.core.Photo
 import com.moment.app.image_viewer.show
@@ -165,5 +167,11 @@ fun View.repeatOnLifeCycle(block : suspend CoroutineScope.() -> Unit) {
         it.lifecycleScope.startCoroutine({
             it.repeatOnLifecycle(Lifecycle.State.STARTED, block)
         }){}
+    }
+}
+
+fun RecyclerView.scrollToBottom() {
+    kotlin.runCatching {
+        smoothScrollToPosition(adapter!!.getItemCount() - 1);
     }
 }

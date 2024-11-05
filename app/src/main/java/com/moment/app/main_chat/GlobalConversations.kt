@@ -6,6 +6,7 @@ import com.blankj.utilcode.util.LogUtils
 import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMConversation.EMConversationType
 import com.hyphenate.chat.EMMessage
+import com.moment.app.datamodel.UserInfo
 import com.moment.app.main_chat.fragments.entities.MomentConversation
 import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.MOMENT_APP
@@ -73,7 +74,7 @@ class GlobalConversationHub(val conversationDao: MessagingListDao, val threadSer
         }
     }
 
-    fun loadMetaDataFromLocalDb() {
+    fun loadMetaDataFromLocalRoomDb() {
         coroutineScope.launch(Dispatchers.IO) {
             if (MessagingContactListHelper.getBoolean(MessagingContactListHelper.HAS_LOAD_LOCAL_CONVERSATION, false) || isLocalLoading) return@launch
             isLocalLoading = true
@@ -151,8 +152,16 @@ class GlobalConversationHub(val conversationDao: MessagingListDao, val threadSer
         }
     }
 
+    fun handleMessageSend(message: EMMessage?) {
+
+    }
+
 
     fun handleMessageReceive(message: EMMessage) {
+
+    }
+
+    fun updateUserInfo(id: String?, info: UserInfo?) {
 
     }
 }

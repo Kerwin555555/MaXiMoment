@@ -3,6 +3,8 @@ package com.moment.app.hilt.app_level
 import android.app.Application
 import androidx.room.Room
 import androidx.room.RoomDatabase.JournalMode
+import com.hyphenate.chat.EMConversation
+import com.hyphenate.chat.EMMessage
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_chat.MessagingListDao
@@ -12,6 +14,7 @@ import com.moment.app.main_chat.ThreadService
 import com.moment.app.main_home.subfragments.db.HomeRecommendationListDatabase
 import com.moment.app.main_home.subfragments.db.UserInfoEntityDao
 import com.moment.app.main_home.subfragments.service.HomeService
+import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserImManager
 import com.moment.app.utils.MomentCoreParams.BASE_URL
 import dagger.Module
@@ -107,7 +110,7 @@ class RoomModule {
 
     @Singleton
     @Provides
-    fun provideIMLoginModel(hub: GlobalConversationHub): UserImManager {
+    fun provideIMLoginModel(hub: GlobalConversationHub): UserIMManagerBus {
         return UserImManager(hub)
     }
 }

@@ -1,11 +1,13 @@
 package com.moment.app.main_chat_private
 
+import android.net.Uri
 import android.os.Bundle
-import androidx.activity.viewModels
+import android.util.Log
 import com.blankj.utilcode.util.KeyboardUtils
 import com.didi.drouter.annotation.Router
 import com.hyphenate.EMMessageListener
-import com.hyphenate.chat.EMClient
+import com.hyphenate.chat.EMConversation
+import com.hyphenate.chat.EMGroupReadAck
 import com.hyphenate.chat.EMMessage
 import com.moment.app.R
 import com.moment.app.databinding.ActivityChatBinding
@@ -15,36 +17,83 @@ import com.moment.app.main_chat.GlobalConversationHub
 import com.moment.app.main_chat.ThreadService
 import com.moment.app.main_chat_private.adapters.ThreadAdapter
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
-import com.moment.app.models.UserImManager
+import com.moment.app.models.UserIMManagerBus
+import com.moment.app.network.UserCancelException
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
-import com.moment.app.utils.getChatBg
+import com.moment.app.utils.MOMENT_APP
+import com.moment.app.utils.cancelIfActive
 import com.moment.app.utils.immersion
+import com.moment.app.utils.scrollToBottom
+import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 
 @AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/chat/thread")
-class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
+class MessagingThreadInterfaceActivity: BaseActivity(){
     private lateinit var binding: ActivityChatBinding
-    private val viewModel by viewModels<ThreadViewModel>()
-
+    private val PAGE_COUNT = 15
+    private var moreDataFromNetWork = true
+    private var currentJob: Job? = null
     @Inject
     @MockData
     lateinit var conversationHub: GlobalConversationHub
 
     @Inject
     @MockData
-    lateinit var imLoginModel: UserImManager
+    lateinit var imLoginModel: UserIMManagerBus
 
     @Inject
     @MockData
     lateinit var threadService: ThreadService
 
     private lateinit var adapter: ThreadAdapter
+
+    val listener = object : EMMessageListener{
+        /**
+         * \~english
+         * Occurs when a message is received.
+         * This callback is triggered to notify the user when a message such as texts or an image, video, voice, location, or file is received.
+         */
+        override fun onMessageReceived(messages: MutableList<EMMessage>?) {
+             startCoroutine({
+                 if (messages == null) return@startCoroutine
+                 for (message in messages) {
+                     if (message.chatType == EMMessage.ChatType.Chat) {
+                         adapter.addData(message)
+                     }
+                 }
+             }){
+                 it.toast()
+             }
+        }
+
+        override fun onCmdMessageReceived(messages: List<EMMessage?>?) {
+
+        }
+
+        override fun onMessageRead(messages: List<EMMessage?>?) {}
+
+
+        override fun onGroupMessageRead(groupReadAcks: List<EMGroupReadAck?>?) {}
+
+
+        override fun onReadAckForGroupMessageUpdated() {}
+
+
+        override fun onMessageDelivered(messages: List<EMMessage?>?) {}
+
+
+        override fun onMessageRecalled(messages: List<EMMessage?>?) {}
+
+    }
 
 
     private var conversation_partner_huanxin_id: String? = null //conversation partner id
@@ -67,23 +116,18 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
             return
         }
         adapter = ThreadAdapter(huanxinId = conversation_partner_huanxin_id!!, conversation_partner_user_info = conversation_partner_user_info)
-        viewModel.setView(this, conversation_partner_huanxin_id!!)
 
         resolvePartnerInfo()
 
         resolvePage()
 
-        //initHuanxinWebSocketData()
+        initHuanxinWebSocketCallback()
 
         getChatContent()
     }
 
-    private fun initHuanxinWebSocketData() {
-        EMClient.getInstance().chatManager().addMessageListener(object : EMMessageListener {
-            override fun onMessageReceived(messages: MutableList<EMMessage>?) {
-
-            }
-        })
+    private fun initHuanxinWebSocketCallback() {
+       imLoginModel.register(listener)
     }
 
     private fun resolvePage() {
@@ -108,7 +152,50 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
     }
 
     private fun getChatContent() {
-        viewModel.fetchChatRecords(if (adapter.data.size > 0) { adapter.getItem(0)!!.msgId } else "")
+        val initialD = if (adapter.data.size > 0) { adapter.getItem(0)!!.msgId } else ""
+        currentJob?.cancelIfActive()
+        currentJob = startCoroutine({
+            val messages = withContext(Dispatchers.IO) {
+                val emConversation = imLoginModel.getEMConversation(conversation_partner_huanxin_id?:"")
+                if (emConversation == null) {
+                    Log.d(MOMENT_APP, "load#EMConversation... isEmpty")
+                    return@withContext null
+                } else {
+                    if (initialD.isEmpty()) {
+                        val memoryMessages = imLoginModel.getEMConversationAllMessages(emConversation)?.toMutableList() ?.let {
+                            if (it.size in 1..9) {
+                                val dbMessages = imLoginModel.loadEmConversationMessagesFromDb(emConversation, it[0].msgId, PAGE_COUNT)
+                                it.addAll(0, dbMessages)
+                            }
+                            it
+                        }?.toMutableList()
+                        return@withContext memoryMessages
+                    } else {
+                        return@withContext getMessagesFromDb(emConversation, initialD).toMutableList()
+                    }
+                }
+            }
+            notifyMessages(messages as List<EMMessage>?)
+        }){
+            if (it.throwable is UserCancelException) {
+                return@startCoroutine
+            }
+            it.toast()
+            notifyMessagesFail()
+        }
+    }
+
+    private fun getMessagesFromDb(emConversation: EMConversation?, leastRecentId: String): List<EMMessage> {
+        var messages = imLoginModel.loadEmConversationMessagesFromDb(emConversation, leastRecentId, PAGE_COUNT)
+        if (!moreDataFromNetWork) {
+            return messages
+        }
+        if (messages.size in 0 until PAGE_COUNT) {
+            val checkServer = imLoginModel.getMessagesFromServer(emConversation, leastRecentId, PAGE_COUNT)
+            moreDataFromNetWork = checkServer.data.size >= PAGE_COUNT
+            messages = imLoginModel.loadEmConversationMessagesFromDb(emConversation, leastRecentId, PAGE_COUNT)
+        }
+        return messages
     }
 
     private fun resolvePartnerInfo() {
@@ -119,12 +206,8 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
         if (conversation_partner_user_info == null) {
             startCoroutine({
                 if (partner_user_id == null) {
-                    val list = listOf(this.async {
-                        (imLoginModel.loadUserInfosAccordingToHXids(listOf(conversation_partner_huanxin_id)))[0]
-                    }, this.async {
-                        getChatContent()
-                    })
-                    val userInfo = (imLoginModel.loadUserInfosAccordingToHXids(listOf(conversation_partner_huanxin_id)))[0]
+                    //由环信ID来
+                    val userInfo = (imLoginModel.loadUserInfosAccordingToHXids(listOf(conversation_partner_huanxin_id!!)))[0]
                     fillUserInfo(userInfo = userInfo)
                 } else {
                     val userInfo = threadService.getUserInfo(partner_user_id).data
@@ -136,7 +219,6 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
         } else  {
             //assert userid non-null!
             fillUserInfo(userInfo = conversation_partner_user_info)
-            getChatContent()
             startCoroutine({
                 val userInfo = threadService.getUserInfo(partner_user_id).data
                 fillUserInfo(userInfo = userInfo)
@@ -160,14 +242,17 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
         }
     }
 
-    override fun notifyMessages(list: List<EMMessage>?) {
+    fun notifyMessages(list: List<EMMessage>?) {
         list?.let {
-            adapter.addData(0, list)
+            if (adapter.data.size == 0) {
+                binding.refreshView.onSuccess(it.toMutableList(), false, false)
+            } else {
+                adapter.addData(0, it.toMutableList())
+            }
         }
-        binding.refreshView.finishRefresh()
     }
 
-    override fun notifyMessagesFail() {
+    fun notifyMessagesFail() {
         binding.refreshView.finishRefresh()
         binding.refreshView.onFail(false, "error happend")
     }
@@ -175,9 +260,35 @@ class MessagingThreadInterfaceActivity: BaseActivity(), MVPView{
     override fun onDestroy() {
         super.onDestroy()
         KeyboardUtils.hideSoftInput(this)
+        imLoginModel.unregister(listener)
     }
 
     private fun initUi() {
         binding.root.setBackgroundResource(R.drawable.theme_chat_background)
+        binding.toolBar.getBinding().back.setOnClickListener{
+            finish()
+        }
+        binding.chatTab.getBinding().apply {
+            sendButton.setOnAvoidMultipleClicksListener({
+                if (conversation_partner_huanxin_id.isNullOrEmpty()) return@setOnAvoidMultipleClicksListener
+                //检查userInfo 是否被blocked
+                //检查是否风险控制
+                imLoginModel.getEMConversation(conversation_partner_huanxin_id ?: "")?.let {
+                    val msg = imLoginModel.generateTextMessage(editText.text?.toString()?.trim() ?: "", conversation_partner_huanxin_id!!)
+                    if (msg == null)return@setOnAvoidMultipleClicksListener
+                    imLoginModel.sendMessageToPartner(msg)
+                    adapter.addData(msg)
+                    binding.refreshView.getRecyclerView().scrollToBottom()
+                }
+            }, 500)
+        }
     }
+}
+
+interface ChatListener {
+    fun onMessage(message: String?)
+
+    fun onVoice(file: File?, audioTime: Int)
+
+    fun onGif(uri: Uri?)
 }

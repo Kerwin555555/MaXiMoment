@@ -4,8 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.didi.drouter.annotation.Router
-import com.google.android.material.imageview.ShapeableImageView
-import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.databinding.ActivityMainBinding
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.eventbus.LogoutEvent
@@ -17,6 +15,7 @@ import com.moment.app.ui.NaviTab
 import com.moment.app.ui.OnTabStatusListener
 import com.moment.app.utils.ActivityHolder
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.immersion
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
@@ -24,7 +23,7 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 @Router(scheme = ".*", host = ".*", path = "/main")
-class MainActivity : BaseActivity(){
+class MainActivity : BaseActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var pageAdapter: MainNaviConfig.MainPageAdapter
@@ -38,16 +37,15 @@ class MainActivity : BaseActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         EventBus.getDefault().register(this)
-        ImmersionBar.with(this)
-            .statusBarDarkFont(false)
-            .init()
+        immersion()
         setSwipeBackEnable(false)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ActivityHolder.onMainCreate(this)
 
         pageAdapter = MainNaviConfig.MainPageAdapter(this)
-        fragmentNavigator = FragmentNavigator(supportFragmentManager,pageAdapter, R.id.fragment_container)
+        fragmentNavigator =
+            FragmentNavigator(supportFragmentManager, pageAdapter, R.id.fragment_container)
         mainViewModel.fetchTabs()
         conversationHub.loadMetaDataFromBackend()
 

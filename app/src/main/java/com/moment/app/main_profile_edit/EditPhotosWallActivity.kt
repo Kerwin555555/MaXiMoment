@@ -20,7 +20,6 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.didi.drouter.annotation.Router
-import com.gyf.immersionbar.ImmersionBar
 import com.moment.app.R
 import com.moment.app.databinding.ActivityEditWallPhotosBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
@@ -42,7 +41,7 @@ import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
-import com.moment.app.utils.cleanSaveFragments
+import com.moment.app.utils.cleanSavedFragments
 import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
@@ -78,7 +77,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
         super.onCreate(savedInstanceState)
         binding = ActivityEditWallPhotosBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        cleanSaveFragments()
+        cleanSavedFragments()
         binding.save.applyEnabledColorIntStateList(enableId =
            0xff1d1d1d.toInt() , disableId = 0xffE5E5E5.toInt())
         binding.save.isEnabled = false

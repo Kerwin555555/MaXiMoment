@@ -320,7 +320,7 @@ fun AppCompatActivity.bottomInBottomOut() : FragmentTransaction {
         )
 }
 
-fun AppCompatActivity.cleanSaveFragments() {
+fun AppCompatActivity.cleanSavedFragments() {
     kotlin.runCatching {
         val transaction = supportFragmentManager.beginTransaction()
         for (f in supportFragmentManager.fragments) {

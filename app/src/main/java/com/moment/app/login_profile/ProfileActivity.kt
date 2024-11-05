@@ -4,13 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.text.Editable
 import android.text.TextUtils
-import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.bigkoo.pickerview.listener.OnDismissListener
@@ -36,13 +35,18 @@ import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateManagingHub
-import com.moment.app.utils.SerializeManager
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressIndicatorFragment
-import com.moment.app.utils.cleanSaveFragments
+import com.moment.app.utils.SerializeManager
+import com.moment.app.utils.cleanSavedFragments
+import com.moment.app.utils.dp
+import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.immersion
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
+import com.moment.app.utils.setBgEnableStateListDrawable
+import com.moment.app.utils.setBgSelectedStateListDrawable
+import com.moment.app.utils.setBgStateListDrawable
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.setTextColorStateSelectList
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,7 +73,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSwipeBackEnable(false)
-        cleanSaveFragments()
+        cleanSavedFragments()
         immersion()
 
         initUI()
@@ -77,31 +81,26 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
     }
 
     private fun initUI() {
-        val w = resources.displayMetrics.widthPixels
-        binding.bg.requestNewSize(width = w, height = w * 313/390 )
-        binding.bioEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+        val w = getScreenWidth()
+        binding.confirm.setBgEnableStateListDrawable(
+            enableId = R.drawable.bg_drawable_dp25,
+            disableId = R.drawable.bg_gray
+        )
+        binding.bg.requestNewSize(width = w, height = w * 313/390)
+        binding.bioEditText.addTextChangedListener(
+            onTextChanged = { text, _, _, _ ->
                 viewModel.liveData.value?.bio = text?.toString()?.trim()?.replace("\n", "") ?: ""
                 refresh()
             }
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        )
         binding.birthday.setOnClickListener {
             //timeSelect = null
             clearEditTextsFocus()
-            binding.birthday.isFocusableInTouchMode = true
-            binding.birthday.requestFocus()
             KeyboardUtils.hideSoftInput(this)
-            val pickerView: TimePickerView = chooseDate(
-                this,
-                null, null,
-                object : OnTimeSelectChangeListener {
-                    override fun onTimeSelectChanged(date: Date) {
-                        viewModel.liveData.value?.timeSelect = date
-                        refresh()
-                    }
-                })
+            val pickerView: TimePickerView = chooseDate(context = this, listener = null, cancelListener = null) { date ->
+                viewModel.liveData.value?.timeSelect = date
+                refresh()
+            }
             pickerView.setOnDismissListener(object : OnDismissListener {
                 override fun onDismiss(o: Any?) {
 
@@ -123,14 +122,12 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
             viewModel.liveData.value?.gender = "girl"
             refresh()
         }
-        binding.nicknameEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-            override fun onTextChanged(text: CharSequence?, start: Int, before: Int, count: Int) {
+        binding.nicknameEditText.addTextChangedListener(
+            onTextChanged = { text, _, _, _ ->
                 viewModel.liveData.value?.nickName = text?.toString()?.trim()?.replace("\n", "") ?: ""
                 refresh()
             }
-            override fun afterTextChanged(s: Editable?) {}
-        })
+        )
         binding.confirm.setOnAvoidMultipleClicksListener({
             viewModel.submit()
         }, 500)
@@ -140,7 +137,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
         viewModel.liveData.value = viewModel.liveData.value
     }
 
-    fun chooseDate(
+    private fun chooseDate(
         context: Context?,
         listener: OnTimeSelectListener?,
         cancelListener: View.OnClickListener?,
@@ -176,8 +173,8 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
              it.timeSelect?.let { date ->
                  val calendar = Calendar.getInstance()
                  calendar.time = date
-                 binding.birthday.setText(String.format("%d-%d-%d", calendar[Calendar.YEAR],
-                         calendar[Calendar.MONTH] + 1, calendar[Calendar.DAY_OF_MONTH]))
+                 binding.birthday.text = String.format("%d-%d-%d", calendar[Calendar.YEAR],
+                     calendar[Calendar.MONTH] + 1, calendar[Calendar.DAY_OF_MONTH])
              } ?: let {
              }
              it.gender?.let { gender ->
@@ -205,15 +202,10 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
                  is LoadingStatus.SuccessLoadingStatus -> {
                      clearEditTextsFocus()
                      KeyboardUtils.hideSoftInput(this)
-                     val fragmentTransaction = supportFragmentManager.beginTransaction()
-                     fragmentTransaction.setCustomAnimations(
-                         R.anim.slide_up, // 进入动画
-                        0, // 退出动画（这里没有设置，所以为0）
-                         0, // 弹出动画（这里没有设置，所以为0）
-                       0, // 弹入动画（这里没有设置，所以为0）
-                     )
-                     fragmentTransaction.add(R.id.root_layout, ChooseAvatarFragment())
-                     fragmentTransaction.commitAllowingStateLoss()
+                     supportFragmentManager.beginTransaction()
+                         .setCustomAnimations(R.anim.slide_up, 0, 0, 0,)
+                         .add(R.id.root_layout, ChooseAvatarFragment())
+                         .commitAllowingStateLoss()
                 }
                  is LoadingStatus.FailedLoadingStatus -> {
                      it.error?.toast()
@@ -261,10 +253,7 @@ class ProfileViewModel @Inject constructor(
                 "gender" to data.gender,
                 "bio" to data.bio
             ))
-            val info: UserInfo? = UserLoginManager.getUserInfo()
-            if (info == null) {
-                return@startCoroutine
-            }
+            val info: UserInfo = UserLoginManager.getUserInfo() ?: return@startCoroutine
             info.name = data.nickName
             info.birthday = data.birthDateToString()
             info.age = DateManagingHub.getAge(info.birthday)
@@ -306,7 +295,7 @@ class ProfileViewModel @Inject constructor(
                 imagesWallList = mutableListOf(file!!)
                 finished_info = true
             })
-            Log.d("zhouzheng save", SerializeManager.toJson(UserLoginManager.getUserInfo()))
+            Log.d(MOMENT_APP, SerializeManager.toJson(UserLoginManager.getUserInfo()))
             hasAvatarLiveData.value = true
             delay(2000) // mock upload to backend and cloud storage
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
@@ -344,7 +333,7 @@ class ProfileViewModel @Inject constructor(
         override fun equals(other: Any?): Boolean {
             return other is ProfileData && birthDateToString() == other.birthDateToString()
                     && gender == other.gender && bio == other.bio && avatar == other.avatar
-                    && bio == other.bio
+                    && nickName == other.nickName
         }
     }
 }

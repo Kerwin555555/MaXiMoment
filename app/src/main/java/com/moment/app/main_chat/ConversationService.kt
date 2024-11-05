@@ -6,7 +6,9 @@ import com.hyphenate.chat.EMConversation
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.BaseBean
+import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 interface ThreadService {
@@ -15,6 +17,9 @@ interface ThreadService {
 
     @GET("api/sns/v1/moment/user/get_info/{userId}")
     suspend fun getUserInfo(@Path("userId") userId: String?): Results<UserInfo>
+
+    @POST("api/sns/v1/lit/user/info_by_huanxin")
+    suspend fun getUserInfoByImId(@Body map: Map<String, List<String>>): Results<Map<String, UserInfo>>
 }
 
 

@@ -7,7 +7,7 @@ plugins {
     id("com.didi.drouter")
 }
 
-
+//打造good app!
 hilt {
     enableAggregatingTask = false  //添加原因 出现bug https://stackoverflow.com/questions/76535832/execution-failed-for-task-apphiltaggregatedepsdebug
 }

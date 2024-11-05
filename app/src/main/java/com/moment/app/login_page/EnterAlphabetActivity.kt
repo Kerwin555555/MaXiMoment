@@ -22,6 +22,7 @@ import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
+import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserImManager
 import com.moment.app.models.UserLoginManager
 import com.moment.app.network.startCoroutine
@@ -45,7 +46,7 @@ class EnterAlphabetActivity : BaseActivity() {
 
     @Inject
     @MockData
-    lateinit var imLoginModel: UserImManager
+    lateinit var imLoginModel: UserIMManagerBus
 
     @SuppressLint("SuspiciousIndentation")
     override fun onCreate(savedInstanceState: Bundle?) {
