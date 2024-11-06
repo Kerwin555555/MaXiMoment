@@ -23,7 +23,6 @@ dependencies {
 
     //Glide 图库加载框架
     def GLIDE_VERSION = "4.16.0"
-    implementation 'com.tencent:mmkv:1.2.13'
     implementation 'com.getkeepsafe.relinker:relinker:1.4.4'
     implementation "com.github.bumptech.glide:glide:${GLIDE_VERSION}"
     kapt "com.github.bumptech.glide:compiler:${GLIDE_VERSION}"

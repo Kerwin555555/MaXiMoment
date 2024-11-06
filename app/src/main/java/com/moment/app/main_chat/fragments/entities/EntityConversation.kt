@@ -6,11 +6,10 @@ import androidx.room.Ignore
 import com.hyphenate.chat.EMConversation
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.BaseBean
-import javax.annotation.Nonnull
 
 
 @Entity(tableName = "user_conversation", primaryKeys = ["id", "userId"])
-class MomentConversation(
+class EntityConversation(
     @NonNull val id: String,
     @NonNull val userId: String
 ) : BaseBean() {

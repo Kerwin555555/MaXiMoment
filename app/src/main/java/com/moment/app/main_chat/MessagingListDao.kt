@@ -6,24 +6,24 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.main_chat.fragments.entities.MomentConversation
+import com.moment.app.main_chat.fragments.entities.EntityConversation
 
 @Dao
 interface MessagingListDao {
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insert(conversationBean: MomentConversation?): Long
+    fun insert(conversationBean: EntityConversation?): Long
 
     @Query("select * from user_conversation where userId=:id order by updateTime desc")
-    fun getAll(id: String): List<MomentConversation> //id就是user_id 一般是当前用户  Momentconversation.id 是回话也就是 对方环信ID
+    fun getAll(id: String): List<EntityConversation> //id就是user_id 一般是当前用户  Momentconversation.id 是回话也就是 对方环信ID
 
     @Query("select * from user_conversation where userId=:id order by pinned desc, updateTime desc limit 20 offset 0")
-    fun getRecent20Users(id: String?): List<MomentConversation?>?
+    fun getRecent20Users(id: String?): List<EntityConversation?>?
 
     @Query("select * from user_conversation where userId=:id and conversationType=0 order by pinned desc, updateTime desc limit 30 offset 0")
-    fun getRecent30Users(id: String?): List<MomentConversation?>?
+    fun getRecent30Users(id: String?): List<EntityConversation?>?
 
     @Query("select * from user_conversation where userId=:user_id and id=:id")
-    fun getConversation(user_id: String?, id: String?): MomentConversation?
+    fun getConversation(user_id: String?, id: String?): EntityConversation?
 
     @Query("update user_conversation set pinned=:pinned where id=:id")
     fun updatePin(id: String?, pinned: Int)
@@ -47,5 +47,5 @@ interface MessagingListDao {
     fun updateFlag(id: String?, flag: Int)
 
     @Delete
-    fun delete(conversationBean: MomentConversation?)
+    fun delete(conversationBean: EntityConversation?)
 }

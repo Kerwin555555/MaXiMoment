@@ -5,11 +5,11 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.main_chat.fragments.entities.MomentConversation
+import com.moment.app.main_chat.fragments.entities.EntityConversation
 import com.moment.app.utils.SerializeManager
 
 @Database(
-    entities = [MomentConversation::class],
+    entities = [EntityConversation::class],
     version = 5,
     exportSchema = false
 )

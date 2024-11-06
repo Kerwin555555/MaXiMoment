@@ -436,10 +436,12 @@ fun ImageFilterView.loadUserBackgroundOrAlbum(fileId: String?) {
 }
 
 fun ImageView.loadUserBackgroundOrAlbum(fileId: String?) {
+    val d = MomentLoadingDrawable(context)
+    setImageDrawable(d)
     kotlin.runCatching {
         Glide.with(this).load(fileId)
-            .placeholder(R.drawable.bg_avatar_big)
-            .error(R.drawable.bg_avatar_big)
+            .placeholder(d)
+            .error(d)
             .centerInside().override(ScreenUtils.getAppScreenWidth()*3/5,
                 ScreenUtils.getAppScreenHeight()*3/5).into(this)
     }

@@ -7,7 +7,7 @@ import com.hyphenate.chat.EMClient
 import com.hyphenate.chat.EMConversation.EMConversationType
 import com.hyphenate.chat.EMMessage
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.main_chat.fragments.entities.MomentConversation
+import com.moment.app.main_chat.fragments.entities.EntityConversation
 import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.coroutineScope
@@ -20,7 +20,7 @@ import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
 class GlobalConversationHub(val conversationDao: MessagingListDao, val threadService: ThreadService) {
-    val conversations = mutableListOf<MomentConversation>()
+    val conversations = mutableListOf<EntityConversation>()
         get() = field
 
     val conversationChangeListeners = mutableListOf<WeakReference<ConversationChangeListener>>()
@@ -107,7 +107,7 @@ class GlobalConversationHub(val conversationDao: MessagingListDao, val threadSer
     }
 
     private suspend fun insertNewConversation(id: String, backend: BackendThread): Long {
-        val bean = MomentConversation(id = id, userId = UserLoginManager.getUserId()).apply {
+        val bean = EntityConversation(id = id, userId = UserLoginManager.getUserId()).apply {
             this.userInfo = backend.userInfo
         }
         bean.conversationType = 0
@@ -135,7 +135,7 @@ class GlobalConversationHub(val conversationDao: MessagingListDao, val threadSer
     }
 
 
-    private fun getAllFromDb(): List<MomentConversation> {
+    private fun getAllFromDb(): List<EntityConversation> {
         kotlin.runCatching {
             return conversationDao.getAll(UserLoginManager.getUserId())
         }

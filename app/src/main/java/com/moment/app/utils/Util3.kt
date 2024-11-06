@@ -1,24 +1,29 @@
 package com.moment.app.utils
 
-import android.R
 import android.content.Context
+import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.PixelFormat
+import android.graphics.Rect
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
 import android.util.Log
-import android.util.TypedValue
 import android.view.View
 import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.RecyclerView
 import com.blankj.utilcode.util.BarUtils
-import com.chad.library.adapter.base.BaseQuickAdapter
 import com.github.iielse.imageviewer.adapter.ItemType.PHOTO
 import com.github.iielse.imageviewer.core.Photo
+import com.moment.app.R
 import com.moment.app.image_viewer.show
 import com.moment.app.localimages.datamodel.AlbumItemFile
 import com.moment.app.network.startCoroutine
@@ -173,5 +178,40 @@ fun View.repeatOnLifeCycle(block : suspend CoroutineScope.() -> Unit) {
 fun RecyclerView.scrollToBottom() {
     kotlin.runCatching {
         smoothScrollToPosition(adapter!!.getItemCount() - 1);
+    }
+}
+
+
+class MomentLoadingDrawable(val context: Context): Drawable() {
+    val bg = GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        setColor(0xffEBEBEB.toInt())
+    }
+
+    val bitmap = ContextCompat.getDrawable(context, R.mipmap.logo_color)
+
+    override fun setBounds(left: Int, top: Int, right: Int, bottom: Int) {
+        super.setBounds(left, top, right, bottom)
+        bg.setBounds(left, top, right, bottom)
+    }
+
+    override fun draw(canvas: Canvas) {
+        kotlin.runCatching {
+            bg.draw(canvas)
+            val w = bounds.width()
+            val h = bounds.height()
+            val top = (256.dp + BarUtils.getStatusBarHeight())/2 - bitmap!!.intrinsicHeight/2
+            val targetRect = Rect((w - bitmap!!.intrinsicWidth)/2, top,
+                (w + bitmap.intrinsicWidth)/2, top + bitmap.intrinsicHeight)
+            canvas.drawBitmap((bitmap as BitmapDrawable).bitmap, null, targetRect, null);
+        }
+    }
+
+    override fun setAlpha(alpha: Int) {}
+
+    override fun setColorFilter(colorFilter: ColorFilter?) {}
+
+    override fun getOpacity(): Int {
+        return PixelFormat.TRANSLUCENT
     }
 }

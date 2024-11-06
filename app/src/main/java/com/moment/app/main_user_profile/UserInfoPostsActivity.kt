@@ -22,6 +22,7 @@ import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.ui.uiLibs.RefreshView
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.MomentLoadingDrawable
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
@@ -64,6 +65,7 @@ class UserInfoPostsActivity : BaseActivity(){
         immersion()
         binding = ActivityUserDetailBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        binding.avatar.setImageDrawable(MomentLoadingDrawable(this))
         binding.back.setOnClickListener {
             finish()
         }

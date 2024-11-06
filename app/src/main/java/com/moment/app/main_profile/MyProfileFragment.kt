@@ -28,6 +28,7 @@ import com.moment.app.third_party.billing.RechargeIncomeActivity.Companion.TYPE_
 import com.moment.app.third_party.billing.RechargeIncomeActivity.Companion.TYPE_RECHARGE
 import com.moment.app.ui.uiLibs.RefreshView
 import com.moment.app.utils.BaseFragment
+import com.moment.app.utils.MomentLoadingDrawable
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
@@ -80,6 +81,7 @@ class MyProfileFragment : BaseFragment() {
     }
 
     private fun initUI() {
+        binding.avatar.setImageDrawable(MomentLoadingDrawable(requireContext()))
         binding.toolbar.isClickable = true
         binding.toolbar.applyPaddingsWithDefaultZero(top = BarUtils.getStatusBarHeight())
         binding.toolbar.requestNewSize(width = -1, height = BarUtils.getStatusBarHeight() + 50.dp)

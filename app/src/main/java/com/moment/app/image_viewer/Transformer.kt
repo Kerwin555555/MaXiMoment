@@ -27,6 +27,7 @@ import com.github.iielse.imageviewer.core.SimpleDataProvider
 import com.github.iielse.imageviewer.core.Transformer
 import com.moment.app.R
 import com.moment.app.utils.DialogFragmentManager
+import com.moment.app.utils.MomentLoadingDrawable
 import com.moment.app.utils.ViewerPhoto
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
@@ -188,13 +189,16 @@ fun ImageView.loadNoAnimResource(fileId: String?){
 }
 
 fun ImageView.loadFeedRemoteResource(fileId: String?) {
+    val d = MomentLoadingDrawable(this.context)
+    setImageDrawable(d)
     kotlin.runCatching {
+        setImageDrawable(d)
         Glide.with(this)
             .setDefaultRequestOptions(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.RESOURCE))
             .load(R.mipmap.xog)
             .dontTransform()
-            .placeholder(R.drawable.moment)
-            .error(R.drawable.moment)
+            .placeholder(d)
+            .error(d)
             .into(this)
     }
 }

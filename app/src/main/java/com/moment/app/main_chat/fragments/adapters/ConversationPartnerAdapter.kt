@@ -9,12 +9,12 @@ import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.hyphenate.chat.EMConversation
 import com.moment.app.databinding.ConversationItemViewBinding
-import com.moment.app.main_chat.fragments.entities.MomentConversation
+import com.moment.app.main_chat.fragments.entities.EntityConversation
 import com.moment.app.utils.dp
 import com.moment.app.utils.loadImage
 import com.moment.app.utils.setBadgeBackground
 
-class ConversationPartnerAdapter: BaseQuickAdapter<MomentConversation, ConversationPartnerAdapter.Holder>(null) {
+class ConversationPartnerAdapter: BaseQuickAdapter<EntityConversation, ConversationPartnerAdapter.Holder>(null) {
 
     override fun onCreateDefViewHolder(parent: ViewGroup?, viewType: Int): ConversationPartnerAdapter.Holder {
         val binding = ConversationItemViewBinding.inflate(LayoutInflater.from(mContext)).apply {
@@ -23,7 +23,7 @@ class ConversationPartnerAdapter: BaseQuickAdapter<MomentConversation, Conversat
         return Holder(binding)
     }
 
-    override fun convert(helper: Holder, conversation: MomentConversation) {
+    override fun convert(helper: Holder, conversation: EntityConversation) {
          helper.binding.avatar.loadImage(conversation.userInfo!!.userId, 60.dp, 60.dp)
          helper.binding.name.text = conversation.userInfo!!.name
          helper.binding.gender.bindGender(conversation.userInfo!!)
