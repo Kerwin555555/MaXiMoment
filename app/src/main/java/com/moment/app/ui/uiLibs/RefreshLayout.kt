@@ -312,7 +312,7 @@ class ProgressDrawable : Drawable(), Animatable,
     protected var mProgressDegree: Int = 0
     protected var mValueAnimator: ValueAnimator = ValueAnimator.ofInt(30, 3600)
     protected var mPath: Path = Path()
-
+    val matrix = Matrix()
     protected val mPaint = Paint()
     init {
         mPaint.style = Paint.Style.FILL
@@ -329,8 +329,7 @@ class ProgressDrawable : Drawable(), Animatable,
     //<editor-fold desc="Drawable">
     override fun draw( canvas: Canvas) {
         canvas.save()
-        val matrix = Matrix()
-        matrix.preTranslate(bounds.left.toFloat(), bounds.top.toFloat())
+        matrix.setTranslate(bounds.left.toFloat(), bounds.top.toFloat())
         canvas.setMatrix(matrix)
         val drawable: Drawable = this@ProgressDrawable
         val bounds = drawable.bounds

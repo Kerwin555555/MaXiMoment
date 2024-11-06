@@ -8,7 +8,7 @@ import com.moment.app.databinding.ActivityMainBinding
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.eventbus.LogoutEvent
 import com.moment.app.hilt.app_level.MockData
-import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.GlobalConversationManager
 import com.moment.app.ui.FragmentNavigator
 import com.moment.app.ui.MainNaviConfig
 import com.moment.app.ui.NaviTab
@@ -32,7 +32,7 @@ class MainActivity : BaseActivity() {
 
     @Inject
     @MockData
-    lateinit var conversationHub: GlobalConversationHub
+    lateinit var conversationHub: GlobalConversationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

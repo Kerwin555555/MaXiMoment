@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import com.moment.app.databinding.FragmentConversationsBinding
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.main_chat.ConversationChangeListener
-import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.GlobalConversationManager
 import com.moment.app.main_chat.fragments.adapters.ConversationPartnerAdapter
 import com.moment.app.main_chat.fragments.rvheaders.CvsNotificationHeader
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
@@ -27,7 +27,7 @@ class ConversationsListFragment: BaseFragment() , ConversationChangeListener {
 
     @Inject
     @MockData
-    lateinit var conversationHub: GlobalConversationHub
+    lateinit var conversationManager: GlobalConversationManager
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +42,7 @@ class ConversationsListFragment: BaseFragment() , ConversationChangeListener {
         super.onViewCreated(view, savedInstanceState)
         initUI()
 
-        conversationHub.conversationChangeListeners.add(WeakReference(this))
+        conversationManager.conversationChangeListeners.add(WeakReference(this))
 
     }
 
@@ -55,7 +55,7 @@ class ConversationsListFragment: BaseFragment() , ConversationChangeListener {
         binding.refreshView.initWith(
             adapter = adapter,
             emptyView = RecommendationEmptyView(this.requireContext())) { isLoadMore ->
-            conversationHub.refreshListFromDB()
+            conversationManager.refreshListFromDB()
         }
         binding.refreshView.getRecyclerView().addItemDecoration(
             DataDividerItemDecoration(
@@ -68,12 +68,12 @@ class ConversationsListFragment: BaseFragment() , ConversationChangeListener {
 
     override fun onResume() {
         super.onResume()
-        conversationHub.refreshListFromDB()
+        conversationManager.refreshListFromDB()
     }
 
     override fun onConversationsChange() {
         binding.refreshView.onSuccess(
-            ArrayList(conversationHub.conversations),
+            ArrayList(conversationManager.conversations),
             false,
             false
         )

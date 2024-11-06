@@ -13,7 +13,7 @@ import com.moment.app.R
 import com.moment.app.databinding.ActivityChatBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.hilt.app_level.MockData
-import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.GlobalConversationManager
 import com.moment.app.main_chat.ThreadService
 import com.moment.app.main_chat_private.adapters.ThreadAdapter
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
@@ -44,7 +44,7 @@ class MessagingThreadInterfaceActivity: BaseActivity(){
     private var currentJob: Job? = null
     @Inject
     @MockData
-    lateinit var conversationHub: GlobalConversationHub
+    lateinit var conversationHub: GlobalConversationManager
 
     @Inject
     @MockData

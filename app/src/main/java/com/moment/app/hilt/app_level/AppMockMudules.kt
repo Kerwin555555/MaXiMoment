@@ -1,24 +1,16 @@
 package com.moment.app.hilt.app_level
 
-import android.content.Context
 import android.util.Log
-import com.hyphenate.EMCallBack
-import com.hyphenate.EMMessageListener
-import com.hyphenate.chat.EMConversation
-import com.hyphenate.chat.EMCursorResult
-import com.hyphenate.chat.EMMessage
-import com.hyphenate.chat.adapter.EMAConversation
 import com.moment.app.datamodel.CommentItem
 import com.moment.app.datamodel.CommentItem.TimeInfoBean
 import com.moment.app.datamodel.CommentsList
 import com.moment.app.datamodel.HuanxinBean
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.login_page.LoginCallback
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_chat.BackendThread
-import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.GlobalConversationManager
 import com.moment.app.main_chat.MessagingListDao
 import com.moment.app.main_chat.ThreadList
 import com.moment.app.main_chat.ThreadService
@@ -32,7 +24,6 @@ import com.moment.app.models.UserImManager
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.MomentCoreParams.BASE_URL
 import com.moment.app.utils.ViewerPhoto
-import com.moment.app.utils.toast
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -43,7 +34,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import java.lang.reflect.Constructor
 import java.util.UUID
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -102,14 +92,14 @@ class MockNetWorkModule {
     @Provides
     @Singleton
     @MockData
-    fun provideConversationHub(conversationDao: MessagingListDao, @MockData service: ThreadService): GlobalConversationHub {
-        return GlobalConversationHub(conversationDao, service)
+    fun provideConversationHub(conversationDao: MessagingListDao, @MockData service: ThreadService): GlobalConversationManager {
+        return GlobalConversationManager(conversationDao, service)
     }
 
     @Singleton
     @Provides
     @MockData
-    fun provideIMLoginModel(@MockData hub: GlobalConversationHub): UserIMManagerBus{
+    fun provideIMLoginModel(@MockData hub: GlobalConversationManager): UserIMManagerBus{
         return UserImManager(hub)
     }
 }

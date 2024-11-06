@@ -19,7 +19,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
 
-class GlobalConversationHub(val conversationDao: MessagingListDao, val threadService: ThreadService) {
+class GlobalConversationManager(val conversationDao: MessagingListDao, val threadService: ThreadService) {
     val conversations = mutableListOf<EntityConversation>()
         get() = field
 

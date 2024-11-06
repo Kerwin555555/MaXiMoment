@@ -29,7 +29,7 @@ import com.moment.app.MomentApp
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.ConnectState
 import com.moment.app.login_page.LoginCallback
-import com.moment.app.main_chat.GlobalConversationHub
+import com.moment.app.main_chat.GlobalConversationManager
 import com.moment.app.utils.AppInfo
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.MomentCoreParams
@@ -45,7 +45,7 @@ import javax.inject.Inject
 import kotlin.math.max
 
 
-class UserImManager(val globalConversationHub: GlobalConversationHub): UserIMManagerBus {
+class UserImManager(val globalConversationHub: GlobalConversationManager): UserIMManagerBus {
     private var retryCount = 0
     private val handler = Handler(Looper.getMainLooper())
 
@@ -344,7 +344,7 @@ class UserImManager(val globalConversationHub: GlobalConversationHub): UserIMMan
 //    }
 
     //实现ConnectionListener接口
-    private inner class MyConnectionListener(val globalConversationHub: GlobalConversationHub ) : EMConnectionListener {
+    private inner class MyConnectionListener(val globalConversationHub: GlobalConversationManager ) : EMConnectionListener {
         override fun onConnected() {
             LogUtils.d(MOMENT_APP, "onConnected")
             handler.post(Runnable {
