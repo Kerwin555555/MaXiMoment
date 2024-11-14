@@ -3,6 +3,7 @@ package com.moment.app
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Context
+import com.bumptech.glide.Glide
 import com.didi.drouter.api.DRouter
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.models.UserIMManagerBus
@@ -37,5 +38,17 @@ class MomentApp : Application() {
         emoji()
     }
 
+    override fun onLowMemory() {
+        super.onLowMemory()
+        Glide.with(this).onLowMemory()
+    }
 
+    override fun onTrimMemory(level: Int) {
+        super.onTrimMemory(level)
+        if (level == TRIM_MEMORY_UI_HIDDEN) {
+            Glide.get(this).clearMemory()
+        } else {
+            Glide.with(this).onTrimMemory(level)
+        }
+    }
 }

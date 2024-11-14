@@ -55,7 +55,7 @@ class ConversationsListFragment: BaseFragment() , ConversationChangeListener {
         binding.refreshView.initWith(
             adapter = adapter,
             emptyView = RecommendationEmptyView(this.requireContext())) { isLoadMore ->
-            conversationManager.refreshListFromDB()
+            conversationManager.simplyRefreshListFromDB()
         }
         binding.refreshView.getRecyclerView().addItemDecoration(
             DataDividerItemDecoration(
@@ -68,7 +68,7 @@ class ConversationsListFragment: BaseFragment() , ConversationChangeListener {
 
     override fun onResume() {
         super.onResume()
-        conversationManager.refreshListFromDB()
+        conversationManager.simplyRefreshListFromDB()
     }
 
     override fun onConversationsChange() {

@@ -8,6 +8,7 @@ import com.moment.app.databinding.ActivityMainBinding
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.eventbus.LogoutEvent
 import com.moment.app.hilt.app_level.MockData
+import com.moment.app.main_chat.ConversationChangeListener
 import com.moment.app.main_chat.GlobalConversationManager
 import com.moment.app.ui.FragmentNavigator
 import com.moment.app.ui.MainNaviConfig
@@ -30,9 +31,17 @@ class MainActivity : BaseActivity() {
     private lateinit var fragmentNavigator: FragmentNavigator
     private val mainViewModel by viewModels<MainActivityViewModel>()
 
+    //accept changes from conversation manager
+    private val mainActivityConversationChangeListener = object: ConversationChangeListener {
+        override fun onConversationsChange() {
+
+
+        }
+    }
+
     @Inject
     @MockData
-    lateinit var conversationHub: GlobalConversationManager
+    lateinit var conversationsManager: GlobalConversationManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +56,10 @@ class MainActivity : BaseActivity() {
         fragmentNavigator =
             FragmentNavigator(supportFragmentManager, pageAdapter, R.id.fragment_container)
         mainViewModel.fetchTabs()
-        conversationHub.loadMetaDataFromBackend()
+
+        conversationsManager.addConversationListener(mainActivityConversationChangeListener)
+        conversationsManager.loadMetaDataFromBackendAndUpdateUserInfos()
+        conversationsManager.simplyRefreshListFromDB()
 
         initObservers()
     }
@@ -97,8 +109,9 @@ class MainActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         EventBus.getDefault().unregister(this)
+        conversationsManager.removeConversationListener(mainActivityConversationChangeListener)
+        super.onDestroy()
     }
 
     @Subscribe

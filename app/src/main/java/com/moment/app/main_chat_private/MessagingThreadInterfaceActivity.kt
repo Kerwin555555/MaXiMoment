@@ -156,6 +156,8 @@ class MessagingThreadInterfaceActivity: BaseActivity(){
         currentJob?.cancelIfActive()
         currentJob = startCoroutine({
             val messages = withContext(Dispatchers.IO) {
+                //https://blog.csdn.net/CrackgmKey/article/details/82381192
+                //https://www.easemob.com/apidoc/android/chat/com/easemob/chat/EMChatManager.html
                 val emConversation = imLoginModel.getEMConversation(conversation_partner_huanxin_id?:"")
                 if (emConversation == null) {
                     Log.d(MOMENT_APP, "load#EMConversation... isEmpty")
@@ -206,7 +208,7 @@ class MessagingThreadInterfaceActivity: BaseActivity(){
         if (conversation_partner_user_info == null) {
             startCoroutine({
                 if (partner_user_id == null) {
-                    //由环信ID来
+                    //来自环信ID
                     val userInfo = (imLoginModel.loadUserInfosAccordingToHXids(listOf(conversation_partner_huanxin_id!!)))[0]
                     fillUserInfo(userInfo = userInfo)
                 } else {

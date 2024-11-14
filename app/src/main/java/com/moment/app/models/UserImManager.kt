@@ -45,7 +45,7 @@ import javax.inject.Inject
 import kotlin.math.max
 
 
-class UserImManager(val globalConversationHub: GlobalConversationManager): UserIMManagerBus {
+class UserImManager(val conversationsManager: GlobalConversationManager): UserIMManagerBus {
     private var retryCount = 0
     private val handler = Handler(Looper.getMainLooper())
 
@@ -103,7 +103,7 @@ class UserImManager(val globalConversationHub: GlobalConversationManager): UserI
             //在做打包混淆时，关闭debug模式，避免消耗不必要的资源
         EMClient.getInstance().setDebugMode(BuildConfig.DEBUG)
         //注册一个监听连接状态的listener
-        EMClient.getInstance().addConnectionListener(MyConnectionListener(globalConversationHub))
+        EMClient.getInstance().addConnectionListener(MyConnectionListener(conversationsManager))
         EMClient.getInstance().chatManager().addMessageListener(IMessageListener())
         loadChatData()
     }
@@ -125,7 +125,7 @@ class UserImManager(val globalConversationHub: GlobalConversationManager): UserI
     override suspend fun loadUserInfosAccordingToHXids(ids: List<String>): MutableList<UserInfo> {
         if (true) return mutableListOf()
         val map = mutableMapOf("ids" to ids)
-        return globalConversationHub.threadService.getUserInfoByImId(map).data?.values?.toMutableList() ?: mutableListOf()
+        return conversationsManager.threadService.getUserInfoByImId(map).data?.values?.toMutableList() ?: mutableListOf()
     }
 
 //    override suspend fun loadUserInfosAccordingToHXids(ids: List<String>): MutableList<UserInfo> {
@@ -187,7 +187,7 @@ class UserImManager(val globalConversationHub: GlobalConversationManager): UserI
         if (true) return
         try {
             EMClient.getInstance().chatManager().saveMessage(message)
-            globalConversationHub.handleMessageSend(message)
+            conversationsManager.handleMessageSend(message)
         } catch (e: Exception) {
             //ignore
         }
@@ -224,7 +224,7 @@ class UserImManager(val globalConversationHub: GlobalConversationManager): UserI
 
     override fun updateUserInfo(hxid: String?, info: UserInfo?) {
         if (true) return
-        globalConversationHub.updateUserInfo(hxid, info)
+        conversationsManager.updateUserInfo(hxid, info)
     }
 
 
@@ -351,7 +351,7 @@ class UserImManager(val globalConversationHub: GlobalConversationManager): UserI
                 EventBus.getDefault().post(ConnectState(true))
             })
             handler.postDelayed(Runnable {
-                globalConversationHub.loadMetaDataFromLocalRoomDb()
+                globalConversationHub.loadLocalRoomDbAndUpdateUserInfos()
             }, 1000)
         }
 

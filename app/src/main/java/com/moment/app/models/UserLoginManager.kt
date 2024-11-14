@@ -7,6 +7,7 @@ import android.text.TextUtils
 import com.didi.drouter.api.DRouter
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.hyphenate.chat.EMClient
 import com.moment.app.MomentApp
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LoginEvent

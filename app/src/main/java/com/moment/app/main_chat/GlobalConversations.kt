@@ -18,12 +18,24 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.lang.ref.WeakReference
+import java.util.Collections
 
 class GlobalConversationManager(val conversationDao: MessagingListDao, val threadService: ThreadService) {
     val conversations = mutableListOf<EntityConversation>()
         get() = field
 
-    val conversationChangeListeners = mutableListOf<WeakReference<ConversationChangeListener>>()
+    val conversationChangeListeners = Collections.synchronizedList<WeakReference<ConversationChangeListener>>(java.util.ArrayList())
+
+
+    fun addConversationListener(conversationListener: ConversationChangeListener) {
+        conversationChangeListeners.add(WeakReference(conversationListener))
+    }
+
+    fun removeConversationListener(listener: ConversationChangeListener) {
+        conversationChangeListeners.removeAll {
+            it.get() == listener
+        }
+    }
 
     private var isLocalLoading = false
 
@@ -35,8 +47,10 @@ class GlobalConversationManager(val conversationDao: MessagingListDao, val threa
 //        }
     }
 
-
-    fun loadMetaDataFromBackend() {
+    /**
+     *  only once during cold start https://doc.easemob.com/document/android/conversation_overview.html#%E4%BC%9A%E8%AF%9D%E7%B1%BB
+     */
+    fun loadMetaDataFromBackendAndUpdateUserInfos() {
         if (MessagingContactListHelper.getBoolean(MessagingContactListHelper.HAS_LOAD_CLOUD_CONVERSATION, false)) return
         coroutineScope.launch(Dispatchers.IO){
             val ids = ArrayList<String>()
@@ -53,7 +67,9 @@ class GlobalConversationManager(val conversationDao: MessagingListDao, val threa
 //                conversationDao.updatePin(bean.conversation_id, if (bean.pinned) 1 else 0)
 //                conversationDao.updateFlag(bean.conversation_id, if (bean.reply_later) 1 else 0)
             }
-            res.awaitAll()
+            kotlin.runCatching {
+               res.awaitAll()
+            }
 
 
             //update messages
@@ -74,12 +90,21 @@ class GlobalConversationManager(val conversationDao: MessagingListDao, val threa
         }
     }
 
-    fun loadMetaDataFromLocalRoomDb() {
+    /**
+     * 每次回到 聊天list 刷新 https://doc.easemob.com/document/android/conversation_overview.html#%E4%BC%9A%E8%AF%9D%E7%B1%BB
+     */
+    fun loadLocalRoomDbAndUpdateUserInfos() {
         coroutineScope.launch(Dispatchers.IO) {
             if (MessagingContactListHelper.getBoolean(MessagingContactListHelper.HAS_LOAD_LOCAL_CONVERSATION, false) || isLocalLoading) return@launch
             isLocalLoading = true
+            /**
+             * 	 * 先从内存中加载，如果内存中没有再从数据库中加载。
+             * 	 *
+             * 	 * @return 返回本地内存或者数据库中所有的会话。
+             */
             val chatConversations = EMClient.getInstance().chatManager().getConversationsByType(
                 EMConversationType.Chat)
+            //有一种可能 chatConversations 完全为空
             for (emConversation in chatConversations) {
               //  val code = insertNewConversation(emConversation.conversationId(), )
 //                if (code > 0) {
@@ -141,7 +166,11 @@ class GlobalConversationManager(val conversationDao: MessagingListDao, val threa
         }
         return ArrayList()
     }
-    fun refreshListFromDB() {
+
+    /**
+     * 首次加载时速度填充 防止网络不好导致长时间的加载态；每次onResume,调用这个。
+     */
+    fun simplyRefreshListFromDB() {
         coroutineScope.launch(Dispatchers.IO) {
             val list = getAllFromDb()
             withContext(Dispatchers.Main) {
