@@ -33,11 +33,8 @@ class HomeFragment : BaseFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        ImmersionBar.with(this)
-            .statusBarDarkFont(false)
-            .fitsSystemWindows(false)
-            .init()
-         initUI()
+
+        initUI()
     }
 
     private fun initUI() {

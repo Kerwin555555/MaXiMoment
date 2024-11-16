@@ -22,6 +22,7 @@ import com.didi.drouter.api.DRouter
 import com.didi.drouter.api.Extend
 import com.moment.app.R
 import com.moment.app.databinding.ActivityProfileBinding
+import com.moment.app.datamodel.FINISHED_INFO
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LoginEvent
 import com.moment.app.hilt.app_level.MockData
@@ -39,14 +40,11 @@ import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.SerializeManager
 import com.moment.app.utils.cleanSavedFragments
-import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.immersion
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
 import com.moment.app.utils.setBgEnableStateListDrawable
-import com.moment.app.utils.setBgSelectedStateListDrawable
-import com.moment.app.utils.setBgStateListDrawable
 import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.setTextColorStateSelectList
 import dagger.hilt.android.AndroidEntryPoint
@@ -254,7 +252,7 @@ class ProfileViewModel @Inject constructor(
                 "bio" to data.bio
             ))
             val info: UserInfo = UserLoginManager.getUserInfo() ?: return@startCoroutine
-            info.name = data.nickName
+            info.nickname = data.nickName
             info.birthday = data.birthDateToString()
             info.age = DateManagingHub.getAge(info.birthday)
             info.gender = data.gender
@@ -293,7 +291,7 @@ class ProfileViewModel @Inject constructor(
             UserLoginManager.setUserInfo(UserLoginManager.getUserInfo()?.apply {
                 avatar = file // for test
                 imagesWallList = mutableListOf(file!!)
-                finished_info = true
+                register_status = FINISHED_INFO
             })
             Log.d(MOMENT_APP, SerializeManager.toJson(UserLoginManager.getUserInfo()))
             hasAvatarLiveData.value = true

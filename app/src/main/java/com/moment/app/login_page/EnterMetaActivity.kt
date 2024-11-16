@@ -16,7 +16,6 @@ import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.models.UserIMManagerBus
-import com.moment.app.models.UserImManager
 import com.moment.app.models.UserLoginManager
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
@@ -35,7 +34,6 @@ class EnterMetaActivity : BaseActivity() {
     private lateinit var callbackManager: CallbackManager
 
     @Inject
-    @MockData
     lateinit var loginService: LoginService
 
     @Inject
@@ -107,10 +105,12 @@ class EnterMetaActivity : BaseActivity() {
          val progressDialog = ProgressIndicatorFragment.show(this)
          progressDialog.isCancelable = false
          startCoroutine({
-             val map = mutableMapOf("token" to metaToken)
-             val result = loginService.facebookLogin(map)
-             val info: UserInfo? = result.data
-             if (info == null || TextUtils.isEmpty(info.userId)) {
+             val map = mutableMapOf("login_token" to metaToken, "login_type" to "facebook")
+             val result = loginService.login(map)
+             val info: UserInfo? = result.data?.user_info?.apply {
+                 session = result.data?.session
+             }
+             if (info == null || TextUtils.isEmpty(info.user_id)) {
                  //onFail(-1, getString(R.string.data_error))
                  return@startCoroutine
              }

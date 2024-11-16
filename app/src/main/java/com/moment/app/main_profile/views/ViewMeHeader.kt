@@ -164,7 +164,7 @@ class ViewMeHeader : ConstraintLayout {
             helper.itemView.setOnClickListener {
                 kotlin.runCatching {
                     (helper.itemView as ImageFilterView).showInImageViewer(
-                        userInfo!!.imagesWallList,
+                        userInfo!!.imagesWallList!!,
                         item ?: ""
                     )
                 }

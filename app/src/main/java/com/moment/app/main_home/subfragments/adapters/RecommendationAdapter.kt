@@ -24,11 +24,11 @@ class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.Fr
         val binding= helper.binding
         binding.avatar.setOnAvoidMultipleClicksListener({
             DRouter.build("/user")
-                .putExtra("id", item.userId)
+                .putExtra("id", item.user_id)
                 .start()
         }, 500)
 
-        binding.name.text = item.name
+        binding.name.text = item.nickname
 
         binding.gender.bindGender(item)
 

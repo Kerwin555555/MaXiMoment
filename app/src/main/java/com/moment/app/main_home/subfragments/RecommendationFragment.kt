@@ -86,7 +86,7 @@ class RecommendationFragment: BaseFragment() {
         currentJob = startCoroutine({
             if (!isLoadMore) {
                 startPos = 0
-                val key = "${UserLoginManager.getUserInfo()?.userId?:""}_recommendation"
+                val key = "${UserLoginManager.getUserInfo()?.user_id?:""}_recommendation"
                 if (!MomentNetwork.coldStartMap.containsKey(key)) {
                     kotlin.runCatching {
                         withContext(Dispatchers.IO) {
@@ -118,7 +118,7 @@ class RecommendationFragment: BaseFragment() {
                 this.async(Dispatchers.IO) {
                     val item = (result.data as UserInfoList).user_infos?.map { it ->
                         UserInfoEntity(
-                            userId = it.userId!!,
+                            userId = it.user_id!!,
                             userInfo = it
                         )
                     }

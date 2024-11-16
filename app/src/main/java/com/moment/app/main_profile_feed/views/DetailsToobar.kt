@@ -21,7 +21,7 @@ class DetailsToolbar: ConstraintLayout{
     }
 
     fun bindData(userInfo: UserInfo) {
-        binding.name.text = userInfo.name
+        binding.name.text = userInfo.nickname
         binding.gender.bindGender(userInfo)
         Glide.with(this).load(userInfo.avatar)
             .into(binding.avatar)

@@ -5,6 +5,7 @@ import com.moment.app.datamodel.CommentItem
 import com.moment.app.datamodel.CommentItem.TimeInfoBean
 import com.moment.app.datamodel.CommentsList
 import com.moment.app.datamodel.HuanxinBean
+import com.moment.app.datamodel.LoginSessionResult
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.login_page.service.FeedService
@@ -119,9 +120,9 @@ class MockHomeService: HomeService {
                     this.user_id = ""+java.util.UUID.randomUUID()
                     this.password = "dsds"
                 }
-                this.userId = ""+java.util.UUID.randomUUID()
+                this.user_id = ""+java.util.UUID.randomUUID()
                 this.gender = if (i%2 ==0)"boy" else "girl"
-                this.name = "MomentFan" + i
+                this.nickname = "MomentFan" + i
                 this.age = i
                 this.followed = i%2 ==0
                 this.imagesWallList = mutableListOf("0","1", "2", "3", "1")
@@ -134,21 +135,18 @@ class MockHomeService: HomeService {
         result.next_start = startPos + num
         return Results<UserInfoList>().apply {
             data = result
-            isOk = true
-            this.result = 0
         }
     }
 }
 
 class MockLoginService: LoginService {
-    override suspend fun facebookLogin(map: Map<String, String>): Results<UserInfo> {
+    override suspend fun login(map: Map<String, String>): Results<LoginSessionResult> {
         val res = withContext(Dispatchers.IO) {
             delay(800)
             UserInfo(
-                userId = UUID.randomUUID().toString(),
-                name = "Momentfanxxx",
+                user_id = UUID.randomUUID().toString(),
+                nickname = "Momentfanxxx",
                 session = "mysession",
-                finished_info = false,
                 huanxin = HuanxinBean().apply{
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
@@ -161,35 +159,10 @@ class MockLoginService: LoginService {
                 bio = ""
             )
         }
-        return Results<UserInfo>().apply {
-            data = res
+        return Results<LoginSessionResult>().apply {
+
         }
 
-    }
-
-    override suspend fun googleLogin(map: Map<String, String>): Results<UserInfo> {
-        val res = withContext(Dispatchers.IO) {
-            delay(800)
-            UserInfo(
-                userId = UUID.randomUUID().toString(),
-                name = "Momentfanxxx",
-                session = "mysession",
-                finished_info = false,
-                huanxin = HuanxinBean().apply{
-                    password  = "045xxxx"
-                    user_id = "loveabscdessss"
-                },
-                gender = "boy",
-                imagesWallList = mutableListOf("0","1", "2", "3", "1"),
-                follower_count = 10000,
-                following_count= 100000,
-                friends_count = 1000000,
-                bio = "hello this is the default from the backend mhello this is the default from the backend hello this is the default from the backend hello this is the default from the backend"
-            )
-        }
-        return Results<UserInfo>().apply {
-            data = res
-        }
     }
 
     override suspend fun logout(): Results<Any> {
@@ -201,10 +174,9 @@ class MockLoginService: LoginService {
         val res = withContext(Dispatchers.IO) {
             delay(800)
             UserInfo(
-                userId = UUID.randomUUID().toString(),
-                name = "Momentfanxxx",
+                user_id = UUID.randomUUID().toString(),
+                nickname = "Momentfanxxx",
                 session = "mysession",
-                finished_info = false,
                 huanxin = HuanxinBean().apply{
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
@@ -257,10 +229,9 @@ class MockFeedService : FeedService{
     override suspend fun getFeeds(user: String?, startPos: Int, num: Int): Results<FeedList?> {
         return withContext(Dispatchers.IO) {
             val user = UserInfo(
-                userId = UUID.randomUUID().toString(),
-                name = "Momentfanxxx",
+                user_id = UUID.randomUUID().toString(),
+                nickname = "Momentfanxxx",
                 session = "mysession",
-                finished_info = true,
                 huanxin = HuanxinBean().apply{
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
@@ -297,8 +268,6 @@ class MockFeedService : FeedService{
                     has_next = next_start < 30
                 }
                 data!!.feeds = list
-                isOk = true
-                this.result = 0
 
             }
         }
@@ -342,8 +311,8 @@ class MockFeedService : FeedService{
                         content = "You are cute let us chat"
                         user_info = UserInfo(
                             avatar = "avatar",
-                            userId = UUID.randomUUID().toString(),
-                            name = "MomentComment",
+                            user_id = UUID.randomUUID().toString(),
+                            nickname = "MomentComment",
                             huanxin = HuanxinBean().apply{
                                 password  = "045xxxx"
                                 user_id = "loveabscdessss"
@@ -355,7 +324,6 @@ class MockFeedService : FeedService{
             }
         }
         return Results<CommentsList>().apply {
-            isOk = true
             data = comment
         }
     }
@@ -366,10 +334,9 @@ class MockFeedService : FeedService{
         }
         return Results<UserInfo>().apply {
             data =             UserInfo(
-                userId = UUID.randomUUID().toString(),
-                name = "Momentfanxxx",
+                user_id = UUID.randomUUID().toString(),
+                nickname = "Momentfanxxx",
                 session = "mysession",
-                finished_info = false,
                 huanxin = HuanxinBean().apply{
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
@@ -397,8 +364,8 @@ class MockThreadService: ThreadService {
                     this. create_time = null
                     this.user_id = UUID.randomUUID().toString()
                     this. userInfo  =   UserInfo(
-                    userId = UUID.randomUUID().toString(),
-                    name = "Momentfanxxx",
+                    user_id = UUID.randomUUID().toString(),
+                    nickname = "Momentfanxxx",
                     gender = "girl",
                 )
                 })
@@ -415,10 +382,9 @@ class MockThreadService: ThreadService {
         val res = withContext(Dispatchers.IO) {
             delay(800)
             UserInfo(
-                userId = UUID.randomUUID().toString(),
-                name = "Momentfanxxx",
+                user_id = UUID.randomUUID().toString(),
+                nickname = "Momentfanxxx",
                 session = "mysession",
-                finished_info = false,
                 huanxin = HuanxinBean().apply{
                     password  = "045xxxx"
                     user_id = "loveabscdessss"
@@ -439,10 +405,9 @@ class MockThreadService: ThreadService {
     override suspend fun getUserInfoByImId(map: Map<String, List<String>>): Results<Map<String, UserInfo>> {
         return Results<Map<String, UserInfo>>().apply {
             data = mutableMapOf("other" to UserInfo(
-                userId = UUID.randomUUID().toString(),
-                name = "Momentfanxxx",
+                user_id = UUID.randomUUID().toString(),
+                nickname = "Momentfanxxx",
                 session = "mysession",
-                finished_info = false,
                 huanxin = HuanxinBean().apply{
                     password  = "045xxxx"
                     user_id = "loveabscdessss"

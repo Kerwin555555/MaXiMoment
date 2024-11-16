@@ -7,14 +7,8 @@ import android.os.Bundle
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.Lifecycle
-import com.trello.lifecycle2.android.lifecycle.AndroidLifecycle
-import com.trello.rxlifecycle3.LifecycleProvider
-import com.trello.rxlifecycle3.LifecycleTransformer
 
 abstract class BaseDialogFragment : DialogFragment() {
-    private val provider
-            : LifecycleProvider<Lifecycle.Event> = AndroidLifecycle.createLifecycleProvider(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,10 +29,6 @@ abstract class BaseDialogFragment : DialogFragment() {
 
     protected fun windowColor(): Int {
         return Color.TRANSPARENT
-    }
-
-    protected fun <T> bindToLifecycle(): LifecycleTransformer<T> {
-        return provider.bindToLifecycle()
     }
 
     override fun dismiss() {

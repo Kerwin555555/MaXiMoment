@@ -34,10 +34,6 @@ object MomentKeysManager {
     fun getSessionOrForbid(): String {
         val session = getSession()
         if (TextUtils.isEmpty(session)) {
-            val forbidSession = UserLoginManager.forbidden_session
-            if (!TextUtils.isEmpty(forbidSession)) {
-                return forbidSession!!
-            }
             return ""
         }
         return session

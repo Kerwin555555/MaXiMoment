@@ -23,7 +23,7 @@ class PostDetailCommentsAdapter : BaseQuickAdapter<CommentItem, PostDetailCommen
     override fun convert(holder: PostDetailCommentsAdapter.CommentItemHolder, item: CommentItem) {
         val binding = holder.binding
         item.user_info?.let {
-            binding.name.text = item.user_info?.name ?: ""
+            binding.name.text = item.user_info?.nickname ?: ""
             Glide.with(mContext).load(it.avatar).into(binding.avatar)
             binding.gender.bindGender(it)
         }

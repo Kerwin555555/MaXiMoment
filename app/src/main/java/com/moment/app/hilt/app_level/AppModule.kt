@@ -3,6 +3,9 @@ package com.moment.app.hilt.app_level
 import android.app.Application
 import androidx.room.Room
 import androidx.room.RoomDatabase.JournalMode
+import com.moment.app.BuildConfig
+import com.moment.app.hilt.app_level.interceptors.LogInterceptor
+import com.moment.app.hilt.app_level.interceptors.converter.MyGsonConverterFactory
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_chat.MessagingListDao
@@ -22,6 +25,8 @@ import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.net.Proxy
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module
@@ -30,7 +35,16 @@ class NetWorkModule {
     @Provides
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
-        return OkHttpClient.Builder().build()
+        val builder = OkHttpClient.Builder()
+            .addInterceptor(LogInterceptor())
+            .connectTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .cache(null)
+        if (!BuildConfig.DEBUG && BASE_URL.contains("https")) {
+            builder.proxy(Proxy.NO_PROXY)
+        }
+        return builder.build()
     }
 
     @Singleton
@@ -39,7 +53,7 @@ class NetWorkModule {
         return Retrofit.Builder()
             .client(client)
             .baseUrl(BASE_URL)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(MyGsonConverterFactory.create())
             .build()
     }
 

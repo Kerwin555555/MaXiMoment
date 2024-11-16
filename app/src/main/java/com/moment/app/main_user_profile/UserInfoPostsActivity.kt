@@ -125,7 +125,7 @@ class UserInfoPostsActivity : BaseActivity(){
     private fun ensureParam() {
         val userInfo = intent.getSerializableExtra("userInfo")  as UserInfo?
         userInfo?.let {
-            it.userId?.let { id ->
+            it.user_id?.let { id ->
                 this.userId = id
             }
         }

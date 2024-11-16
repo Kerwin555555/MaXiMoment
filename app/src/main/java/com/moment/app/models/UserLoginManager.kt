@@ -7,8 +7,8 @@ import android.text.TextUtils
 import com.didi.drouter.api.DRouter
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.hyphenate.chat.EMClient
 import com.moment.app.MomentApp
+import com.moment.app.datamodel.FINISHED_INFO
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LoginEvent
 import com.moment.app.eventbus.LogoutEvent
@@ -22,11 +22,7 @@ import org.greenrobot.eventbus.EventBus
 
 object UserLoginManager {
     private var info: UserInfo? = null
-    var forbidden_session: String? = null
-        get() = field
-        set(value) {
-            field = value
-        }
+
     init {
             try {
                 resetInfoCache(AppPrefs.getUserInfo())
@@ -55,7 +51,7 @@ object UserLoginManager {
     }
 
     fun getUserId(): String {
-        return if (info != null) (info!!.userId ?: "") else ""
+        return if (info != null) (info!!.user_id ?: "") else ""
     }
 
     fun setUserInfo(info: UserInfo?) {
@@ -81,7 +77,7 @@ object UserLoginManager {
         setUserInfo(info)
         //Sea.getInstance().config().uid(info.getUser_id())
         //EyeConnector.getInstance().fetchEyeToken()
-        if (!info.finished_info) {
+        if (info.register_status != FINISHED_INFO) {
             //这里暂时使用原始的，不使用router，router拦截器可能异步执行，导致黑屏体验问题
             val intent = Intent(context, ProfileActivity::class.java)
             intent.putExtra("type", type)
@@ -155,7 +151,6 @@ object UserLoginManager {
         }
 
         info = null
-        forbidden_session = null
     }
 
     private fun logoutApi(loginService: LoginService) {
@@ -168,7 +163,7 @@ object UserLoginManager {
 
     fun isMe(id: String?): Boolean {
         if (info != null) {
-            return TextUtils.equals(id, info?.userId)
+            return TextUtils.equals(id, info?.user_id)
         }
         return false
     }

@@ -93,9 +93,9 @@ class ViewFeedPicturesHeader : ConstraintLayout, DetailsFeedView {
             Glide.with(this).load(it.avatar)
                 .into(toolbarBinding.avatar)
             toolbarBinding.gender.bindGender(it)
-            toolbarBinding.name.text = it.name
+            toolbarBinding.name.text = it.nickname
             UserLoginManager.getUserInfo()?.let { userInfo ->
-                  if (userInfo.userId == it.userId) {
+                  if (userInfo.user_id == it.user_id) {
                       toolbarBinding.more.isVisible = false
                   } else {
                       toolbarBinding.more.isVisible = true

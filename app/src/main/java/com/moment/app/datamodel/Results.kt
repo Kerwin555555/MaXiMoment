@@ -1,18 +1,37 @@
 package com.moment.app.datamodel
 
+import java.io.IOException
+
 class Results<T>  {
-    var isOk: Boolean = false
-    var result: Int = 0 //0 成功
+    var code: Int = 0 //0 成功
     var msg: String? = null
     var message: String? = null
     var data: T? = null
 
     override fun toString(): String {
         return "Result{" +
-                "success=" + isOk +
-                ", result=" + result +
+                "success="  +
+                ", result=" + code +
                 ", msg='" + msg + '\'' +
                 ", data=" + data +
                 '}'
     }
 }
+
+class BackendException : IOException {
+    var errorCode: Int
+        private set
+
+    var response: String? = null
+        private set
+
+    constructor(code: Int, msg: String?) : super(msg) {
+        this.errorCode = code
+    }
+
+    constructor(code: Int, msg: String?, response: String?) : super(msg) {
+        this.errorCode = code
+        this.response = response
+    }
+}
+

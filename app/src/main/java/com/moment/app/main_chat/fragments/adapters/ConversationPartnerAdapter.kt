@@ -24,8 +24,8 @@ class ConversationPartnerAdapter: BaseQuickAdapter<EntityConversation, Conversat
     }
 
     override fun convert(helper: Holder, conversation: EntityConversation) {
-         helper.binding.avatar.loadImage(conversation.userInfo!!.userId, 60.dp, 60.dp)
-         helper.binding.name.text = conversation.userInfo!!.name
+         helper.binding.avatar.loadImage(conversation.userInfo!!.user_id, 60.dp, 60.dp)
+         helper.binding.name.text = conversation.userInfo!!.nickname
          helper.binding.gender.bindGender(conversation.userInfo!!)
         helper.binding.redDot.setBadgeBackground(2)
 

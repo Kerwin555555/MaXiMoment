@@ -126,7 +126,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
             initUI(userInfo = it)
             initialProfileData = ProfileViewModel.ProfileData(
                 avatar = it.avatar ?: "",
-                nickName = it.name,
+                nickName = it.nickname,
                 bio = it.bio,
                 gender = it.gender,
                 timeSelect = if (it.birthday.isNullOrEmpty()) Date() else DateManagingHub.birthdayToDate(it.birthday!!)
@@ -153,7 +153,7 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
         binding.avatar.setOnClickListener {
             onChooseFromLibrary()
         }
-        binding.nicknameEditText.setText(userInfo.name ?: "")
+        binding.nicknameEditText.setText(userInfo.nickname ?: "")
         binding.nicknameEditText.addTextChangedListener(object : TextWatcher{
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
@@ -339,7 +339,7 @@ class EditProfileViewModel : ViewModel() {
             "upload to backend".toast()
             UserLoginManager.getUserInfo()?.apply {
                 map["name"]?.let{
-                    this.name = it
+                    this.nickname = it
                 }
                 map["gender"]?.let{
                     this.gender = it

@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import com.moment.app.datamodel.BackendException
 import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.toast
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,6 +31,7 @@ inline fun CoroutineScope.startCoroutine(
     //map 配置 参数读取从主线程开始
     val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
         launch(Dispatchers.Main) {
+            NetErrorHandler.handleNetError(throwable)
             val pair = throwable.format()
             errorAction.invoke(MomentNetError(pair.first, pair.second, throwable))
         }
@@ -44,6 +46,7 @@ inline fun ViewModel.startCoroutine(
 ) : Job{
     val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
         this.viewModelScope.launch(Dispatchers.Main) {
+            NetErrorHandler.handleNetError(throwable)
             val pair = throwable.format()
             errorAction.invoke(MomentNetError(pair.first, pair.second, throwable))
         }
@@ -59,6 +62,7 @@ inline fun AppCompatActivity.startCoroutine(
 ) : Job  {
     val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
         this.lifecycleScope.launch(Dispatchers.Main) {
+            NetErrorHandler.handleNetError(throwable)
             val pair = throwable.format()
             errorAction.invoke(MomentNetError(pair.first, pair.second, throwable))
         }
@@ -74,6 +78,7 @@ inline fun Fragment.startCoroutine(
 ) : Job {
     val coroutineHandler = CoroutineExceptionHandler {_, throwable ->
         this.viewLifecycleOwner.lifecycleScope.launch(Dispatchers.Main) {
+            NetErrorHandler.handleNetError(throwable)
             val pair = throwable.format()
             errorAction.invoke(MomentNetError(pair.first, pair.second, throwable))
         }
@@ -86,7 +91,7 @@ inline fun Fragment.startCoroutine(
 
 fun Throwable.format(): Pair<Int, String?> {
     return when (this) {
-        is ApiException -> {
+        is BackendException -> {
             errorCode to message
         }
 
@@ -105,22 +110,6 @@ fun Throwable.format(): Pair<Int, String?> {
         else -> {
             -1 to "Connect error, please check your network and try later."
         }
-    }
-}
-
-class ApiException : IOException {
-    var errorCode: Int
-        private set
-    var response: String? = null
-        private set
-
-    constructor(code: Int, msg: String?) : super(msg) {
-        this.errorCode = code
-    }
-
-    constructor(code: Int, msg: String?, response: String?) : super(msg) {
-        this.errorCode = code
-        this.response = response
     }
 }
 

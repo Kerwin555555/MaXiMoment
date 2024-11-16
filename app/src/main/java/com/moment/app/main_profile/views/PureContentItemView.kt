@@ -58,7 +58,7 @@ class PureContentItemView: ConstraintLayout, AdapterItemView {
     private fun bindCommon(post: PostBean) {
         Glide.with(this).load(post.user_info!!.avatar)
             .into(binding.avatar)
-        binding.name.text = post.user_info!!.name
+        binding.name.text = post.user_info!!.nickname
         binding.content.text = post.content
         binding.gender.bindGender(post.user_info!!)
 

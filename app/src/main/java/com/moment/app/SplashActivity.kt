@@ -6,6 +6,7 @@ import android.text.TextUtils
 import com.didi.drouter.api.DRouter
 import com.didi.drouter.api.Extend
 import com.moment.app.databinding.ActivitySplashBinding
+import com.moment.app.datamodel.FINISHED_INFO
 import com.moment.app.eventbus.LoginEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
@@ -34,7 +35,6 @@ class SplashActivity : BaseActivity(){
         super.onCreate(savedInstanceState)
         binding = ActivitySplashBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        binding.root
         if (!isTaskRoot && intent.hasCategory(Intent.CATEGORY_LAUNCHER)
             &&  intent.action == Intent.ACTION_MAIN) {
             if (!intent.getStringExtra("route").isNullOrEmpty()) {
@@ -65,28 +65,17 @@ class SplashActivity : BaseActivity(){
     }
 
     private fun jump() {
-        if (UserLoginManager.isLogin() && UserLoginManager.getUserInfo()?.finished_info == true) {
+        if (UserLoginManager.isLogin() && UserLoginManager.getUserInfo()?.register_status == FINISHED_INFO) {
             var intent: Intent? = null
-            if (UserLoginManager.getUserInfo()?.finished_info == true) {
                 /*跳转主页*/
-                intent = Intent(this@SplashActivity, MainActivity::class.java)
-                if (getIntent().extras != null) {
-                    intent.putExtras(getIntent().extras!!)
-                }
-                intent.setData(getIntent().data)
-                DRouter.build("/main")
-                    .putExtra(Extend.START_ACTIVITY_VIA_INTENT, intent)
-                    .start()
-            } else {
-                intent = Intent(this@SplashActivity, ProfileActivity::class.java)
-                if (getIntent().extras != null) {
-                    intent.putExtras(getIntent().extras!!)
-                }
-                intent.setData(getIntent().data)
-                DRouter.build("/user/init")
-                    .putExtra(Extend.START_ACTIVITY_VIA_INTENT, intent)
-                    .start()
+            intent = Intent(this@SplashActivity, MainActivity::class.java)
+            if (getIntent().extras != null) {
+                intent.putExtras(getIntent().extras!!)
             }
+            intent.setData(getIntent().data)
+            DRouter.build("/main")
+                .putExtra(Extend.START_ACTIVITY_VIA_INTENT, intent)
+                .start()
 
             var loc = "EN"
             if (UserLoginManager.getUserInfo() != null
@@ -100,12 +89,7 @@ class SplashActivity : BaseActivity(){
             overridePendingTransition(0, 0)
         } else {
             if (UserLoginManager.isLogin()) {
-                val forbidSid: String? = UserLoginManager.forbidden_session
-                //登录但是有完善信息
                 UserLoginManager.logout(true, loginService = loginService)
-                if (!TextUtils.isEmpty(forbidSid)) {
-                    UserLoginManager.forbidden_session = forbidSid
-                }
             }
             loginDialog = MomentEntryFragment().apply {
                 supportFragmentManager

@@ -23,7 +23,6 @@ import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.models.UserIMManagerBus
-import com.moment.app.models.UserImManager
 import com.moment.app.models.UserLoginManager
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
@@ -163,10 +162,12 @@ class EnterAlphabetActivity : BaseActivity() {
         val progressDialog = ProgressIndicatorFragment.show(this)
         progressDialog.isCancelable = false
         startCoroutine({
-             val map = mutableMapOf("token" to token)
-             val result = loginService.googleLogin(map)
-            val info: UserInfo? = result.data
-            if (info == null || TextUtils.isEmpty(info.userId)) {
+            val map = mutableMapOf("login_token" to token, "login_type" to "google")
+            val result = loginService.login(map)
+            val info: UserInfo? = result.data?.user_info?.apply {
+                session = result.data?.session
+            }
+            if (info == null || TextUtils.isEmpty(info.user_id)) {
                 //onFail(-1, getString(R.string.data_error))
                 return@startCoroutine
             }

@@ -1,7 +1,7 @@
 package com.moment.app.login_page.service
 
-import com.moment.app.datamodel.CommentItem
 import com.moment.app.datamodel.CommentsList
+import com.moment.app.datamodel.LoginSessionResult
 import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.main_profile.entities.FeedList
@@ -13,11 +13,8 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface LoginService {
-    @POST("api/sns/v1/moment/user/facebook_login")
-    suspend fun facebookLogin(@Body map: Map<String, String>): Results<UserInfo>
-
-    @POST("api/sns/v1/moment/user/google_login")
-    suspend fun googleLogin(@Body map: Map<String, String>): Results<UserInfo>
+    @POST("api/v1/user/login")
+    suspend fun login(@Body map: Map<String, String>): Results<LoginSessionResult>
 
     @GET("api/sns/v1/moment/user/logout")
     suspend fun logout(): Results<Any>

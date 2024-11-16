@@ -4,9 +4,9 @@ import android.text.TextUtils
 import com.moment.app.BuildConfig
 
 object MomentCoreParams {
-    const val ONLINE_URL: String = "https://www.moment.com/"
+    const val ONLINE_URL: String = "http://106.14.221.125:8080/"
 
-    const val TEST_URL: String = "http://test.moment.com/"
+    const val TEST_URL: String = "http://106.14.221.125:8080/"
 
     const val OSS: String = "http://oss.moment.com/"
     const val BS_CDN: String = "https://baishan.moment.com/"

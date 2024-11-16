@@ -13,11 +13,9 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.StateListDrawable
 import android.util.Log
-import android.view.Gravity
 import android.view.View
 import android.view.ViewConfiguration
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.ColorInt
@@ -43,7 +41,6 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.suspendCancellableCoroutine
-import org.w3c.dom.Text
 import java.util.UUID
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.coroutines.resume
@@ -397,7 +394,7 @@ suspend fun generateEmptyMockUserInfos(start_pos : Int = 0, limit: Int =10) : Us
         if (start_pos + i > 50) noNext = true
         val uuid = UUID.randomUUID()
         f.user_infos?.add(UserInfo("${start_pos + i}", if (i%2==0) "boy" else "girl",age = 19 ).apply {
-            name = "Moment"+uuid
+            nickname = "Moment"+uuid
         })
     }
     delay(1200)

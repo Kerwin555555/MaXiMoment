@@ -5,13 +5,18 @@ import android.app.Application
 import android.content.Context
 import com.bumptech.glide.Glide
 import com.didi.drouter.api.DRouter
+import com.moment.app.datamodel.BackendException
 import com.moment.app.hilt.app_level.MockData
+import com.moment.app.login_page.service.LoginService
 import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserImManager
 import com.moment.app.models.UserLoginManager
+import com.moment.app.network.NetErrorHandler
+import com.moment.app.network.NetErrorHandler.OnApiErrorListener
 import com.moment.app.utils.AppInfo
 import com.moment.app.utils.emoji
 import dagger.hilt.android.HiltAndroidApp
+import okhttp3.Request
 import javax.inject.Inject
 
 
@@ -26,6 +31,9 @@ class MomentApp : Application() {
     @MockData
     lateinit var imLoginModel: UserIMManagerBus
 
+    @Inject
+    lateinit var loginService: LoginService
+
     override fun onCreate() {
         super.onCreate()
         DRouter.init(this)
@@ -36,6 +44,19 @@ class MomentApp : Application() {
 
         UserLoginManager.getUserInfo()
         emoji()
+        NetErrorHandler.setListener(object : OnApiErrorListener{
+            override fun onApiError(r: Request?, t: Throwable?) {
+                when (t) {
+                    is BackendException -> {
+                        if (t.errorCode == 401) {
+                            UserLoginManager.logout(true, loginService = loginService)
+                        }
+                    } else -> {
+
+                    }
+                }
+            }
+        })
     }
 
     override fun onLowMemory() {

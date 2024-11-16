@@ -11,8 +11,6 @@ import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.bumptech.glide.request.RequestOptions
 import com.chad.library.adapter.base.BaseQuickAdapter
 import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.R
@@ -92,7 +90,7 @@ class ImageItemView: ConstraintLayout , AdapterItemView{
         Glide.with(this).load(post.user_info!!.avatar)
             .into(binding.avatar)
         binding.gender.bindGender(post.user_info!!)
-        binding.name.text = post.user_info!!.name
+        binding.name.text = post.user_info!!.nickname
         binding.content.text = post.content
 
         binding.time.text = SimpleDateFormat("yyyy.MM.dd HH:mm")

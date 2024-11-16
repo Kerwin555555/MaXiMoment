@@ -3,7 +3,6 @@ package com.moment.app.main_profile_feed.views
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.bumptech.glide.Glide
@@ -61,7 +60,7 @@ class ViewFeedContentHeader : ConstraintLayout, DetailsFeedView{
             Glide.with(this).load(it.avatar)
                 .into(detailBinding.avatar)
             detailBinding.gender.bindGender(it)
-            detailBinding.name.text = it.name
+            detailBinding.name.text = it.nickname
         }
         binding.content.text = post.content
         detailBinding.back.setOnClickListener {
