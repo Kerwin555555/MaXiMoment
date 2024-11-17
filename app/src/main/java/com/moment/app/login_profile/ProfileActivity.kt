@@ -271,8 +271,6 @@ class ProfileViewModel @Inject constructor(
 
 
     fun saveAvatar(imageView: PictureCroppingView) {
-        Log.d(MOMENT_APP, "wro")
-        Log.d(MOMENT_APP, "dxx xxxxdasdfas")
         startCoroutine({
             showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(cancellable = false)
             kotlin.runCatching {

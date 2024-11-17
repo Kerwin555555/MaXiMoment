@@ -9,12 +9,13 @@ import com.moment.app.datamodel.BackendException
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.models.UserIMManagerBus
-import com.moment.app.models.UserImManager
 import com.moment.app.models.UserLoginManager
 import com.moment.app.network.NetErrorHandler
 import com.moment.app.network.NetErrorHandler.OnApiErrorListener
 import com.moment.app.utils.AppInfo
+import com.moment.app.utils.MachineUUIDManager
 import com.moment.app.utils.emoji
+import com.moment.app.utils.sntp.SntpClock
 import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.Request
@@ -41,6 +42,8 @@ class MomentApp : Application() {
         appContext = this
 
         MMKV.initialize(this)
+        SntpClock.init(this)
+        SntpClock.syncTime(this)
         AppInfo.init(this)
         imLoginModel.init(this)
 

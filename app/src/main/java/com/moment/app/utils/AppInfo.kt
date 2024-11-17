@@ -3,7 +3,9 @@ package com.moment.app.utils
 import android.content.Context
 import android.os.Build
 import android.util.Pair
+import com.blankj.utilcode.util.AppUtils
 import com.blankj.utilcode.util.LanguageUtils
+import com.moment.app.utils.MachineUUIDManager.MachineUUIDManager
 import java.util.Locale
 
 object AppInfo {
@@ -16,16 +18,16 @@ object AppInfo {
     var loctype: Int = 0
     fun init(context: Context) {
         try {
-            val pInfo = context.packageManager.getPackageInfo(context.packageName, 0)
-            versionName = pInfo.versionName
-            versionCode = pInfo.versionCode.toLong()
+            val pInfo = AppUtils.getAppInfo()
+            versionName = pInfo?.versionName ?: ""
+            versionCode = pInfo?.versionCode?.toLong() ?: 0L
 
             model = Build.MODEL
         } catch (e: Throwable) {
             e.printStackTrace()
         }
         try {
-            uuid = MachineUuidManager(context).deviceUuid
+            uuid = MachineUUIDManager(context)
         } catch (e: Exception) {
             e.printStackTrace()
         }

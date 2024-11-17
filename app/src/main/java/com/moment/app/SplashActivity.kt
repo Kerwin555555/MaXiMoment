@@ -11,7 +11,6 @@ import com.moment.app.datamodel.FINISHED_INFO
 import com.moment.app.eventbus.LoginEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
-import com.moment.app.login_profile.ProfileActivity
 import com.moment.app.models.AppConfigManager
 import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.BaseActivity

@@ -1,8 +1,10 @@
 package com.moment.app.utils.sntp
 
 import android.content.Context
+import android.util.Log
 import com.blankj.utilcode.util.LogUtils
 import com.moment.app.R
+import com.moment.app.utils.MOMENT_APP
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
