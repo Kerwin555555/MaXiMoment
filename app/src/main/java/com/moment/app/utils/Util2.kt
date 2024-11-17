@@ -14,6 +14,8 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Environment
+import android.os.Handler
+import android.os.Looper
 import android.provider.BaseColumns
 import android.provider.MediaStore
 import android.util.LayoutDirection.RTL
@@ -646,10 +648,11 @@ fun AppCompatActivity.checkAndSelectPhotos(onPermissionOk: (() -> Unit)? = null)
  * 已经有了权限，读取所有相机图片
  */
 fun AppCompatActivity.fetchAllAlbumImages(func: ((album: Album)-> Unit)?) {
+        val cxt = this
         LoaderManager.getInstance(this)
             .initLoader(LOAD_ID_IMAGE, bundleOf("extra_mode" to AlbumSearcher.MODE_ONLY_IMAGE), object : LoaderManager.LoaderCallbacks<Cursor> {
                 override fun onCreateLoader(id: Int, args: Bundle?): Loader<Cursor> {
-                    return PhotoGalleryLoader(this@fetchAllAlbumImages) //加载图片的cursor
+                    return PhotoGalleryLoader(cxt) //加载图片的cursor
                 }
 
                 override fun onLoadFinished(loader: Loader<Cursor>, data: Cursor?) {

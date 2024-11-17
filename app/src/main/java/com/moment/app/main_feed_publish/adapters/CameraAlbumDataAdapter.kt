@@ -99,7 +99,7 @@ class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickA
                      "Maximum photos is reached".toast()
                      return@setOnClickListener
                  }
-                 val hasPhotoPermission = mContext.checkReadWritePermission() || data.size > 1
+                 val hasPhotoPermission = mContext.checkReadWritePermission()
                  val hasCameraPermission = mContext.checkCameraPermission()
                  if (hasCameraPermission) {
                      // 所有权限都有了 got to camera

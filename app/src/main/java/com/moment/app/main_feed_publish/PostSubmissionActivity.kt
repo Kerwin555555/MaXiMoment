@@ -41,6 +41,7 @@ class PostSubmissionActivity : BaseActivity() {
     private lateinit var albumAdapter: CameraAlbumDataAdapter
     private lateinit var uploadImageAdapter : UploadImageAdapter
     private var currentPhoto : Uri? = null
+    private var hasLoadImages = false
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -91,7 +92,10 @@ class PostSubmissionActivity : BaseActivity() {
         albumAdapter.goAndChoosePhotos = {
             checkAndSelectPhotos {
                fetchAllAlbumImages {  album->
-                   albumAdapter.addData(album.files)
+                   if (!hasLoadImages) {
+                       hasLoadImages = true
+                       albumAdapter.addData(album.files)
+                   }
                }
             }
         }
@@ -144,7 +148,11 @@ class PostSubmissionActivity : BaseActivity() {
         })
         if (checkReadWritePermission()) {
             fetchAllAlbumImages {  album ->
-                albumAdapter.addData(album.files)
+                //有的会触发 content observer
+                if (!hasLoadImages) {
+                    hasLoadImages = true
+                    albumAdapter.addData(album.files)
+                }
             }
         }
     }
