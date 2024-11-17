@@ -355,7 +355,7 @@ class EditProfileViewModel : ViewModel() {
                     this.birthday = it
                 }
                 Log.d("zhouzheng save", SerializeManager.toJson(this))
-                UserLoginManager.setUserInfo(this)
+                UserLoginManager.setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(this)
                 _showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
                 (context as? AppCompatActivity)?.finish()
             }

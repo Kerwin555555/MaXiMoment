@@ -25,19 +25,19 @@ object UserLoginManager {
 
     init {
             try {
-                resetInfoCache(AppPrefs.getUserInfo())
+                setMemoryUserInfoWhileCheckIfNeedToSaveMMKVAndHuanxinId(AppPrefs.getUserInfo())
             } catch (e: Exception) {
                 e.printStackTrace()
             }
             if (info == null) {
-                resetInfoCache(UserInfo())
+                setMemoryUserInfoWhileCheckIfNeedToSaveMMKVAndHuanxinId(UserInfo())
             }
 
     }
 
-    private fun resetInfoCache(newInfo: UserInfo?) {
+    private fun setMemoryUserInfoWhileCheckIfNeedToSaveMMKVAndHuanxinId(newInfo: UserInfo?) {
         if (newInfo != null && !TextUtils.isEmpty(newInfo.session)) {
-            MomentKeysManager.updateIfNeed(newInfo)
+            MomentKeysManager.saveMMKVSessionAndHuanxinPasswordIfNeed(newInfo)
         }
         info = newInfo
     }
@@ -54,9 +54,8 @@ object UserLoginManager {
         return if (info != null) (info!!.user_id ?: "") else ""
     }
 
-    fun setUserInfo(info: UserInfo?) {
-        this.info = info
-        resetInfoCache(info)
+    fun setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(info: UserInfo?) {
+        setMemoryUserInfoWhileCheckIfNeedToSaveMMKVAndHuanxinId(info)
         AppPrefs.saveUserInfo(info)
         //fetchUserSettings()
     }
@@ -73,8 +72,8 @@ object UserLoginManager {
 //        map["uuid"] = AppInfo.uuid
 //        AppsFlyerLib.getInstance()
 //            .logEvent(LitApplication.getAppContext(), AFInAppEventType.LOGIN, map)
-        MomentKeysManager.updateIfNeed(info)
-        setUserInfo(info)
+        MomentKeysManager.saveMMKVSessionAndHuanxinPasswordIfNeed(info)
+        setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(info)
         //Sea.getInstance().config().uid(info.getUser_id())
         //EyeConnector.getInstance().fetchEyeToken()
         if (info.register_status != FINISHED_INFO) {

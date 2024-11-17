@@ -171,7 +171,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
              it.timeSelect?.let { date ->
                  val calendar = Calendar.getInstance()
                  calendar.time = date
-                 binding.birthday.text = String.format("%d-%d-%d", calendar[Calendar.YEAR],
+                 binding.birthday.text = String.format("%d-%02d-%02d", calendar[Calendar.YEAR],
                      calendar[Calendar.MONTH] + 1, calendar[Calendar.DAY_OF_MONTH])
              } ?: let {
              }
@@ -228,7 +228,7 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    @MockData private val loginService: LoginService
+    private val loginService: LoginService
 ): ViewModel() {
      private val _liveData = MutableLiveData<ProfileData>()
      val liveData = _liveData
@@ -246,8 +246,8 @@ class ProfileViewModel @Inject constructor(
         startCoroutine({
             val data = _liveData.value
             val result =  loginService.updateInfo(mutableMapOf(
-                "age" to data!!.birthDateToString(),
-                "name" to data.nickName,
+                "birthdate" to data!!.birthDateToString(),
+                "nickname" to data.nickName,
                 "gender" to data.gender,
                 "bio" to data.bio
             ))
@@ -257,7 +257,7 @@ class ProfileViewModel @Inject constructor(
             info.age = DateManagingHub.getAge(info.birthday)
             info.gender = data.gender
             info.bio = data.bio
-            UserLoginManager.setUserInfo(info)
+            UserLoginManager.setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(info)
             EventBus.getDefault().post(LoginEvent())
             AppConfigManager.updateConfig()
             _netLiveData.value = LoadingStatus.SuccessLoadingStatus(info)
@@ -288,7 +288,7 @@ class ProfileViewModel @Inject constructor(
             val file = withContext(Dispatchers.IO) {
                 saveView(imageView.context, imageView.clipOriginalBitmap()!!)?.absolutePath
             }
-            UserLoginManager.setUserInfo(UserLoginManager.getUserInfo()?.apply {
+            UserLoginManager.setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(UserLoginManager.getUserInfo()?.apply {
                 avatar = file // for test
                 imagesWallList = mutableListOf(file!!)
                 register_status = FINISHED_INFO
@@ -322,7 +322,7 @@ class ProfileViewModel @Inject constructor(
             val calendar = Calendar.getInstance()
             calendar.time = timeSelect
              return  String.format(
-                    "%d-%d-%d", calendar[Calendar.YEAR],
+                    "%d-%02d-%02d", calendar[Calendar.YEAR],
                     calendar[Calendar.MONTH] + 1,
                     calendar[Calendar.DAY_OF_MONTH]
                 )

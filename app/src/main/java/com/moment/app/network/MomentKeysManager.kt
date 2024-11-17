@@ -2,7 +2,6 @@ package com.moment.app.network
 
 import android.text.TextUtils
 import com.moment.app.datamodel.UserInfo
-import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.BaseBean
 import com.moment.app.utils.SerializeManager
 import com.tencent.mmkv.MMKV
@@ -17,7 +16,7 @@ object MomentKeysManager {
         MMKV.defaultMMKV()
     }
 
-    fun updateIfNeed(info: UserInfo) {
+    fun saveMMKVSessionAndHuanxinPasswordIfNeed(info: UserInfo) {
         val session = info.session
         val hxPwd = info.huanxin?.password ?: ""
 
