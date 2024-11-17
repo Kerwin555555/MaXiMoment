@@ -308,7 +308,7 @@ class EditProfileViewModel : ViewModel() {
         _showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(true)
         startCoroutine({
             val profileData = liveData.value
-            val map = mutableMapOf<String?,String?>()
+            val map = mutableMapOf<String, Any>()
             if (profileData?.avatar != null && initData.avatar != profileData.avatar) {
                 val file = withContext(Dispatchers.IO) {
                     val bitmap =
@@ -339,23 +339,23 @@ class EditProfileViewModel : ViewModel() {
             "upload to backend".toast()
             UserLoginManager.getUserInfo()?.apply {
                 map["name"]?.let{
-                    this.nickname = it
+                    this.nickname = it as String
                 }
                 map["gender"]?.let{
-                    this.gender = it
+                    this.gender = it as String
                 }
                 map["avatar"]?.let{
-                    this.avatar = it
-                    this.imagesWallList[0] = it
+                    this.avatar = it as String
+                    this.imagesWallList[0] = it as String
                 }
                 map["bio"]?.let{
-                    this.bio = it
+                    this.bio = it as String
                 }
                 map["birthday"]?.let{
-                    this.birthday = it
+                    this.birthday = it as String
                 }
                 Log.d("zhouzheng save", SerializeManager.toJson(this))
-                UserLoginManager.setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(this)
+                UserLoginManager.setMemoryUserInfoAndSaveUserInfoToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(this)
                 _showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
                 (context as? AppCompatActivity)?.finish()
             }

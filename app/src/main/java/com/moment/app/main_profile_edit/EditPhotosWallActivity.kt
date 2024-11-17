@@ -119,7 +119,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                 }
                 val result = list.awaitAll()
                 delay(400) //mock upload to cloud and backend
-                UserLoginManager.setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(UserLoginManager.getUserInfo()?.apply {
+                UserLoginManager.setMemoryUserInfoAndSaveUserInfoToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(UserLoginManager.getUserInfo()?.apply {
                     val mutableList = mutableListOf<String>()
                     result.forEach { fileid->
                         mutableList.add(fileid!!)

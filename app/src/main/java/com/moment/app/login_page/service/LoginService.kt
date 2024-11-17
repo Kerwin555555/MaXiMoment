@@ -20,7 +20,7 @@ interface LoginService {
     suspend fun logout(): Results<Any>
 
     @POST("api/v1/user/update-info")
-    suspend fun updateInfo(@Body data: Map<String?, String?>?): Results<UserInfo>
+    suspend fun updateInfo(@Body data: @JvmSuppressWildcards Map<String, Any>): Results<UserInfo>
 
     @GET("api/sns/v1/moment/user/get_info/{userId}")
     suspend fun getUserInfo(@Path("userId") userId: String?): Results<UserInfo>

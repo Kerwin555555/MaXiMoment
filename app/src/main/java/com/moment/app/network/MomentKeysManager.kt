@@ -50,6 +50,7 @@ object MomentKeysManager {
 
     fun clear() {
         mmkv.remove(SAVE_KEY)
+        this.keyInfo = null
     }
 
     private fun ensureKeyInfo() {

@@ -15,6 +15,7 @@ import com.moment.app.network.NetErrorHandler
 import com.moment.app.network.NetErrorHandler.OnApiErrorListener
 import com.moment.app.utils.AppInfo
 import com.moment.app.utils.emoji
+import com.tencent.mmkv.MMKV
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.Request
 import javax.inject.Inject
@@ -39,6 +40,7 @@ class MomentApp : Application() {
         DRouter.init(this)
         appContext = this
 
+        MMKV.initialize(this)
         AppInfo.init(this)
         imLoginModel.init(this)
 

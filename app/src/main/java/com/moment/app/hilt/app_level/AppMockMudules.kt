@@ -35,6 +35,7 @@ import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.Body
 import java.util.UUID
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -170,7 +171,7 @@ class MockLoginService: LoginService {
         return Results()
     }
 
-    override suspend fun updateInfo(data: Map<String?, String?>?): Results<UserInfo> {
+    override suspend fun updateInfo(data: Map<String, Any>): Results<UserInfo> {
         val res = withContext(Dispatchers.IO) {
             delay(800)
             UserInfo(

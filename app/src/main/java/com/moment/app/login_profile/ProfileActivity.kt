@@ -23,9 +23,9 @@ import com.didi.drouter.api.Extend
 import com.moment.app.R
 import com.moment.app.databinding.ActivityProfileBinding
 import com.moment.app.datamodel.FINISHED_INFO
+import com.moment.app.datamodel.SECOND_INFO
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LoginEvent
-import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.models.AppConfigManager
 import com.moment.app.models.UserLoginManager
@@ -246,10 +246,11 @@ class ProfileViewModel @Inject constructor(
         startCoroutine({
             val data = _liveData.value
             val result =  loginService.updateInfo(mutableMapOf(
-                "birthdate" to data!!.birthDateToString(),
-                "nickname" to data.nickName,
-                "gender" to data.gender,
-                "bio" to data.bio
+                "birthdate" to data!!.birthDateToString() as Any,
+                "nickname" to data.nickName as Any,
+                "gender" to data.gender as Any,
+                "bio" to data.bio as Any,
+                "update_type" to SECOND_INFO as Any,
             ))
             val info: UserInfo = UserLoginManager.getUserInfo() ?: return@startCoroutine
             info.nickname = data.nickName
@@ -257,7 +258,7 @@ class ProfileViewModel @Inject constructor(
             info.age = DateManagingHub.getAge(info.birthday)
             info.gender = data.gender
             info.bio = data.bio
-            UserLoginManager.setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(info)
+            UserLoginManager.setMemoryUserInfoAndSaveUserInfoToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(info)
             EventBus.getDefault().post(LoginEvent())
             AppConfigManager.updateConfig()
             _netLiveData.value = LoadingStatus.SuccessLoadingStatus(info)
@@ -288,7 +289,7 @@ class ProfileViewModel @Inject constructor(
             val file = withContext(Dispatchers.IO) {
                 saveView(imageView.context, imageView.clipOriginalBitmap()!!)?.absolutePath
             }
-            UserLoginManager.setMemoryUserInfoAndSaveToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(UserLoginManager.getUserInfo()?.apply {
+            UserLoginManager.setMemoryUserInfoAndSaveUserInfoToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(UserLoginManager.getUserInfo()?.apply {
                 avatar = file // for test
                 imagesWallList = mutableListOf(file!!)
                 register_status = FINISHED_INFO

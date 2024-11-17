@@ -3,6 +3,7 @@ package com.moment.app
 import android.content.Intent
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import com.didi.drouter.api.DRouter
 import com.didi.drouter.api.Extend
 import com.moment.app.databinding.ActivitySplashBinding
@@ -14,6 +15,7 @@ import com.moment.app.login_profile.ProfileActivity
 import com.moment.app.models.AppConfigManager
 import com.moment.app.models.UserLoginManager
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.sntp.SntpClock
 import dagger.hilt.android.AndroidEntryPoint
 import org.greenrobot.eventbus.EventBus
@@ -88,6 +90,7 @@ class SplashActivity : BaseActivity(){
             this@SplashActivity.finish()
             overridePendingTransition(0, 0)
         } else {
+            Log.e(MOMENT_APP, ""+UserLoginManager.isLogin())
             if (UserLoginManager.isLogin()) {
                 UserLoginManager.logout(true, loginService = loginService)
             }

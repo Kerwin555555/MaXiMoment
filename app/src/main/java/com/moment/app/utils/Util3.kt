@@ -1,6 +1,7 @@
 package com.moment.app.utils
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorFilter
@@ -214,4 +215,8 @@ class MomentLoadingDrawable(val context: Context): Drawable() {
     override fun getOpacity(): Int {
         return PixelFormat.TRANSLUCENT
     }
+}
+
+fun Bitmap?.isOk() : Boolean{
+    return this != null && this.height >0 && this.width > 0
 }

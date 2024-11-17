@@ -36,6 +36,7 @@ class NetWorkModule {
     @Singleton
     fun provideOkHttpClient(): OkHttpClient {
         val builder = OkHttpClient.Builder()
+            .addInterceptor(ParamsInterceptor())
             .addInterceptor(LogInterceptor())
             .connectTimeout(15, TimeUnit.SECONDS)
             .writeTimeout(15, TimeUnit.SECONDS)
