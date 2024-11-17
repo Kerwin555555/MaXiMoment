@@ -10,6 +10,7 @@ import com.moment.app.eventbus.LogoutEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.main_chat.ConversationChangeListener
 import com.moment.app.main_chat.GlobalConversationManager
+import com.moment.app.models.AppConfigManager
 import com.moment.app.ui.FragmentNavigator
 import com.moment.app.ui.MainNaviConfig
 import com.moment.app.ui.NaviTab
@@ -51,7 +52,7 @@ class MainActivity : BaseActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         ActivityHolder.onMainCreate(this)
-
+        AppConfigManager.updateConfig()
         pageAdapter = MainNaviConfig.MainPageAdapter(this)
         fragmentNavigator =
             FragmentNavigator(supportFragmentManager, pageAdapter, R.id.fragment_container)
