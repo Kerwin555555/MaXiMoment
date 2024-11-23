@@ -14,7 +14,6 @@ import com.didi.drouter.api.DRouter
 import com.moment.app.databinding.FragmentProfileBinding
 import com.moment.app.eventbus.UpdateUserInfoEvent
 import com.moment.app.hilt.app_level.MockData
-import com.moment.app.html.JsActivity.Companion.TYPE_GET
 import com.moment.app.login_page.service.FeedService
 import com.moment.app.login_page.service.LoginService
 import com.moment.app.main_home.subfragments.view.RecommendationEmptyView
@@ -32,13 +31,13 @@ import com.moment.app.utils.MomentLoadingDrawable
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.applyPaddingsWithDefaultZero
 import com.moment.app.utils.cancelIfActive
+import com.moment.app.utils.clicks
 import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.loadAvatarBig
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.resetGravity
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.scwang.smart.refresh.layout.util.SmartUtil
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
@@ -93,12 +92,12 @@ class MyProfileFragment : BaseFragment() {
         binding.income.setOnClickListener {
             DRouter.build("/recharge_income").putExtra("type",  TYPE_INCOME).start()
         }
-        binding.setting.setOnAvoidMultipleClicksListener({
+        binding.setting.clicks{
             DRouter.build("/settings").start()
-        }, 500)
-        binding.feedPublish.setOnAvoidMultipleClicksListener({
+        }
+        binding.feedPublish.clicks{
             DRouter.build("/feed/publish").start()
-        }, 500)
+        }
         adapter = ProfilePostsAdapter(isMe = true)
         adapter.setHeaderAndEmpty(true)
         viewMeHeader = ViewMeHeader(requireContext())

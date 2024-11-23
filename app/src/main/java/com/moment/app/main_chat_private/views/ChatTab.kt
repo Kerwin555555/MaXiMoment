@@ -27,6 +27,7 @@ import com.chad.library.adapter.base.BaseViewHolder
 import com.moment.app.R
 import com.moment.app.databinding.ChatBottomBarBinding
 import com.moment.app.ui.uiLibs.MomentRefreshView
+import com.moment.app.utils.clicks
 import com.moment.app.utils.dp
 import com.moment.app.utils.getKeyboardHeight
 import com.moment.app.utils.getScreenWidth
@@ -34,7 +35,6 @@ import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveKeyboardHeight
 import com.moment.app.utils.setBgEnableStateListDrawable
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 
 
 //https://gitee.com/jiao-shichun/ChatInput
@@ -64,7 +64,7 @@ class ChatTab: LinearLayout {
             disableId = R.drawable.bg_gray
         )
         binding.sendButton.isEnabled = false
-        binding.emojiImageView.setOnAvoidMultipleClicksListener({
+        binding.emojiImageView.clicks{
             if (KeyboardUtils.isSoftInputVisible(context as AppCompatActivity)) {
                 lockContentHeight()
                 KeyboardUtils.hideSoftInput(binding.editText)
@@ -86,7 +86,7 @@ class ChatTab: LinearLayout {
                     unlockContentHeightDelayed()
                 }
             }
-        }, 500)
+        }
         binding.editText.setOnKeyListener { v, keyCode, event ->
             if (keyCode == KeyEvent.KEYCODE_BACK
                 && event.action == KeyEvent.ACTION_UP
@@ -148,7 +148,7 @@ class ChatTab: LinearLayout {
 
         override fun convert(helper: BaseViewHolder, item: String) {
             (helper.itemView as EmojiTextView).setText(item)
-            helper.itemView.setOnAvoidMultipleClicksListener({
+            helper.itemView.clicks{
                  val len = binding.editText.text.length
                  binding.editText.getText().insert(len, item)
                  //binding.emojiRv.isVisible = false
@@ -160,7 +160,7 @@ class ChatTab: LinearLayout {
 //                    binding.emojiImageView.isSelected = false
 //                }, 200)
 //                unlockContentHeightDelayed()
-            }, 500)
+            }
         }
     }
 

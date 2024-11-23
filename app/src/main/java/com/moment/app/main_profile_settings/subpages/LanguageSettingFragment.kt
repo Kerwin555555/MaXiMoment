@@ -16,9 +16,9 @@ import com.moment.app.databinding.FragmentLanguageSettingBinding
 import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.applyEnabledColorIntStateList
+import com.moment.app.utils.clicks
 import com.moment.app.utils.getSelectedLoc
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import java.util.Arrays
 import java.util.Locale
 
@@ -58,9 +58,9 @@ class LanguageSettingFragment : BaseFragment(){
         super.onViewCreated(view, savedInstanceState)
         view.isClickable = true
 
-        binding.back.setOnAvoidMultipleClicksListener({
+        binding.back.clicks{
             (context as? AppCompatActivity?)?.supportFragmentManager?.popBackStackNowAllowingStateLoss()
-        }, 500)
+        }
         binding.save.applyEnabledColorIntStateList(enableId =
         0xff1d1d1d.toInt() , disableId = 0xffE5E5E5.toInt())
 
@@ -83,11 +83,11 @@ class LanguageSettingFragment : BaseFragment(){
                 horizontalMargin = 26)
         )
 
-        binding.save.setOnAvoidMultipleClicksListener({
+        binding.save.clicks{
             adapter.selected?.let {
                 changeLanguage(it)
             }
-        }, 500)
+        }
     }
 
 

@@ -41,8 +41,8 @@ import com.moment.app.localimages.utils.Util
 import com.moment.app.user_rights.UserPermissionManager
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.DialogFragmentManager
+import com.moment.app.utils.clicks
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.stackAnimation
 import com.moment.app.utils.toast
 
@@ -323,7 +323,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
     override fun onBindViewHolder(h: RecyclerView.ViewHolder, position: Int) {
         if (position == 0) {
             val holder = h as MediaPhotoViewHolder
-            holder.binding.root.setOnAvoidMultipleClicksListener({
+            holder.binding.root.clicks{
                     try {
                         UserPermissionManager.check(
                             context, "Take Photos",
@@ -354,7 +354,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                         e.printStackTrace()
                         "requestPermissions error".toast()
                     }
-            }, 500)
+            }
             return
         }
         val holder = h as MediaViewHolder
@@ -387,7 +387,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                 })
 
 
-                itemView.setOnAvoidMultipleClicksListener({
+                itemView.clicks{
                     val bundle = bundleOf("file" to file.path)
 
                     //来自 EditPhotosWallActivity
@@ -402,7 +402,7 @@ class MediaAdapter(private val f: Fragment, private val context: Context) :
                             onConfirmListener = f.context as? OnImageConfirmListener?
                         }, "CroppingPictureFragment")?.addToBackStack(null)
                         ?.commitAllowingStateLoss()
-                },500)
+                }
 
 
                 itemView.isEnabled = true

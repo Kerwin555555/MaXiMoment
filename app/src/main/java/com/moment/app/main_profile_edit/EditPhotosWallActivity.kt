@@ -42,12 +42,12 @@ import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
 import com.moment.app.utils.cleanSavedFragments
+import com.moment.app.utils.clicks
 import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.immersion
 import com.moment.app.utils.saveView
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -262,7 +262,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
 
             val filterView = helper.getView<ImageFilterView>(R.id.image)
             filterView.setImageResource(0)
-            helper.itemView.setOnAvoidMultipleClicksListener({
+            helper.itemView.clicks{
                 if (item.isEmpty()) {
                     this@EditPhotosWallActivity.bottomInBottomOut()
                         .add(R.id.root_layout, ChooseAlbumFragment().apply {
@@ -293,7 +293,7 @@ class EditPhotosWallActivity : BaseActivity(), OnImageConfirmListener{
                         }
                     })
                 }
-            }, 100)
+            }
 
             if (item.remoteFileId != null) {
                 filterView.isVisible = true

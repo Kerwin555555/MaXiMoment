@@ -22,10 +22,10 @@ import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ViewerPhoto
+import com.moment.app.utils.clicks
 import com.moment.app.utils.dp
 import com.moment.app.utils.gotoPostDetail
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.showInImageViewer
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -100,9 +100,9 @@ class ImageItemView: ConstraintLayout , AdapterItemView{
 
         binding.commentCount.text = "${post.comment_num}"
 
-        binding.root.setOnAvoidMultipleClicksListener( {
+        binding.root.clicks{
             gotoPostDetail(post)
-        },500)
+        }
     }
 
     inner class Adapter: BaseQuickAdapter<ViewerPhoto.PicShape, BaseViewHolder>(null) {

@@ -40,12 +40,12 @@ import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.SerializeManager
 import com.moment.app.utils.cleanSavedFragments
+import com.moment.app.utils.clicks
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.immersion
 import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
 import com.moment.app.utils.setBgEnableStateListDrawable
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.setTextColorStateSelectList
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -126,9 +126,9 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
                 refresh()
             }
         )
-        binding.confirm.setOnAvoidMultipleClicksListener({
+        binding.confirm.clicks{
             viewModel.submit()
-        }, 500)
+        }
     }
 
     private fun refresh() {

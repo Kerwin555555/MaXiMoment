@@ -18,11 +18,11 @@ import com.bumptech.glide.request.transition.Transition
 import com.moment.app.databinding.ClipImagePopUpWindowBinding
 import com.moment.app.utils.BaseFragment
 import com.moment.app.utils.MOMENT_APP
+import com.moment.app.utils.clicks
 import com.moment.app.utils.copyFragmentArgumentsToMap
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.popBackStackNowAllowingStateLoss
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import java.lang.ref.WeakReference
 
 class CroppingPictureFragment : BaseFragment() {
@@ -107,7 +107,7 @@ class CroppingPictureFragment : BaseFragment() {
             }
 
 
-            binding.confirm.setOnAvoidMultipleClicksListener({
+            binding.confirm.clicks{
                 val map = copyFragmentArgumentsToMap()
                 if (file != null) {
                     map["file"] = file
@@ -117,7 +117,7 @@ class CroppingPictureFragment : BaseFragment() {
                     Log.d(MOMENT_APP, "dxx xxxx" + (onConfirmListener == null))
                     onConfirmListener?.onConfirm(binding.clipImage, map)
                 }
-            }, 500)
+            }
 
             binding.cancel.setOnClickListener {
                 context?.let {

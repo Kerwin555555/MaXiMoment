@@ -11,7 +11,7 @@ import com.moment.app.image_viewer.loadNoAnimResource
 import com.moment.app.localimages.datamodel.AlbumItemFile
 import com.moment.app.main_feed_publish.PostSubmissionViewModel
 import com.moment.app.main_feed_publish.extensions.Action
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
+import com.moment.app.utils.clicks
 import com.moment.app.utils.showAlbumInImageViewer
 import com.moment.app.utils.showInImageViewer
 
@@ -26,22 +26,21 @@ class UploadImageAdapter(val viewModel: PostSubmissionViewModel): BaseQuickAdapt
                 Glide.with(it).load(item as Uri).into(image)
             }
             val photoAdapterPosition = helper.bindingAdapterPosition
-            helper.getView<FrameLayout>(R.id.touche_area).setOnAvoidMultipleClicksListener({
-                if (photoAdapterPosition == null) return@setOnAvoidMultipleClicksListener
+            helper.getView<FrameLayout>(R.id.touche_area).clicks{
+                if (photoAdapterPosition == null) return@clicks
                 viewModel.dispatchAction(Action.RemoveNewPhotoAction.apply {
                     this.photoAdapterPosition = photoAdapterPosition
                 })
-            }, 500)
-            helper.itemView.setOnAvoidMultipleClicksListener({
+            }
+            helper.itemView.clicks{
                 image.showInImageViewer(mutableListOf(item as Uri), item)
-
-            }, 500)
+            }
         } else {
             mContext?.let {
                 image.loadNoAnimResource((item as AlbumItemFile).path)
             }
             val imageUploadAdapterPostion = helper.bindingAdapterPosition
-            helper.getView<FrameLayout>(R.id.touche_area).setOnAvoidMultipleClicksListener({
+            helper.getView<FrameLayout>(R.id.touche_area).clicks{
                 val map = viewModel.getImages()
                 var imageAlbumePos = -1
                 for ((k, v) in map) {
@@ -50,16 +49,16 @@ class UploadImageAdapter(val viewModel: PostSubmissionViewModel): BaseQuickAdapt
                         break
                     }
                 }
-                if (imageAlbumePos == -1) return@setOnAvoidMultipleClicksListener
+                if (imageAlbumePos == -1) return@clicks
                 viewModel.dispatchAction(Action.RemoveImageAction.apply {
                     imageAlbumPosition = imageAlbumePos
                     imageUploadPosition = imageUploadAdapterPostion
                     file = item as AlbumItemFile
                 })
-            }, 500)
-            helper.itemView.setOnAvoidMultipleClicksListener({
+            }
+            helper.itemView.clicks {
                 image.showAlbumInImageViewer(mutableListOf((item as AlbumItemFile).path), item.path, item)
-            }, 500)
+            }
         }
     }
 

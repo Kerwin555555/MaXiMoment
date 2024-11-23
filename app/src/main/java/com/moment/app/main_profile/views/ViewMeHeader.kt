@@ -20,11 +20,11 @@ import com.didi.drouter.api.DRouter
 import com.moment.app.databinding.ViewMeHeaderBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.image_viewer.loadNoAnimResource
+import com.moment.app.utils.clicks
 import com.moment.app.utils.dp
 import com.moment.app.utils.formatScore
 import com.moment.app.utils.isRTL
 import com.moment.app.utils.setBgWithCornerRadiusAndColor
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.showInImageViewer
 
 class ViewMeHeader : ConstraintLayout {
@@ -91,10 +91,10 @@ class ViewMeHeader : ConstraintLayout {
         this.isMe = isMe
         if (isMe) {
             binding.editPhotos.isVisible = true
-            binding.editPhotos.setOnAvoidMultipleClicksListener({
+            binding.editPhotos.clicks{
                 DRouter.build("/edit/photos")
                     .putExtra("fileIds", ArrayList(userInfo.imagesWallList)).start()
-            }, 500)
+            }
         } else {
             binding.editPhotos.visibility = View.INVISIBLE
         }
@@ -104,15 +104,15 @@ class ViewMeHeader : ConstraintLayout {
         if (isMe) {
             binding.edit.isVisible = true
             binding.expand.isVisible = false
-            binding.edit.setOnAvoidMultipleClicksListener({
+            binding.edit.clicks{
                 DRouter.build("/edit/userInfo").start()
-            }, 500)
+            }
         } else {
             binding.edit.isVisible = false
             binding.expand.isVisible = true
             binding.bio.maxLines = 2
             binding.bio.ellipsize = TextUtils.TruncateAt.END
-            binding.expand.setOnAvoidMultipleClicksListener({
+            binding.expand.clicks {
                 if (isOpen) {
                     binding.bio.maxLines = 2
                     isOpen = false
@@ -122,7 +122,7 @@ class ViewMeHeader : ConstraintLayout {
                     binding.ivArrow.rotation = 0f
                     isOpen = true
                 }
-            }, 500)
+            }
         }
 
 

@@ -48,12 +48,12 @@ import com.moment.app.utils.applyEnabledColorIntStateList
 import com.moment.app.utils.applyMargin
 import com.moment.app.utils.bottomInBottomOut
 import com.moment.app.utils.cleanSavedFragments
+import com.moment.app.utils.clicks
 import com.moment.app.utils.dp
 import com.moment.app.utils.getScreenHeight
 import com.moment.app.utils.getScreenWidth
 import com.moment.app.utils.immersion
 import com.moment.app.utils.saveView
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import com.moment.app.utils.setTextColorStateSelectList
 import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
@@ -92,9 +92,9 @@ class EditInfoActivity : BaseActivity(), OnImageConfirmListener{
             finish()
         }
 
-        binding.save.setOnAvoidMultipleClicksListener({
+        binding.save.clicks{
             viewModel.submitData(initialProfileData!!, this@EditInfoActivity, loginService)
-        }, 500)
+        }
 
         viewModel.liveData.observe(this) {
 

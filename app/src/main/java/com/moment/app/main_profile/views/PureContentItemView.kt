@@ -11,9 +11,9 @@ import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.clicks
 import com.moment.app.utils.gotoPostDetail
 import com.moment.app.utils.setImageResourceSelectedStateListDrawable
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import java.text.SimpleDateFormat
 import java.util.Date
 
@@ -64,9 +64,9 @@ class PureContentItemView: ConstraintLayout, AdapterItemView {
 
         binding.time.text = SimpleDateFormat("yyyy.MM.dd HH:mm")
             .format(Date(post.create_time!!.time.toLong()))
-        binding.root.setOnAvoidMultipleClicksListener( {
+        binding.root.clicks {
             gotoPostDetail(post)
-        },500)
+        }
         binding.like.isSelected = post.liked
 
         binding.commentCount.text = "${post.comment_num}"

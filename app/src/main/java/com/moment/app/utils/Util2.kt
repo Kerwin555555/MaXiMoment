@@ -130,20 +130,6 @@ fun AppCompatActivity.immersion() {
     .init()
 }
 
-/**
- * 防止多次点击
- */
-inline fun View.setOnAvoidMultipleClicksListener(crossinline onClick: (view: View) -> Unit, delayMillis: Long) {
-    this.setOnClickListener {
-        if (this.isClickable) {
-            this.isClickable = false
-            onClick(it)
-            this.postDelayed({
-                this.isClickable = true
-            }, delayMillis)
-        }
-    }
-}
 
 internal fun View.isRTL() : Boolean  {
     return this.layoutDirection == RTL

@@ -11,6 +11,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.net.Uri
+import android.os.SystemClock
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
@@ -29,6 +30,7 @@ import com.moment.app.image_viewer.show
 import com.moment.app.localimages.datamodel.AlbumItemFile
 import com.moment.app.network.startCoroutine
 import kotlinx.coroutines.CoroutineScope
+import java.util.concurrent.TimeUnit
 
 
 fun ImageFilterView.showInImageViewer(dataList: List<ViewerPhoto>, clickedData: ViewerPhoto) {
@@ -219,4 +221,47 @@ class MomentLoadingDrawable(val context: Context): Drawable() {
 
 fun Bitmap?.isOk() : Boolean{
     return this != null && this.height >0 && this.width > 0
+}
+
+inline fun View.clicks(skipDuration: Long = 500, crossinline block: (View) -> Unit) {
+    val throttle = MomentThrottle(skipDuration, TimeUnit.MILLISECONDS)
+    setOnClickListener {
+        if (throttle.needSkip()) return@setOnClickListener
+        block(it)
+    }
+}
+
+inline fun View.clicksPro(skipDuration: Long = 1000, crossinline block: (View) -> Unit) {
+    val throttle = MomentThrottle(skipDuration, TimeUnit.MILLISECONDS)
+    setOnClickListener {
+        if (throttle.needSkip()) return@setOnClickListener
+        block(it)
+    }
+}
+
+class MomentThrottle(
+    skipDuration: Long,
+    timeUnit: TimeUnit
+) {
+    private val delayMilliseconds: Long
+    private var oldTime = 0L
+
+    init {
+        if (skipDuration < 0) {
+            delayMilliseconds = 0
+        } else {
+            delayMilliseconds = timeUnit.toMillis(skipDuration)
+        }
+    }
+
+    fun needSkip(): Boolean {
+        val nowTime = SystemClock.elapsedRealtime()
+        val intervalTime = nowTime - oldTime
+        if (oldTime == 0L || intervalTime >= delayMilliseconds) {
+            oldTime = nowTime
+            return false
+        }
+
+        return true
+    }
 }

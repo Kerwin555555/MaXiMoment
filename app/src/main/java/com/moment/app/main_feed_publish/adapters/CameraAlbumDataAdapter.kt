@@ -16,7 +16,7 @@ import com.moment.app.main_feed_publish.extensions.Action
 import com.moment.app.utils.DialogFragmentManager
 import com.moment.app.utils.checkCameraPermission
 import com.moment.app.utils.checkReadWritePermission
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
+import com.moment.app.utils.clicks
 import com.moment.app.utils.showAlbumInImageViewer
 import com.moment.app.utils.toast
 
@@ -135,10 +135,10 @@ class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickA
             } else {
                 binding.selector.text = ""
             }
-            binding.toucheArea.setOnAvoidMultipleClicksListener({
+            binding.toucheArea.clicks{
                 if (selectedMap.size >= 9 && !selectedMap.containsKey(position)) {
                     "Maximum photos is reached"
-                    return@setOnAvoidMultipleClicksListener
+                    return@clicks
                 }
                 if (selectedMap.containsKey(position)) {
                     val map = viewModel.getImages()
@@ -160,7 +160,7 @@ class CameraAlbumDataAdapter(var viewModel: PostSubmissionViewModel): BaseQuickA
                         this.file = item
                     })
                 }
-            }, 500)
+            }
             binding.albumImage.setOnClickListener {
                 binding.albumImage.showAlbumInImageViewer(mutableListOf(item.path), item.path, item)
             }

@@ -15,8 +15,8 @@ import com.moment.app.models.UserLoginManager
 import com.moment.app.main_profile_settings.subpages.LanguageSettingFragment
 import com.moment.app.ui.uiLibs.DataDividerItemDecoration
 import com.moment.app.utils.BaseActivity
+import com.moment.app.utils.clicks
 import com.moment.app.utils.rightInRightOut
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -68,9 +68,9 @@ class MomentSettingsActivity : BaseActivity(){
                 horizontalMargin = 26)
         )
 
-        binding.logOut.setOnAvoidMultipleClicksListener({
+        binding.logOut.clicks{
             UserLoginManager.logout(true, loginService)
-        }, 500)
+        }
     }
 
     inner class Adapter: BaseQuickAdapter<Item, BaseViewHolder>(R.layout.settings_item_view) {

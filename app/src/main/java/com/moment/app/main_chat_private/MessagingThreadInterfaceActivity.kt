@@ -24,9 +24,9 @@ import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.cancelIfActive
+import com.moment.app.utils.clicks
 import com.moment.app.utils.immersion
 import com.moment.app.utils.scrollToBottom
-import com.moment.app.utils.setOnAvoidMultipleClicksListener
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -271,18 +271,18 @@ class MessagingThreadInterfaceActivity: BaseActivity(){
             finish()
         }
         binding.chatTab.getBinding().apply {
-            sendButton.setOnAvoidMultipleClicksListener({
-                if (conversation_partner_huanxin_id.isNullOrEmpty()) return@setOnAvoidMultipleClicksListener
+            sendButton.clicks{
+                if (conversation_partner_huanxin_id.isNullOrEmpty()) return@clicks
                 //检查userInfo 是否被blocked
                 //检查是否风险控制
                 imLoginModel.getEMConversation(conversation_partner_huanxin_id ?: "")?.let {
                     val msg = imLoginModel.generateTextMessage(editText.text?.toString()?.trim() ?: "", conversation_partner_huanxin_id!!)
-                    if (msg == null)return@setOnAvoidMultipleClicksListener
+                    if (msg == null)return@clicks
                     imLoginModel.sendMessageToPartner(msg)
                     adapter.addData(msg)
                     binding.refreshView.getRecyclerView().scrollToBottom()
                 }
-            }, 500)
+            }
         }
     }
 }
