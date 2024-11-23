@@ -18,6 +18,9 @@ import android.widget.ImageView
 import androidx.constraintlayout.utils.widget.ImageFilterView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -264,4 +267,62 @@ class MomentThrottle(
 
         return true
     }
+}
+
+/**
+ * 可定制是否定制数据倒灌的LiveData
+ * @param <T>
+</T> */
+class MomentLiveData<T> : MutableLiveData<T> {
+    private var newValueTime = 0L
+
+    /**
+     * 是否接受数据倒灌，默认不支持，而MutableLiveData天生支持。
+     */
+    private var acceptInversion = false
+
+    constructor()
+
+    /**
+     *
+     * @param acceptInversion 是否接受数据倒灌
+     * @param holder 占位，无意义。用于区别开androidx.lifecycle.MutableLiveData#MutableLiveData(java.lang.Object)
+     */
+    constructor(acceptInversion: Boolean,  holder: Any?) {
+        this.acceptInversion = acceptInversion
+    }
+
+    fun observe(owner: LifecycleOwner?, observer: Observer<in T>) {
+        val filterOb: MomentLiveDataObserver<in T> = object : MomentLiveDataObserver<T>() {
+            override fun onChanged(t: T) {
+                if (acceptInversion || (newValueTime >= registerTime)) {
+                    observer.onChanged(t)
+                } else {
+                    //CommonUtilsKt.printW("UULiveData", "Inversion Data: $t")
+                }
+            }
+        }
+        super.observe(owner!!, filterOb)
+    }
+
+    override fun observeForever(observer: Observer<in T>) {
+        val filterOb: MomentLiveDataObserver<in T> = object : MomentLiveDataObserver<T>() {
+            override fun onChanged(t: T) {
+                if (acceptInversion || (newValueTime >= registerTime)) {
+                    observer.onChanged(t)
+                } else {
+                   // CommonUtilsKt.printW("UULiveData", "observeForever Inversion Data: $t")
+                }
+            }
+        }
+        super.observeForever(filterOb)
+    }
+
+    override fun setValue(value: T) {
+        newValueTime = System.currentTimeMillis()
+        super.setValue(value)
+    }
+}
+abstract class  MomentLiveDataObserver<T>: Observer<T> {
+    var registerTime = System.currentTimeMillis()
 }
