@@ -292,7 +292,7 @@ class MomentLiveData<T> : MutableLiveData<T> {
         this.acceptInversion = acceptInversion
     }
 
-    fun observe(owner: LifecycleOwner?, observer: Observer<in T>) {
+    override fun observe(owner: LifecycleOwner, observer: Observer<in T>) {
         val filterOb: MomentLiveDataObserver<in T> = object : MomentLiveDataObserver<T>() {
             override fun onChanged(t: T) {
                 if (acceptInversion || (newValueTime >= registerTime)) {
@@ -302,7 +302,7 @@ class MomentLiveData<T> : MutableLiveData<T> {
                 }
             }
         }
-        super.observe(owner!!, filterOb)
+        super.observe(owner, filterOb)
     }
 
     override fun observeForever(observer: Observer<in T>) {

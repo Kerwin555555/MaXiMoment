@@ -3,6 +3,7 @@ package com.moment.app.hilt.app_level
 import android.app.Application
 import androidx.room.Room
 import androidx.room.RoomDatabase.JournalMode
+import com.chad.library.adapter.base.util.ProviderDelegate
 import com.moment.app.BuildConfig
 import com.moment.app.hilt.app_level.interceptors.LogInterceptor
 import com.moment.app.hilt.app_level.interceptors.converter.MyGsonConverterFactory
@@ -17,14 +18,15 @@ import com.moment.app.main_home.subfragments.db.UserInfoEntityDao
 import com.moment.app.main_home.subfragments.service.HomeService
 import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserImManager
+import com.moment.app.utils.ImageUploader
 import com.moment.app.utils.MomentCoreParams.BASE_URL
+import com.moment.app.utils.MomentOSSDelegate
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import java.net.Proxy
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -125,6 +127,18 @@ class RoomModule {
     @Provides
     fun provideIMLoginModel(hub: GlobalConversationManager): UserIMManagerBus {
         return UserImManager(hub)
+    }
+
+    @Singleton
+    @Provides
+    fun provideOSSPrepare(loginService: LoginService): MomentOSSDelegate {
+        return MomentOSSDelegate(loginService)
+    }
+
+    @Singleton
+    @Provides
+    fun provideImageUploader(delegate: MomentOSSDelegate): ImageUploader {
+        return ImageUploader(delegate)
     }
 }
 

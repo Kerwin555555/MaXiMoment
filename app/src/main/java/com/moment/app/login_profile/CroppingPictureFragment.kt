@@ -119,7 +119,7 @@ class CroppingPictureFragment : BaseFragment() {
                 }
             }
 
-            binding.cancel.setOnClickListener {
+            binding.cancel.clicks {
                 context?.let {
                     (it as AppCompatActivity).supportFragmentManager.popBackStackNowAllowingStateLoss()
                 }

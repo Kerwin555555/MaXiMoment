@@ -11,7 +11,7 @@ object MomentCoreParams {
     const val OSS: String = "http://oss.moment.com/"
     const val BS_CDN: String = "https://baishan.moment.com/"
 
-    var IMAGE_URL: String = BS_CDN + "api/sns/v1/lit/image/"
+    var IMAGE_URL: String = "https://moment-test.oss-cn-hongkong.aliyuncs.com/"
     var IMAGE_URL_LIT: String = BS_CDN + "api/sns/v1/lit/simage/"
     var AUDIO_URL: String = BS_CDN + "api/sns/v1/lit/audio/"
     var VIDEO_URL: String = BS_CDN + "api/sns/v1/lit/video/"

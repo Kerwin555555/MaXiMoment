@@ -16,6 +16,10 @@ class Results<T>  {
                 ", data=" + data +
                 '}'
     }
+
+    fun success(): Boolean {
+        return code == 0
+    }
 }
 
 class BackendException : IOException {

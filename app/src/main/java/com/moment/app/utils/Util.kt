@@ -18,6 +18,8 @@ import android.view.ViewConfiguration
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import android.widget.Toast.LENGTH_SHORT
 import androidx.annotation.ColorInt
 import androidx.annotation.ColorRes
 import androidx.annotation.DrawableRes
@@ -417,7 +419,9 @@ fun String.toast() {
     if (this.isNullOrEmpty() || ActivityHolder.getCurrentActivity() == null) {
         return
     }
-    ToastUtils.showShort(this)
+    ActivityHolder.getCurrentActivity()?.let {
+        if (this.isNotEmpty()) Toast.makeText(it, this, LENGTH_SHORT)
+    }
 }
 
 //取代 deprecated 的 GlobalCope

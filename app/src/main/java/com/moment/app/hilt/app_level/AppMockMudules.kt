@@ -24,6 +24,7 @@ import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserImManager
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.MomentCoreParams.BASE_URL
+import com.moment.app.utils.MomentOSSDelegate
 import com.moment.app.utils.ViewerPhoto
 import dagger.Module
 import dagger.Provides
@@ -33,9 +34,9 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
+import retrofit2.Call
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.Body
 import java.util.UUID
 import javax.inject.Qualifier
 import javax.inject.Singleton
@@ -207,6 +208,10 @@ class MockLoginService: LoginService {
             delay(400)
         }
         return Results()
+    }
+
+    override fun getOssToken():Call<Results<MomentOSSDelegate.OSSToken>>? {
+        return null
     }
 }
 

@@ -6,6 +6,8 @@ import com.moment.app.datamodel.Results
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.main_profile.entities.FeedList
 import com.moment.app.main_profile.entities.PostBean
+import com.moment.app.utils.MomentOSSDelegate
+import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -24,6 +26,9 @@ interface LoginService {
 
     @GET("api/sns/v1/moment/user/get_info/{userId}")
     suspend fun getUserInfo(@Path("userId") userId: String?): Results<UserInfo>
+
+    @GET("/api/v1/oss/fetch-sts-token")
+    fun getOssToken(): Call<Results<MomentOSSDelegate.OSSToken>>?
 }
 
 

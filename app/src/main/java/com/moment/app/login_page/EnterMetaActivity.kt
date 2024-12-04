@@ -50,7 +50,7 @@ class EnterMetaActivity : BaseActivity() {
         setContentView(binding.getRoot())
         initFacebookLogin()
 
-        login("metatoken")
+        login("googledtoken-googletoken-googletoken-googletoken")
 
 //        val accessToken = AccessToken.getCurrentAccessToken()
 //        val isLoggedIn = accessToken != null && !accessToken.isExpired
@@ -105,7 +105,7 @@ class EnterMetaActivity : BaseActivity() {
          val progressDialog = ProgressIndicatorFragment.show(this)
          progressDialog.isCancelable = false
          startCoroutine({
-             val map = mutableMapOf("login_token" to metaToken, "login_type" to "facebook")
+             val map = mutableMapOf("login_token" to metaToken, "login_type" to "google")
              val result = loginService.login(map)
              val info: UserInfo? = result.data?.user_info?.apply {
                  session = result.data?.session

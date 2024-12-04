@@ -16,7 +16,9 @@ import com.bigkoo.pickerview.listener.OnDismissListener
 import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener
 import com.bigkoo.pickerview.listener.OnTimeSelectListener
 import com.bigkoo.pickerview.view.TimePickerView
+import com.blankj.utilcode.util.JsonUtils
 import com.blankj.utilcode.util.KeyboardUtils
+import com.blankj.utilcode.util.LogUtils
 import com.didi.drouter.annotation.Router
 import com.didi.drouter.api.DRouter
 import com.didi.drouter.api.Extend
@@ -36,6 +38,7 @@ import com.moment.app.network.startCoroutine
 import com.moment.app.network.toast
 import com.moment.app.utils.BaseActivity
 import com.moment.app.utils.DateManagingHub
+import com.moment.app.utils.ImageUploader
 import com.moment.app.utils.MOMENT_APP
 import com.moment.app.utils.ProgressIndicatorFragment
 import com.moment.app.utils.SerializeManager
@@ -47,6 +50,7 @@ import com.moment.app.utils.requestNewSize
 import com.moment.app.utils.saveView
 import com.moment.app.utils.setBgEnableStateListDrawable
 import com.moment.app.utils.setTextColorStateSelectList
+import com.moment.app.utils.toast
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -222,13 +226,15 @@ class ProfileActivity: BaseActivity(), OnImageConfirmListener{
     }
 
     override fun onConfirm(imageView: PictureCroppingView, map: Map<String, Any?>?) {
-        viewModel.saveAvatar(imageView)
+        LogUtils.d(MOMENT_APP, SerializeManager.toJson(map))
+        viewModel.saveAvatar(imageView, map)
     }
 }
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val loginService: LoginService
+    private val loginService: LoginService,
+    private val uploader: ImageUploader
 ): ViewModel() {
      private val _liveData = MutableLiveData<ProfileData>()
      val liveData = _liveData
@@ -270,7 +276,7 @@ class ProfileViewModel @Inject constructor(
     }
 
 
-    fun saveAvatar(imageView: PictureCroppingView) {
+    fun saveAvatar(imageView: PictureCroppingView, map: Map<String, Any?>?) {
         startCoroutine({
             showProgressDialog.value = ProgressDialogStatus.ShowProgressDialog(cancellable = false)
             kotlin.runCatching {
@@ -284,17 +290,30 @@ class ProfileViewModel @Inject constructor(
                         .commitNowAllowingStateLoss()
                 }
             }
-            val file = withContext(Dispatchers.IO) {
-                saveView(imageView.context, imageView.clipOriginalBitmap()!!)?.absolutePath
+            var file = ""
+            map?.get("file")?.let { f ->
+                file = f as String
+            } ?: let {
+                map?.get("uri")?.let { uri ->
+                    file = uri.toString()
+                }
             }
+            val rzt = uploader.uploadImage(file, false)
+            if(rzt.fileId.isNullOrEmpty()) {
+                "sth wrong".toast()
+                return@startCoroutine
+            }
+            loginService.updateInfo(mutableMapOf(
+                "avatar" to rzt.fileId as Any,
+                "update_type" to FINISHED_INFO as Any,
+            ))
             UserLoginManager.setMemoryUserInfoAndSaveUserInfoToMMKVAndTryToSaveMMKVSessionAndHuanxinPasswordIfNeed(UserLoginManager.getUserInfo()?.apply {
-                avatar = file // for test
-                imagesWallList = mutableListOf(file!!)
+                avatar = rzt.fileId // for test
+                imagesWallList = mutableListOf(rzt.fileId!!)
                 register_status = FINISHED_INFO
             })
             Log.d(MOMENT_APP, SerializeManager.toJson(UserLoginManager.getUserInfo()))
             hasAvatarLiveData.value = true
-            delay(2000) // mock upload to backend and cloud storage
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
             DRouter.build("/main")
                 .putExtra(Extend.START_ACTIVITY_FLAGS, Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -302,6 +321,7 @@ class ProfileViewModel @Inject constructor(
                 //.putExtra(MainActivity.INTENT_FROM_KEY, MainActivity.INTENT_FROM_LOGIN)
                 .start()
         }) {
+            it.toast()
             showProgressDialog.value = ProgressDialogStatus.CancelProgressDialog
         }
     }

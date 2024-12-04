@@ -64,6 +64,7 @@ import com.moment.app.localimages.album.IAlbumInterface.Companion.LOAD_ID_IMAGE
 import com.moment.app.main_profile.entities.PostBean
 import com.moment.app.models.UserLoginManager
 import com.moment.app.user_rights.UserPermissionManager
+import com.moment.app.utils.MomentCoreParams.IMAGE_URL
 import com.tencent.mmkv.MMKV
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -427,7 +428,7 @@ fun ImageView.loadUserBackgroundOrAlbum(fileId: String?) {
     val d = MomentLoadingDrawable(context)
     setImageDrawable(d)
     kotlin.runCatching {
-        Glide.with(this).load(fileId)
+        Glide.with(this).load(IMAGE_URL + fileId)
             .placeholder(d)
             .error(d)
             .centerInside().override(ScreenUtils.getAppScreenWidth()*3/5,
