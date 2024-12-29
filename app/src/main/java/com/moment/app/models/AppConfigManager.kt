@@ -3,7 +3,7 @@ package com.moment.app.models
 import com.moment.app.utils.BaseBean
 
 object AppConfigManager {
-    var momentConfig: MomentConfig? = null
+    var momentConfig: MomentConfig? = MomentConfig()
 
     fun updateConfig() {
 
@@ -11,6 +11,6 @@ object AppConfigManager {
 }
 
 class MomentConfig: BaseBean() {
-    var enableFacebookTokenCheck: Boolean = false
+    var enableFacebookTokenCheck: Boolean = true
     var disableHXLogin: Boolean = false
 }

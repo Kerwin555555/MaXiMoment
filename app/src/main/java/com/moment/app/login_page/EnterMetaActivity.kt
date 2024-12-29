@@ -2,9 +2,11 @@ package com.moment.app.login_page
 
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import com.blankj.utilcode.util.LogUtils
 import com.blankj.utilcode.util.ToastUtils
 import com.didi.drouter.annotation.Router
+import com.facebook.AccessToken
 import com.facebook.CallbackManager
 import com.facebook.FacebookCallback
 import com.facebook.FacebookException
@@ -15,6 +17,7 @@ import com.moment.app.datamodel.UserInfo
 import com.moment.app.eventbus.LogCancelEvent
 import com.moment.app.hilt.app_level.MockData
 import com.moment.app.login_page.service.LoginService
+import com.moment.app.models.AppConfigManager
 import com.moment.app.models.UserIMManagerBus
 import com.moment.app.models.UserLoginManager
 import com.moment.app.network.startCoroutine
@@ -50,15 +53,13 @@ class EnterMetaActivity : BaseActivity() {
         setContentView(binding.getRoot())
         initFacebookLogin()
 
-        login("googledtoken-googletoken-googletoken-googletoken")
-
-//        val accessToken = AccessToken.getCurrentAccessToken()
-//        val isLoggedIn = accessToken != null && !accessToken.isExpired
-//        if (isLoggedIn && ConfigModel.momentConfig?.enableFacebookTokenCheck == true) {
-//            login(accessToken!!.token)
-//        } else {
-//            binding.loginButton.performClick()
-//        }
+        val accessToken = AccessToken.getCurrentAccessToken()
+        val isLoggedIn = accessToken != null && !accessToken.isExpired
+        if (isLoggedIn && AppConfigManager.momentConfig?.enableFacebookTokenCheck == true) {
+            login(accessToken!!.token)
+        } else {
+            binding.loginButton.performClick()
+        }
     }
 
     private fun initFacebookLogin() {
