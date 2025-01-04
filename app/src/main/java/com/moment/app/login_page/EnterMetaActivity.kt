@@ -66,9 +66,9 @@ class EnterMetaActivity : BaseActivity() {
         callbackManager = CallbackManager.Factory.create()
         binding.loginButton.setPermissions(
             "email",
-            "public_profile",
-            "user_age_range",
-            "contact_email"
+            "public_profile"
+//            "user_age_range",
+//            "contact_email"
         )
         binding.loginButton.registerCallback(callbackManager, object : FacebookCallback<LoginResult> {
             override fun onCancel() {

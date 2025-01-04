@@ -206,7 +206,7 @@ class EnterAlphabetActivity : BaseActivity() {
         private const val RC_SIGN_IN = 100
         private const val RC_SIGN_IN_NEW = 101
         private const val SERVER_CLIENT_ID =
-            "72687572250-i5659eubkl38ck9n17mrijl0neh7rgkc.apps.googleusercontent.com"
+            "829532366987-hcqbqkf01a24rsua2n58vh101k7aq95e.apps.googleusercontent.com"
 
         fun start(context: Context?) {
             DRouter.build("/login/google").start(context)
