@@ -4,13 +4,12 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.LinearLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.blankj.utilcode.util.SizeUtils
 import com.moment.app.databinding.UserBottomBarBinding
 import com.moment.app.datamodel.UserInfo
 import com.moment.app.utils.applyPaddingsWithDefaultZero
-import com.sxu.shadowdrawable.ShadowDrawable
+import com.moment.app.utils.shadow.ShadowDrawable
 
 class UserAccostChatFollowActionBar: ConstraintLayout {
     constructor(context: Context) : super(context)

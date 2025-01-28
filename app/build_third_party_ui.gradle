@@ -1,6 +1,4 @@
 dependencies {
-    //模糊半径设置背景阴影
-    implementation 'com.github.Liberuman:ShadowDrawable:0.1'
     //smart refresh layout 刷新相关
     implementation 'io.github.scwang90:refresh-layout-kernel:2.1.0'
     implementation  'io.github.scwang90:refresh-header-classics:2.1.0'    //经典刷新头
@@ -9,7 +7,11 @@ dependencies {
     implementation  'io.github.scwang90:refresh-header-material:2.1.0'    //谷歌刷新头
     implementation  'io.github.scwang90:refresh-header-two-level:2.1.0'   //二级刷新头
     //status bar 设置沉浸式
-    implementation 'com.gyf.immersionbar:immersionbar:3.0.0'
+    implementation 'com.geyifeng.immersionbar:immersionbar:3.2.2'
+    // kotlin扩展（可选）
+    implementation 'com.geyifeng.immersionbar:immersionbar-ktx:3.2.2'
+    // fragment快速实现（可选）已废弃
+    implementation 'com.geyifeng.immersionbar:immersionbar-components:3.2.2'
     //RecyclerView 核心 Adapter
     implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.50'
     //支持手势的ImageView,多个库的依赖含有DoubleTouch等功能

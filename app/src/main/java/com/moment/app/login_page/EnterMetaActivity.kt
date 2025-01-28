@@ -106,7 +106,7 @@ class EnterMetaActivity : BaseActivity() {
          val progressDialog = ProgressIndicatorFragment.show(this)
          progressDialog.isCancelable = false
          startCoroutine({
-             val map = mutableMapOf("login_token" to metaToken, "login_type" to "google")
+             val map = mutableMapOf("login_token" to metaToken, "login_type" to "facebook")
              val result = loginService.login(map)
              val info: UserInfo? = result.data?.user_info?.apply {
                  session = result.data?.session
