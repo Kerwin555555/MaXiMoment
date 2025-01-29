@@ -1,8 +1,9 @@
 package com.moment.app.datamodel
 
+import com.moment.app.utils.BaseBean
 import java.io.IOException
 
-class Results<T>  {
+class Results<T>  : BaseBean(){
     var code: Int = 0 //0 成功
     var msg: String? = null
     var message: String? = null

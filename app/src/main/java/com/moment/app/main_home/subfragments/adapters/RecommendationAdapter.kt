@@ -39,7 +39,7 @@ class RecommendationAdapter: BaseQuickAdapter<UserInfo, RecommendationAdapter.Fr
                 .start()
         }
 
-        item.followed?.let {
+        item.say_hi?.let {
             binding.chat.isSelected = it
             binding.chatText.applyDrawable(
                 start = if (it) 0 else R.mipmap.love_small_12dp

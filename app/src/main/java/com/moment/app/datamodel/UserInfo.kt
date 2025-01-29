@@ -29,6 +29,7 @@ data class UserInfo(
     var forbidden_session: String? ="",
     var huanxin:HuanxinBean? = HuanxinBean(),
     var followed: Boolean? = false,
+    var say_hi: Boolean? = false,
     var avatar: String? = null,
     var imagesWallList: MutableList<String> = mutableListOf(),
     var friends_count: Int? = 0,
@@ -36,7 +37,6 @@ data class UserInfo(
     var follower_count: Int? = 0,
 ): BaseBean() {
 }
-
 class HuanxinBean : BaseBean() {
     /**
      * password : b7702c283c823038ce4776cf9a3735fb
