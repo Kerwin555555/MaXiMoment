@@ -162,7 +162,10 @@ class MockLoginService: LoginService {
             )
         }
         return Results<LoginSessionResult>().apply {
-
+            this.data = LoginSessionResult().apply {
+                this.user_info = res
+                this.session = "fajsdfijhaiodfjaoidfjioa"
+            }
         }
 
     }

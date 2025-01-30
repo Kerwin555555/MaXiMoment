@@ -107,6 +107,11 @@ android {
         viewBinding true
         buildConfig true
         dataBinding true
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.8"
     }
 }
 
@@ -114,6 +119,7 @@ apply from: './build_billing_ads.gradle'
 apply from: './build_third_party_ui.gradle'
 apply from: './build_tools.gradle'
 apply from: './build_network.gradle'
+apply from: './build_compose.gradle'
 
 dependencies {
     implementation fileTree(include: ['*.aar'], dir: 'libs')
